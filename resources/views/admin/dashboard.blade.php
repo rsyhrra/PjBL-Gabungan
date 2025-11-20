@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Admin Dashboard - Aneka Usaha</title>
+    
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <style>
-        /* --- 1. TEMA WARNA (SAMA DENGAN BERANDA) --- */
+        /* --- 1. TEMA WARNA --- */
         :root {
             --bg-color: #FDFBF7;       /* Cream Background */
             --primary: #2C3E50;        /* Navy Blue */
@@ -21,12 +23,12 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { display: flex; min-height: 100vh; background-color: var(--bg-color); color: var(--primary); overflow-x: hidden; }
 
-        /* --- 2. SIDEBAR (NAVY) --- */
+        /* --- 2. SIDEBAR --- */
         .sidebar {
             width: 280px; background-color: var(--primary); color: #fff;
             display: flex; flex-direction: column; padding: 30px; 
-            position: fixed; height: 100%; transition: 0.3s;
-            box-shadow: 5px 0 15px rgba(0,0,0,0.1); z-index: 100;
+            position: fixed; height: 100%; z-index: 100;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.1);
         }
         
         .logo-area {
@@ -39,29 +41,30 @@
         .nav-item {
             padding: 15px 20px; color: rgba(255,255,255,0.7); text-decoration: none; 
             font-weight: 500; border-radius: 12px; margin-bottom: 10px; 
-            transition: 0.3s; display: flex; align-items: center; gap: 15px;
-            font-size: 0.95rem;
+            transition: 0.3s; display: flex; align-items: center; gap: 15px; font-size: 0.95rem;
         }
-        .nav-item i { width: 20px; text-align: center; }
-        
-        /* Efek Hover & Active pada Menu */
         .nav-item:hover, .nav-item.active { 
             background-color: var(--accent); color: white; 
-            box-shadow: 0 5px 15px rgba(212, 163, 115, 0.3);
-            transform: translateX(5px);
+            transform: translateX(5px); box-shadow: 0 5px 15px rgba(212, 163, 115, 0.3);
         }
         
         /* --- 3. MAIN CONTENT --- */
         .main-content { margin-left: 280px; flex: 1; display: flex; flex-direction: column; }
         
-        /* Topbar (White) */
+        /* Topbar */
         .topbar {
-            background: var(--white); padding: 20px 40px; 
+            background: var(--white); padding: 15px 40px; 
             display: flex; justify-content: space-between; align-items: center;
             box-shadow: var(--shadow); position: sticky; top: 0; z-index: 90;
         }
-        .page-title { font-size: 1.2rem; font-weight: 600; color: var(--primary); }
         
+        /* Search Box Real-time */
+        .search-box {
+            background: #f0f0f0; padding: 10px 20px; border-radius: 25px; border: none;
+            width: 400px; color: var(--primary); outline: none; transition: 0.3s; font-family: inherit;
+        }
+        .search-box:focus { background: #fff; box-shadow: 0 0 0 2px var(--accent); }
+
         .logout-btn { 
             text-decoration: none; color: var(--primary); font-weight: 600; 
             display: flex; align-items: center; gap: 10px; transition: 0.3s;
@@ -73,7 +76,7 @@
         .content-area { padding: 40px; }
 
         /* --- 4. SUMMARY CARDS --- */
-        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; margin-bottom: 50px; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; margin-bottom: 40px; }
         .card {
             background: var(--white); padding: 30px; border-radius: 20px; 
             box-shadow: var(--shadow); position: relative; overflow: hidden;
@@ -83,36 +86,38 @@
         
         .card h3 { font-size: 0.9rem; margin-bottom: 10px; color: var(--text-grey); font-weight: 500; }
         .card .val { font-size: 2.2rem; font-weight: 700; color: var(--primary); }
-        
-        /* Ikon Background di Card */
-        .card-icon {
-            position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
-            font-size: 3.5rem; color: var(--accent); opacity: 0.2;
-        }
+        .card-icon { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 3.5rem; color: var(--accent); opacity: 0.15; }
 
-        /* --- 5. TABLES --- */
+        /* --- 5. TABLES & SCROLL FRAME --- */
         .table-section { margin-bottom: 50px; background: var(--white); border-radius: 20px; box-shadow: var(--shadow); padding: 30px; }
         
         .section-header { 
-            font-size: 1.3rem; font-weight: 700; margin-bottom: 25px; 
+            font-size: 1.3rem; font-weight: 700; margin-bottom: 20px; 
             color: var(--primary); display: flex; justify-content: space-between; align-items: center; 
         }
 
-        .table-responsive { overflow-x: auto; }
-        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; min-width: 800px; }
+        /* Bingkai Scroll untuk Tabel */
+        .table-scroll-frame {
+            max-height: 500px; overflow-y: auto; border-radius: 10px; border: 1px solid #eee;
+        }
+        .table-scroll-frame::-webkit-scrollbar { width: 8px; }
+        .table-scroll-frame::-webkit-scrollbar-track { background: #f9f9f9; }
+        .table-scroll-frame::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
         
-        th { 
+        table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 800px; }
+        
+        /* Sticky Header */
+        thead th { 
+            position: sticky; top: 0; background: var(--white); z-index: 5;
             text-align: left; padding: 15px; color: var(--text-grey); font-size: 0.85rem; 
             text-transform: uppercase; letter-spacing: 1px; font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
         
-        td { background: #f9f9f9; padding: 15px; vertical-align: middle; }
-        tr td:first-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
-        tr td:last-child { border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
-        
-        tr:hover td { background: #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transform: scale(1.01); transition: 0.2s; }
+        td { background: #fff; padding: 15px; vertical-align: middle; border-bottom: 1px solid #f5f5f5; }
+        tr:hover td { background: #fafafa; }
 
-        /* --- 6. BUTTONS & INPUTS --- */
+        /* --- 6. BUTTONS & STATUS --- */
         .btn { padding: 8px 15px; border-radius: 8px; border: none; cursor: pointer; color: white; font-size: 0.85rem; transition: 0.3s; }
         .btn-edit { background: var(--primary); } .btn-edit:hover { background: var(--primary-light); }
         .btn-delete { background: #e74c3c; } .btn-delete:hover { background: #c0392b; }
@@ -120,23 +125,27 @@
         .btn-add { 
             background: var(--accent); padding: 12px 25px; font-size: 0.95rem; 
             font-weight: 600; box-shadow: 0 5px 15px rgba(212, 163, 115, 0.4);
+            color: white; border: none; cursor: pointer; border-radius: 8px;
         }
-        .btn-add:hover { transform: translateY(-2px); }
+        .btn-add:hover { transform: translateY(-2px); background: #b0855b; }
 
+        /* Warna-warni Status Dropdown */
         .status-select { 
-            padding: 8px 12px; border-radius: 20px; border: 1px solid #ddd; 
-            background: white; font-family: 'Poppins', sans-serif; cursor: pointer; outline: none;
+            padding: 8px 12px; border-radius: 20px; border: 1px solid #eee; 
+            font-family: 'Poppins', sans-serif; cursor: pointer; outline: none; font-weight: 600; font-size: 0.85rem;
         }
-        .status-select:focus { border-color: var(--accent); }
+        .status-baru { background-color: #ffebee; color: #c62828; border-color: #ef9a9a; }
+        .status-proses { background-color: #fff3e0; color: #ef6c00; border-color: #ffcc80; }
+        .status-selesai { background-color: #e8f5e9; color: #2e7d32; border-color: #a5d6a7; }
 
         /* --- 7. MODAL POPUP --- */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(44, 62, 80, 0.7); z-index: 9999; 
-            justify-content: center; align-items: center; backdrop-filter: blur(5px);
+            justify-content: center; align-items: center; backdrop-filter: blur(3px);
         }
         .modal-content {
-            background: var(--white); padding: 40px; border-radius: 20px; 
+            background: var(--white); padding: 35px; border-radius: 20px; 
             width: 500px; max-width: 90%; position: relative;
             box-shadow: 0 20px 50px rgba(0,0,0,0.3); animation: slideUp 0.4s ease;
         }
@@ -145,9 +154,7 @@
         .close-modal { position: absolute; top: 20px; right: 25px; font-size: 1.5rem; cursor: pointer; color: #ccc; }
         .close-modal:hover { color: var(--accent); }
 
-        .modal-title { font-size: 1.5rem; font-weight: 700; color: var(--primary); margin-bottom: 25px; text-align: center; }
-
-        .form-group { margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.9rem; color: var(--primary); }
         .form-control {
             width: 100%; padding: 12px 15px; border: 2px solid #eee; border-radius: 10px;
@@ -158,33 +165,8 @@
         .btn-submit { 
             width: 100%; background: var(--accent); color: white; padding: 15px; 
             border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 1rem; margin-top: 10px;
-            transition: 0.3s;
         }
-        .btn-submit:hover { background: #b0855b; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-    
-    /* --- CSS UNTUK SCROLLABLE TABLE --- */
-        .table-scroll-frame {
-            max-height: 500px; /* Tinggi maksimal bingkai */
-            overflow-y: auto;  /* Aktifkan scroll vertikal */
-            border-radius: 10px;
-            border: 1px solid #eee;
-        }
-
-        /* Scrollbar Cantik (Optional - Webkit) */
-        .table-scroll-frame::-webkit-scrollbar { width: 8px; }
-        .table-scroll-frame::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
-        .table-scroll-frame::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
-        .table-scroll-frame::-webkit-scrollbar-thumb:hover { background: var(--accent); }
-
-        /* Agar Header Tabel Tetap Diam (Sticky) saat di-scroll */
-        .table-scroll-frame thead th {
-            position: sticky;
-            top: 0;
-            background-color: #fff; /* Wajib ada background */
-            z-index: 5;
-            box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
-        }
-    
+        .btn-submit:hover { background: #b0855b; }
     </style>
 </head>
 <body>
@@ -199,14 +181,15 @@
             <i class="fas fa-shopping-cart"></i> Pesanan Masuk
         </a>
         <a href="#daftar-produk" class="nav-item">
-            <i class="fas fa-box-open"></i> Daftar Produk
+            <i class="fas fa-box-open"></i> Manajemen Produk
         </a>
     </div>
 
     <div class="main-content">
         
         <div class="topbar">
-            <div class="page-title">Dashboard Overview</div>
+            <input type="text" id="globalSearch" class="search-box" placeholder="Cari pesanan, nama pelanggan, atau produk..." onkeyup="filterDashboard()">
+            
             <a href="{{ route('admin.logout') }}" class="logout-btn">
                 <i class="fas fa-sign-out-alt"></i> Logout
             </a>
@@ -215,9 +198,15 @@
         <div class="content-area">
             
             @if(session('success'))
-                <div style="background: #d4edda; color: #155724; padding: 15px; border-radius: 10px; margin-bottom: 30px; border-left: 5px solid #28a745;">
-                    <i class="fas fa-check-circle"></i> {{ session('success') }}
-                </div>
+            <script>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: '{{ session('success') }}',
+                    confirmButtonColor: '#2C3E50',
+                    timer: 2000
+                });
+            </script>
             @endif
 
             <div class="cards-grid">
@@ -240,9 +229,9 @@
 
             <div class="table-section" id="tabel-pesanan">
                 <div class="section-header">
-                    <span><i class="fas fa-list-alt" style="color:var(--accent); margin-right:10px;"></i> Pesanan Terbaru</span>
+                    <span><i class="fas fa-list-alt" style="color:var(--accent); margin-right:10px;"></i> Pesanan Masuk</span>
                 </div>
-                <div class="table-responsive">
+                <div class="table-scroll-frame">
                     <table>
                         <thead>
                             <tr>
@@ -267,8 +256,8 @@
                                 <td>
                                     <form action="{{ route('admin.pesanan.update', $p->id_pesanan) }}" method="POST">
                                         @csrf @method('PUT')
-                                        <select name="status" class="status-select" onchange="this.form.submit()"
-                                            style="background: {{ $p->status == 'Selesai' ? '#d4edda' : ($p->status == 'Proses' ? '#fff3cd' : '#f8d7da') }}">
+                                        <select name="status" onchange="this.form.submit()" 
+                                            class="status-select {{ $p->status == 'Baru Masuk' ? 'status-baru' : ($p->status == 'Proses' ? 'status-proses' : 'status-selesai') }}">
                                             <option value="Baru Masuk" {{ $p->status == 'Baru Masuk' ? 'selected' : '' }}>Baru Masuk</option>
                                             <option value="Proses" {{ $p->status == 'Proses' ? 'selected' : '' }}>Proses</option>
                                             <option value="Selesai" {{ $p->status == 'Selesai' ? 'selected' : '' }}>Selesai</option>
@@ -277,9 +266,11 @@
                                 </td>
                                 <td style="font-size: 0.85rem; color: #666;">{{ Str::limit($p->detail_pesanan, 40) }}</td>
                                 <td>
-                                    <form action="{{ route('admin.pesanan.delete', $p->id_pesanan) }}" method="POST" onsubmit="return confirm('Hapus pesanan ini?');">
+                                    <form action="{{ route('admin.pesanan.delete', $p->id_pesanan) }}" method="POST" class="form-delete">
                                         @csrf @method('DELETE')
-                                        <button class="btn btn-delete" title="Hapus"><i class="fas fa-trash"></i></button>
+                                        <button type="button" class="btn btn-delete" onclick="confirmDelete(this)">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
                                     </form>
                                 </td>
                             </tr>
@@ -291,20 +282,19 @@
 
             <div class="table-section" id="daftar-produk">
                 <div class="section-header">
-                    <span><i class="fas fa-images" style="color:var(--accent); margin-right:10px;"></i> Manajemen Produk ({{ $produkTerbaru->count() }} Item)</span>
+                    <span><i class="fas fa-images" style="color:var(--accent); margin-right:10px;"></i> Manajemen Produk ({{ $produkTerbaru->count() }})</span>
                     <button class="btn btn-add" onclick="openModal('modalAdd')">
                         <i class="fas fa-plus"></i> Tambah Produk
                     </button>
                 </div>
-
-                <div class="table-responsive table-scroll-frame">
+                <div class="table-scroll-frame">
                     <table>
                         <thead>
                             <tr>
                                 <th>Foto</th>
                                 <th>Nama Produk</th>
                                 <th>Harga</th>
-                                <th>Deskripsi</th>
+                                <th>Min. Order</th> <th>Deskripsi</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -316,6 +306,7 @@
                                 </td>
                                 <td style="font-weight: 600;">{{ $prod->nama_produk }}</td>
                                 <td style="color: var(--accent); font-weight: 600;">Rp {{ number_format($prod->harga) }}</td>
+                                <td style="font-size: 0.85rem;">{{ $prod->min_order }}</td>
                                 <td style="font-size: 0.85rem; color: #888;">{{ Str::limit($prod->deskripsi_produk, 30) }}</td>
                                 <td style="display: flex; gap: 8px; align-items: center; height: 100px;">
                                     <button class="btn btn-edit" onclick="editProduk(
@@ -325,9 +316,11 @@
                                         '{{ $prod->deskripsi_produk }}'
                                     )"><i class="fas fa-pen"></i></button>
 
-                                    <form action="{{ route('admin.produk.delete', $prod->id_produk) }}" method="POST" onsubmit="return confirm('Hapus produk ini?');">
+                                    <form action="{{ route('admin.produk.delete', $prod->id_produk) }}" method="POST" class="form-delete">
                                         @csrf @method('DELETE')
-                                        <button class="btn btn-delete"><i class="fas fa-trash"></i></button>
+                                        <button type="button" class="btn btn-delete" onclick="confirmDelete(this)">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
                                     </form>
                                 </td>
                             </tr>
@@ -351,13 +344,15 @@
                     <label>Nama Produk</label>
                     <input type="text" name="nama_produk" class="form-control" placeholder="Contoh: Undangan Gold..." required>
                 </div>
-                <div class="form-group">
-                    <label>Harga (Rp)</label>
-                    <input type="number" name="harga" class="form-control" placeholder="Contoh: 2500" required>
-                </div>
-                <div class="form-group">
-                    <label>Minimal Order</label>
-                    <input type="text" name="min_order" class="form-control" placeholder="Contoh: 400 lbr" required>
+                <div style="display:flex; gap:10px;">
+                    <div class="form-group" style="flex:1;">
+                        <label>Harga (Rp)</label>
+                        <input type="number" name="harga" class="form-control" placeholder="2500" required>
+                    </div>
+                    <div class="form-group" style="flex:1;">
+                        <label>Min. Order</label>
+                        <input type="text" name="min_order" class="form-control" placeholder="400 lbr" required>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Kategori</label>
@@ -410,16 +405,15 @@
     </div>
 
     <script>
-        // --- JS UNTUK MODAL ---
-        function openModal(id) {
-            document.getElementById(id).style.display = 'flex';
+        // 1. MODAL HANDLER
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        
+        window.onclick = function(event) {
+            if (event.target.className === 'modal') { event.target.style.display = 'none'; }
         }
 
-        function closeModal(id) {
-            document.getElementById(id).style.display = 'none';
-        }
-
-        // Logika mengisi form edit secara otomatis
+        // 2. EDIT PRODUCT FILLER
         function editProduk(id, nama, harga, deskripsi) {
             document.getElementById('editNama').value = nama;
             document.getElementById('editHarga').value = harga;
@@ -432,11 +426,41 @@
             openModal('modalEdit');
         }
 
-        // Tutup modal kalau klik di luar kotak
-        window.onclick = function(event) {
-            if (event.target.className === 'modal') {
-                event.target.style.display = 'none';
-            }
+        // 3. REAL-TIME SEARCH FUNCTION
+        function filterDashboard() {
+            let input = document.getElementById('globalSearch').value.toLowerCase();
+            
+            // Filter Pesanan
+            let tablePesanan = document.querySelectorAll('#tabel-pesanan tbody tr');
+            tablePesanan.forEach(row => {
+                let text = row.innerText.toLowerCase();
+                row.style.display = text.includes(input) ? '' : 'none';
+            });
+
+            // Filter Produk
+            let tableProduk = document.querySelectorAll('#daftar-produk tbody tr');
+            tableProduk.forEach(row => {
+                let text = row.innerText.toLowerCase();
+                row.style.display = text.includes(input) ? '' : 'none';
+            });
+        }
+
+        // 4. SWEETALERT CONFIRM DELETE
+        function confirmDelete(button) {
+            Swal.fire({
+                title: 'Hapus Data?',
+                text: "Data yang dihapus tidak bisa dikembalikan!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#e74c3c',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    button.closest('form').submit();
+                }
+            })
         }
     </script>
 

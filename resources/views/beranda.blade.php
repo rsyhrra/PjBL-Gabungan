@@ -25,14 +25,33 @@
         nav {
             display: flex; justify-content: space-between; align-items: center;
             padding: 15px 50px; position: sticky; top: 0;
-            background: rgba(253, 251, 247, 0.95); backdrop-filter: blur(10px);
+            background: rgba(253, 251, 247, 0.98); backdrop-filter: blur(10px);
             z-index: 1000; box-shadow: 0 2px 15px rgba(0,0,0,0.05);
         }
         .logo { font-weight: 800; font-size: 1.5rem; letter-spacing: 1px; color: var(--primary); }
-        .nav-links a { margin-left: 30px; text-decoration: none; color: var(--primary); font-weight: 500; transition: 0.3s; font-size: 0.95rem; }
+        
+        /* Menu Desktop */
+        .nav-links { display: flex; gap: 30px; }
+        .nav-links a { text-decoration: none; color: var(--primary); font-weight: 500; transition: 0.3s; font-size: 0.95rem; }
         .nav-links a:hover { color: var(--accent); }
-        .nav-icons i { margin-left: 20px; cursor: pointer; font-size: 1.2rem; transition: 0.3s; color: var(--primary); }
+        
+        .nav-icons { display: flex; align-items: center; gap: 20px; }
+        .nav-icons i { cursor: pointer; font-size: 1.2rem; transition: 0.3s; color: var(--primary); }
         .nav-icons i:hover { color: var(--accent); transform: scale(1.1); }
+
+        /* Hamburger Menu */
+        .hamburger { display: none; font-size: 1.5rem; cursor: pointer; margin-left: 15px; }
+        
+        /* Mobile Menu Overlay */
+        .mobile-menu {
+            display: none; flex-direction: column; background: var(--white);
+            position: absolute; top: 60px; left: 0; width: 100%;
+            padding: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            text-align: center; gap: 20px; z-index: 999; border-top: 1px solid #eee;
+        }
+        .mobile-menu.active { display: flex; animation: slideDown 0.3s ease; }
+        .mobile-menu a { text-decoration: none; color: var(--primary); font-weight: 600; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* --- 3. HERO SECTION --- */
         #home {
@@ -43,42 +62,57 @@
         .hero-text h1 { font-size: 3.5rem; line-height: 1.1; margin-bottom: 20px; font-weight: 700; }
         .hero-text p { font-size: 1.1rem; color: #666; margin-bottom: 30px; line-height: 1.6; }
         
+        /* Tombol */
         .btn {
             padding: 12px 35px; border-radius: 50px; text-decoration: none;
             font-weight: 600; border: none; cursor: pointer; transition: 0.3s;
-            display: inline-block; font-size: 0.9rem;
+            display: inline-block; font-size: 0.9rem; text-align: center;
         }
         .btn-primary { background-color: var(--primary); color: var(--white); box-shadow: 0 5px 15px rgba(44, 62, 80, 0.3); }
-        .btn-secondary { background-color: var(--accent); color: var(--white); margin-left: 10px; box-shadow: 0 5px 15px rgba(212, 163, 115, 0.3); }
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+        .btn-secondary { background-color: var(--accent); color: var(--white); box-shadow: 0 5px 15px rgba(212, 163, 115, 0.3); }
+        .btn:hover { transform: translateY(-3px); }
 
-        .hero-image { position: relative; width: 45%; display: flex; justify-content: center; }
+        .hero-image { position: relative; width: 45%; display: flex; justify-content: center; height: 400px; align-items: center; }
+        
+        /* Card Stack */
         .card-stack {
-            width: 280px; height: 340px; background: #e0e0e0;
+            width: 250px; height: 320px; background: #e0e0e0;
+            background-size: cover; background-position: center;
             position: absolute; transform: rotate(-8deg); border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
         .card-stack.top {
-            background: linear-gradient(135deg, #f5f5f5, #dcdcdc);
+            background-size: cover; background-position: center;
             transform: rotate(6deg); z-index: 2;
-            box-shadow: var(--shadow); top: -40px; left: 60px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2); 
+            top: 20px; left: 80px; 
+            border: 4px solid #fff;
         }
 
         /* --- 4. KATALOG SLIDER --- */
         #katalog { padding: 60px 50px; background: #fff; }
-        .catalog-header { display: flex; justify-content: space-between; margin-bottom: 30px; align-items: center; }
-        .search-bar { background: #f0f0f0; padding: 10px 20px; border-radius: 30px; display: flex; align-items: center; width: 350px; transition: 0.3s; }
-        .search-bar:focus-within { box-shadow: 0 0 0 2px var(--accent); background: #fff; }
-        .search-bar input { border: none; background: transparent; outline: none; width: 100%; margin-left: 10px; font-family: inherit; color: var(--primary); }
+        .catalog-header { display: flex; justify-content: space-between; margin-bottom: 30px; align-items: center; gap: 15px; flex-wrap: wrap; }
+        
+        .search-bar { background: #f0f0f0; padding: 10px 20px; border-radius: 30px; display: flex; align-items: center; width: 350px; transition:0.3s; }
+        .search-bar:focus-within { background: #fff; box-shadow: 0 0 0 2px var(--accent); }
+        .search-bar input { border: none; background: transparent; outline: none; width: 100%; margin-left: 10px; font-family: inherit; color:var(--primary); }
+        
+        .sort-dropdown {
+            padding: 10px 15px; border-radius: 30px; border: 1px solid #ccc; 
+            color: var(--primary); outline: none; cursor: pointer; font-family: inherit;
+            background-color: #fff; font-size: 0.9rem; min-width: 150px;
+        }
+        .sort-dropdown:hover { border-color: var(--accent); }
 
-        .slider-container { position: relative; display: flex; align-items: center; gap: 15px; min-height: 400px; } /* Min-height agar tidak gepeng saat kosong */
+        .slider-container { position: relative; display: flex; align-items: center; gap: 15px; min-height: 400px; }
         
         /* Area Scroll Horizontal */
         .product-scroll-wrapper {
             display: flex; overflow-x: auto; scroll-behavior: auto; 
             gap: 25px; padding: 20px 5px; width: 100%;
-            scrollbar-width: none; /* Firefox */
+            scrollbar-width: none; 
         }
-        .product-scroll-wrapper::-webkit-scrollbar { display: none; } /* Chrome */
+        .product-scroll-wrapper::-webkit-scrollbar { display: none; } 
 
         /* Kartu Produk */
         .product-card {
@@ -90,8 +124,7 @@
         }
         .product-card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0,0,0,0.08); border-color: var(--accent); }
 
-        /* Gambar di Kartu */
-        .product-img { height: 180px; background-color: #f4f4f4; overflow: hidden; }
+        .product-img { height: 180px; background-color: #f4f4f4; overflow: hidden; position: relative; }
         .product-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
         .product-card:hover .product-img img { transform: scale(1.1); }
 
@@ -104,7 +137,6 @@
         .price span { font-size: 0.8rem; font-weight: 400; color: #999; }
         .min-order { font-size: 0.75rem; color: #999; margin-top: 2px; }
 
-        /* Tombol Scroll Bulat */
         .scroll-btn {
             background-color: var(--primary); color: white; border: none;
             width: 45px; height: 45px; border-radius: 50%;
@@ -113,42 +145,38 @@
         }
         .scroll-btn:active { transform: scale(0.9); background-color: var(--accent); }
 
-        /* Pesan No Result */
         #noResults {
             position: absolute; width: 100%; text-align: center; top: 50%; transform: translateY(-50%);
             color: #999; display: none;
         }
 
-        /* --- 5. MODAL & ANIMASI --- */
+        /* --- 5. MODAL UMUM --- */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(44, 62, 80, 0.7); z-index: 2000;
-            justify-content: center; align-items: center;
+            justify-content: center; align-items: center; padding: 20px;
             opacity: 0; transition: opacity 0.3s ease;
         }
         .modal.show { display: flex; opacity: 1; }
         
-        .modal-content {
+        .modal-close { position: absolute; top: 20px; right: 25px; font-size: 1.8rem; cursor: pointer; z-index: 20; color: #999; transition: 0.3s; }
+        .modal-close:hover { color: var(--accent); transform: rotate(90deg); }
+
+        /* --- MODAL DETAIL PRODUK --- */
+        #modalProduk .modal-content {
             background: var(--white); padding: 40px; border-radius: 20px;
             width: 90%; max-width: 850px; position: relative;
             box-shadow: 0 25px 50px rgba(0,0,0,0.2); animation: slideUp 0.4s ease;
             display: flex; align-items: center; min-height: 450px; 
         }
 
-        /* Wadah Konten Animasi */
         #modalBody {
             display: flex; gap: 40px; width: 100%;
             transition: all 0.3s ease-in-out; 
             opacity: 1; transform: scale(1);
         }
-        
-        /* Class saat animasi keluar */
         .animating-out { opacity: 0; transform: scale(0.95) translateX(-10px); }
 
-        .modal-close { position: absolute; top: 20px; right: 25px; font-size: 1.8rem; cursor: pointer; z-index: 20; color: #999; transition: 0.3s; }
-        .modal-close:hover { color: var(--accent); transform: rotate(90deg); }
-
-        /* Tombol Navigasi Modal (Next/Prev) */
         .modal-nav-btn {
             position: absolute; top: 50%; transform: translateY(-50%);
             width: 50px; height: 50px; border-radius: 50%;
@@ -161,36 +189,131 @@
         .modal-nav-btn.prev { left: -25px; }
         .modal-nav-btn.next { right: -25px; }
 
-        /* --- 6. TRACKING MODAL --- */
-        .order-input { width: 100%; padding: 15px; border: 2px solid #eee; border-radius: 10px; margin: 20px 0; font-size: 1rem; outline: none; transition: 0.3s; }
-        .order-input:focus { border-color: var(--accent); }
-        .result-box { margin-top: 20px; padding: 20px; background: #f8f9fa; border-radius: 10px; border-left: 4px solid var(--accent); text-align: left; display: none; }
-        .status-badge { display: inline-block; padding: 5px 15px; border-radius: 20px; background: var(--accent); color: white; font-size: 0.85rem; margin-top: 5px; font-weight: 600; }
+        /* --- MODAL CEK PESANAN (FIXED LAYOUT) --- */
+        #modalCekPesanan .modal-content {
+            background: var(--white); 
+            padding: 40px 30px;
+            border-radius: 25px;
+            width: 100%;
+            max-width: 500px; /* Lebar pas */
+            display: flex; /* PENTING: Agar layout flex vertikal */
+            flex-direction: column; 
+            gap: 20px; 
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+            animation: slideUp 0.4s ease;
+            position: relative;
+        }
+
+        .search-wrapper { display: flex; gap: 10px; width: 100%; }
+        .search-input { 
+            flex-grow: 1; padding: 15px; border: 2px solid #eee; border-radius: 12px; 
+            font-size: 1rem; outline: none; background: #f9f9f9;
+        }
+        .search-input:focus { border-color: var(--accent); background: #fff; }
+        .search-btn { 
+            width: 55px; height: 55px; background: var(--primary); color: white; 
+            border: none; border-radius: 12px; cursor: pointer; font-size: 1.2rem;
+        }
+        .search-btn:hover { background: var(--accent); }
+
+        /* Result Card Style */
+        .result-card {
+            background: #f8f9fa; border-radius: 15px; padding: 20px; 
+            text-align: left; display: none; border: 1px solid #eee;
+        }
+        .info-row { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px dashed #ddd; padding-bottom: 10px; }
+        .info-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; align-items: center;}
+        .label { color: #888; font-size: 0.9rem; }
+        .value { font-weight: 600; color: var(--primary); text-align: right; font-size: 0.95rem; }
+        
+        .badge { padding: 5px 15px; border-radius: 20px; color: white; font-size: 0.8rem; font-weight: 600; }
+
 
         /* --- 7. FOOTER / CONTACT --- */
         #contact { padding: 80px 50px; background: var(--bg-color); border-top: 1px solid #eee; margin-top: 50px; }
-        .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; }
+        .contact-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            gap: 30px; 
+            align-items: start; /* PENTING: Agar kolom tidak stretching (memanjang) paksa */
+        }
         .contact-item { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
         .icon-circle { width: 40px; height: 40px; background: #e0e0e0; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary); }
 
-        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        /* --- MOBILE RESPONSIVE --- */
+        /* --- MEDIA QUERIES (PERBAIKAN MOBILE) --- */
         @media (max-width: 768px) {
+            /* Navbar */
             nav { padding: 15px 20px; }
             .nav-links { display: none; }
-            #home { flex-direction: column-reverse; justify-content: center; text-align: center; gap: 40px; padding: 20px; }
-            .hero-text { max-width: 100%; }
-            .hero-text h1 { font-size: 2.5rem; }
-            .hero-image { width: 100%; }
+            .hamburger { display: block; }
+            
+            /* Hero */
+            #home { 
+                flex-direction: column-reverse; text-align: center; 
+                padding: 40px 20px; gap: 20px; justify-content: center; min-height: auto; margin-top: 20px;
+            }
+            .hero-text { max-width: 100%; z-index: 10; }
+            .hero-text h1 { font-size: 2rem; margin-bottom: 15px; }
+            .hero-text p { font-size: 0.95rem; margin-bottom: 20px; }
+            
+            /* Hero Buttons */
+            .hero-text div { display: flex; flex-direction: column; gap: 10px; }
+            .btn { width: 100%; margin: 0; }
+
+            /* Hero Image */
+            .hero-image { width: 100%; height: 320px; margin-bottom: 20px; }
+            .card-stack { 
+                width: 220px; height: 280px; 
+                left: 50%; top: 50%; 
+                transform: translate(-50%, -50%) rotate(-8deg); 
+            }
+            .card-stack.top { 
+                left: 50%; top: 50%;
+                transform: translate(-40%, -60%) rotate(6deg); 
+            }
+            
+            /* Katalog */
             #katalog { padding: 40px 20px; }
-            .catalog-header { flex-direction: column; gap: 15px; }
+            .catalog-header { flex-direction: column; align-items: stretch; gap: 15px; }
             .search-bar { width: 100%; }
-            .scroll-btn { display: none; } /* Hide button di HP */
-            .modal-content { width: 95%; padding: 20px; flex-direction: column; }
+            .sort-dropdown { width: 100%; margin-right: 0; }
+            .slider-container { gap: 0; }
+            .scroll-btn { display: none; } 
+            
+            /* Contact */
+            #contact { padding: 40px 20px; }
+            
+            /* Modal Responsif */
+            #modalProduk .modal-content { width: 95%; padding: 20px; flex-direction: column; height: auto; max-height: 85vh; overflow-y: auto; }
             #modalBody { flex-direction: column; gap: 20px; }
             .modal-nav-btn.prev { left: 5px; }
             .modal-nav-btn.next { right: 5px; }
+        }
+
+        /* --- PERBAIKAN MOBILE (UPDATE BAGIAN INI) --- */
+        @media (max-width: 768px) {
+            
+            /* ... (kode navbar & hero lain biarkan saja) ... */
+
+            /* PERBAIKAN MODAL: Reset tinggi agar pas dengan konten */
+            .modal-content { 
+                width: 95%; 
+                padding: 25px 20px; 
+                flex-direction: column; 
+                height: auto;       /* Tinggi otomatis */
+                min-height: auto;   /* HAPUS tinggi minimal 400px dari desktop */
+                max-height: 85vh; 
+                overflow-y: auto; 
+            }
+            
+            /* PERBAIKAN GRID CONTACT: Agar tidak saling tarik tinggi */
+            .contact-grid { 
+                grid-template-columns: 1fr; /* 1 Kolom */
+                gap: 30px;
+            }
         }
     </style>
 </head>
@@ -205,21 +328,30 @@
         </div>
         <div class="nav-icons">
             <i class="fas fa-receipt" onclick="openModal('modalCekPesanan')" title="Lacak Pesanan"></i>
+            <div class="hamburger" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
         </div>
     </nav>
+
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#home" onclick="toggleMenu()">Home</a>
+        <a href="#katalog" onclick="toggleMenu()">Katalog</a>
+        <a href="#contact" onclick="toggleMenu()">Contact</a>
+    </div>
 
     <section id="home">
         <div class="hero-text">
             <h1>PERCETAKAN<br>UNDANGAN & ATK</h1>
             <p>Solusi percetakan modern dengan kualitas terbaik. Kami melayani pembuatan undangan kustom, spanduk, hingga ATK lengkap.</p>
-            <div style="margin-top: 30px;">
+            <div style="margin-top: 30px; display: flex; gap: 15px; flex-wrap: wrap; justify-content: center;">
                 <a href="#katalog" class="btn btn-primary">Lihat Katalog</a>
                 <a href="#contact" class="btn btn-secondary">Hubungi Kami</a>
             </div>
         </div>
         <div class="hero-image">
-            <div class="card-stack"></div>
-            <div class="card-stack top"></div>
+            <div class="card-stack" style="background-image: url('https://resourceboy.com/wp-content/uploads/2021/11/top-view-of-wedding-invitations-mockup-scene-creator.jpg');"></div>
+            <div class="card-stack top" style="background-image: url('https://cdn.psdrepo.com/images/2x/invitation-card-mockup-with-vellum-wrap-i3.jpg');"></div>
         </div>
     </section>
 
@@ -227,25 +359,31 @@
         <div class="catalog-header">
             <div class="search-bar">
                 <i class="fas fa-search" style="color: #999;"></i>
-                <input type="text" id="searchInput" onkeyup="searchProduct()" placeholder="Cari produk (Undangan, Spanduk)...">
+                <input type="text" id="searchInput" onkeyup="searchProduct()" placeholder="Cari produk...">
             </div>
-            <button class="btn btn-secondary" onclick="openModal('modalCekPesanan')">Cek Pesanan</button>
+            <div style="display:flex; gap:10px; width:100%; justify-content: space-between; flex-wrap: wrap;">
+                <select id="sortSelect" onchange="sortProducts()" class="sort-dropdown" style="flex:1;">
+                    <option value="default">Urutan Default</option>
+                    <option value="price_asc">Harga: Rendah ke Tinggi</option>
+                    <option value="price_desc">Harga: Tinggi ke Rendah</option>
+                    <option value="name_asc">Nama: A - Z</option>
+                </select>
+                <button class="btn btn-secondary" onclick="openModal('modalCekPesanan')" style="flex:1; min-width: 150px;">
+                    Cek Pesanan
+                </button>
+            </div>
         </div>
 
         <div class="slider-container" id="sliderContainer">
-            
-            <button class="scroll-btn left" 
-                onmousedown="startScrolling('left')" 
-                onmouseup="stopScrolling()" 
-                onmouseleave="stopScrolling()"
-                ontouchstart="startScrolling('left')" 
-                ontouchend="stopScrolling()">
-                <i class="fas fa-chevron-left"></i>
-            </button>
+            <button class="scroll-btn left" onmousedown="startScrolling('left')" onmouseup="stopScrolling()" onmouseleave="stopScrolling()"><i class="fas fa-chevron-left"></i></button>
 
             <div class="product-scroll-wrapper" id="katalogScroll">
                 @foreach($produk as $key => $item)
-                <div class="product-card" onclick="openProductModal({{ $key }})">
+                <div class="product-card" 
+                     onclick="openProductModal({{ $key }})"
+                     data-harga="{{ $item->harga }}" 
+                     data-nama="{{ strtolower($item->nama_produk) }}">
+                     
                     <div class="product-img">
                         <img src="{{ asset('img/'.$item->foto_produk) }}" alt="{{ $item->nama_produk }}">
                     </div>
@@ -255,9 +393,7 @@
                             <h3>{{ $item->nama_produk }}</h3>
                         </div>
                         <div class="price-info">
-                            <p class="price">
-                                Rp {{ number_format($item->harga, 0, ',', '.') }} <span>/pcs</span>
-                            </p>
+                            <p class="price">Rp {{ number_format($item->harga, 0, ',', '.') }} <span>/pcs</span></p>
                             <p class="min-order">Min. Order: {{ $item->min_order }}</p>
                         </div>
                     </div>
@@ -270,15 +406,7 @@
                 <p>Maaf, produk tidak ditemukan.</p>
             </div>
 
-            <button class="scroll-btn right" 
-                onmousedown="startScrolling('right')" 
-                onmouseup="stopScrolling()" 
-                onmouseleave="stopScrolling()"
-                ontouchstart="startScrolling('right')" 
-                ontouchend="stopScrolling()">
-                <i class="fas fa-chevron-right"></i>
-            </button>
-
+            <button class="scroll-btn right" onmousedown="startScrolling('right')" onmouseup="stopScrolling()" onmouseleave="stopScrolling()"><i class="fas fa-chevron-right"></i></button>
         </div>
     </section>
 
@@ -290,14 +418,14 @@
                     <div class="icon-circle"><i class="fab fa-whatsapp"></i></div>
                     <div>
                         <p style="font-size: 0.8rem; color:#888;">WhatsApp</p>
-                        <p style="font-weight: 600;">0813-4113-6423</p>
+                        <p style="font-weight: 600;">0815-2728-0817</p>
                     </div>
                 </div>
                 <div class="contact-item">
                     <div class="icon-circle"><i class="fas fa-envelope"></i></div>
                     <div>
                         <p style="font-size: 0.8rem; color:#888;">Email</p>
-                        <p style="font-weight: 600;">anekausaha.gmail.com</p>
+                        <p style="font-weight: 600;">muhammadhamzah.study@gmail.com</p>
                     </div>
                 </div>
             </div>
@@ -306,7 +434,7 @@
                 <div class="contact-item">
                     <div class="icon-circle"><i class="fas fa-map-marker-alt"></i></div>
                     <div>
-                        <p style="font-weight: 600;">Jln. Pappa, Pattalassang, Kota Takalar, Sulawesi Selatan.</p>
+                        <p style="font-weight: 600;">Jln. In aja dulu No.333</p>
                         <p style="font-size: 0.9rem; color:#666;">(Dekat Pusat Kota)</p>
                     </div>
                 </div>
@@ -316,11 +444,7 @@
 
     <div id="modalProduk" class="modal">
         <div class="modal-content">
-            
-            <button class="modal-nav-btn prev" onclick="switchProduct('prev')">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-
+            <button class="modal-nav-btn prev" onclick="switchProduct('prev')"><i class="fas fa-chevron-left"></i></button>
             <span class="modal-close" onclick="closeModal('modalProduk')">&times;</span>
             
             <div id="modalBody">
@@ -345,48 +469,61 @@
                 </div>
             </div>
 
-            <button class="modal-nav-btn next" onclick="switchProduct('next')">
-                <i class="fas fa-chevron-right"></i>
-            </button>
-
+            <button class="modal-nav-btn next" onclick="switchProduct('next')"><i class="fas fa-chevron-right"></i></button>
         </div>
     </div>
 
     <div id="modalCekPesanan" class="modal">
-        <div class="modal-content" style="max-width: 500px; display: block; min-height: auto;">
+        <div class="modal-content">
             <span class="modal-close" onclick="closeModal('modalCekPesanan')">&times;</span>
             
-            <div style="text-align: center;">
-                <h3 style="margin-bottom: 10px;">Lacak Pesanan Anda</h3>
-                <p style="font-size: 0.9rem; color: #888;">Masukkan Kode Pesanan (ID) atau No. WhatsApp Anda</p>
-                
-                <input type="text" id="inputKode" class="order-input" placeholder="Contoh: 1 atau 0812...">
-                <button class="btn btn-primary" onclick="cekPesanan()" style="width: 100%;">
-                    Cari Pesanan <i class="fas fa-search" style="margin-left: 5px;"></i>
+            <h3 style="margin-bottom:10px; color:var(--primary); font-weight:700;">Lacak Pesanan Anda</h3>
+            <p style="font-size:0.9rem; color:#888; margin-bottom:20px;">Masukkan Kode Pesanan (ID) atau No. WhatsApp</p>
+            
+            <div class="search-wrapper">
+                <input type="text" id="inputKode" class="search-input" placeholder="Contoh: 1 atau 0812...">
+                <button class="search-btn" onclick="cekPesanan()">
+                    <i class="fas fa-search"></i>
                 </button>
-                
-                <div id="resultArea" class="result-box">
-                    <p><strong>Atas Nama:</strong> <span id="resNama">-</span></p>
-                    <p><strong>Tanggal:</strong> <span id="resTgl">-</span></p>
-                    <p style="margin-top: 10px;"><strong>Detail Pesanan:</strong></p>
-                    <p id="resDetail" style="color: #666; font-size: 0.9rem;">-</p>
-                    <div class="status-badge" id="resStatus">Proses</div>
+            </div>
+            
+            <div id="resultArea" class="result-card">
+                <div class="info-row">
+                    <span class="label">Customer</span>
+                    <span class="value" id="resNama">-</span>
                 </div>
-                <p id="notFoundMsg" style="color: #e74c3c; margin-top: 15px; display: none; font-weight: 500;">
-                    <i class="fas fa-exclamation-circle"></i> Data pesanan tidak ditemukan.
-                </p>
+                <div class="info-row">
+                    <span class="label">No Pesan</span>
+                    <span class="value" id="resId">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Tgl Pesan</span>
+                    <span class="value" id="resTgl">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Detail</span>
+                    <span class="value" id="resDetail">-</span>
+                </div>
+                <div class="info-row" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
+                    <span class="label" style="font-weight: 700; color: var(--primary);">Status</span>
+                    <span class="badge" id="resStatus">-</span>
+                </div>
+            </div>
+
+            <div id="notFoundMsg" style="display: none; margin-top: 20px; color: #e74c3c; font-weight: 500;">
+                <i class="fas fa-times-circle"></i> Data tidak ditemukan.
             </div>
         </div>
     </div>
 
     <script>
-        // 1. DATA DARI CONTROLLER
+        function toggleMenu() { document.getElementById('mobileMenu').classList.toggle('active'); }
+
         const allProducts = @json($produk);
         let currentIndex = 0;
         let scrollInterval;
         const baseUrl = "{{ asset('img') }}"; 
 
-        // 2. SEARCH FUNCTION (REAL-TIME)
         function searchProduct() {
             let input = document.getElementById('searchInput').value.toLowerCase();
             let cards = document.getElementsByClassName('product-card');
@@ -395,94 +532,66 @@
             for (let i = 0; i < cards.length; i++) {
                 let title = cards[i].getElementsByTagName('h3')[0].innerText.toLowerCase();
                 let cat = cards[i].getElementsByClassName('cat-label')[0].innerText.toLowerCase();
-
                 if (title.includes(input) || cat.includes(input)) {
-                    cards[i].style.display = ""; // Show
-                    hasResults = true;
-                } else {
-                    cards[i].style.display = "none"; // Hide
-                }
+                    cards[i].style.display = ""; hasResults = true;
+                } else { cards[i].style.display = "none"; }
             }
-
-            // Tampilkan Pesan jika Kosong
-            const noResDiv = document.getElementById('noResults');
-            const scrollWrapper = document.getElementById('katalogScroll');
-            const btns = document.querySelectorAll('.scroll-btn');
-
-            if (!hasResults) {
-                noResDiv.style.display = "block";
-                scrollWrapper.style.display = "none";
-                btns.forEach(b => b.style.display = "none");
-            } else {
-                noResDiv.style.display = "none";
-                scrollWrapper.style.display = "flex";
-                if(window.innerWidth > 768) btns.forEach(b => b.style.display = "flex");
-            }
+            document.getElementById('noResults').style.display = hasResults ? 'none' : 'block';
+            document.getElementById('katalogScroll').style.display = hasResults ? 'flex' : 'none';
         }
 
-        // 3. HOLD TO SCROLL LOGIC
-        function startScrolling(direction) {
+        function sortProducts() {
+            const sortType = document.getElementById('sortSelect').value;
             const container = document.getElementById('katalogScroll');
-            const speed = 20; 
-            const interval = 15;
-
-            stopScrolling();
-            scrollInterval = setInterval(() => {
-                container.scrollLeft += (direction === 'left' ? -speed : speed);
-            }, interval);
+            let cards = Array.from(container.getElementsByClassName('product-card'));
+            cards.sort((a, b) => {
+                const pA = parseInt(a.getAttribute('data-harga'));
+                const pB = parseInt(b.getAttribute('data-harga'));
+                const nA = a.getAttribute('data-nama');
+                const nB = b.getAttribute('data-nama');
+                if (sortType === 'price_asc') return pA - pB;
+                if (sortType === 'price_desc') return pB - pA;
+                if (sortType === 'name_asc') return nA.localeCompare(nB);
+                return 0;
+            });
+            cards.forEach(c => container.appendChild(c));
         }
 
-        function stopScrolling() {
-            clearInterval(scrollInterval);
+        function startScrolling(dir) {
+            const c = document.getElementById('katalogScroll'); stopScrolling();
+            scrollInterval = setInterval(() => { c.scrollLeft += (dir==='left'?-20:20); }, 15);
         }
+        function stopScrolling() { clearInterval(scrollInterval); }
 
-        // 4. MODAL LOGIC (OPEN/CLOSE)
         function openModal(id) { document.getElementById(id).classList.add('show'); }
         function closeModal(id) { document.getElementById(id).classList.remove('show'); }
         window.onclick = function(e) { if(e.target.classList.contains('modal')) e.target.classList.remove('show'); }
 
-        // 5. PRODUCT MODAL LOGIC
-        function openProductModal(index) {
-            currentIndex = index;
-            updateModalContent();
-            document.getElementById('modalBody').classList.remove('animating-out');
-            openModal('modalProduk');
-        }
+        function openProductModal(idx) { currentIndex = idx; updateModal(); openModal('modalProduk'); }
 
-        function switchProduct(direction) {
-            const modalBody = document.getElementById('modalBody');
-            modalBody.classList.add('animating-out');
-
+        function switchProduct(dir) {
+            const mb = document.getElementById('modalBody');
+            mb.classList.add('animating-out');
             setTimeout(() => {
-                if (direction === 'next') {
-                    currentIndex = (currentIndex + 1) % allProducts.length;
-                } else {
-                    currentIndex = (currentIndex - 1 + allProducts.length) % allProducts.length;
-                }
-                updateModalContent();
-                modalBody.classList.remove('animating-out');
+                if(dir==='next') currentIndex = (currentIndex+1)%allProducts.length;
+                else currentIndex = (currentIndex-1+allProducts.length)%allProducts.length;
+                updateModal();
+                mb.classList.remove('animating-out');
             }, 300);
         }
 
-       function updateModalContent() {
+        function updateModal() {
             const item = allProducts[currentIndex];
-            let formattedPrice = new Intl.NumberFormat('id-ID').format(item.harga);
-
-            // Sesuaikan dengan nama kolom database
             document.getElementById('modalTitle').innerText = item.nama_produk;
             document.getElementById('modalCat').innerText = item.kategori;
-            document.getElementById('modalDesc').innerText = item.deskripsi_produk; // Bedanya disini
-            document.getElementById('modalPrice').innerText = 'Rp ' + formattedPrice + ' /pcs';
+            document.getElementById('modalDesc').innerText = item.deskripsi_produk;
+            document.getElementById('modalPrice').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(item.harga) + ' /pcs';
             document.getElementById('modalMinOrder').innerText = 'Minimal Order: ' + item.min_order;
-            document.getElementById('modalImg').src = baseUrl + '/' + item.foto_produk; // Bedanya disini
+            document.getElementById('modalImg').src = baseUrl + '/' + item.foto_produk;
         }
 
-        // 6. AJAX CEK PESANAN
         async function cekPesanan() {
             let kode = document.getElementById('inputKode').value;
-            let resultArea = document.getElementById('resultArea');
-            let notFoundMsg = document.getElementById('notFoundMsg');
-
             if(!kode) { alert("Mohon isi data!"); return; }
 
             try {
@@ -491,21 +600,25 @@
 
                 if (data.status === 'found') {
                     document.getElementById('resNama').innerText = data.data.nama_pelanggan;
+                    document.getElementById('resId').innerText = data.data.id_pesanan;
                     let tgl = new Date(data.data.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
                     document.getElementById('resTgl').innerText = tgl;
                     document.getElementById('resDetail').innerText = data.data.detail_pesanan;
-                    document.getElementById('resStatus').innerText = data.data.status;
                     
-                    resultArea.style.display = 'block';
-                    notFoundMsg.style.display = 'none';
+                    let badge = document.getElementById('resStatus');
+                    let st = data.data.status;
+                    badge.innerText = st;
+                    if(st === 'Selesai') badge.style.backgroundColor = '#2e7d32';
+                    else if(st === 'Proses') badge.style.backgroundColor = '#ef6c00';
+                    else badge.style.backgroundColor = '#c62828';
+
+                    document.getElementById('resultArea').style.display = 'block';
+                    document.getElementById('notFoundMsg').style.display = 'none';
                 } else {
-                    resultArea.style.display = 'none';
-                    notFoundMsg.style.display = 'block';
+                    document.getElementById('resultArea').style.display = 'none';
+                    document.getElementById('notFoundMsg').style.display = 'block';
                 }
-            } catch (error) {
-                console.error(error);
-                alert("Gagal menghubungi server.");
-            }
+            } catch (error) { alert("Gagal menghubungi server."); }
         }
     </script>
 </body>

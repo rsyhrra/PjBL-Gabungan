@@ -54,5 +54,29 @@ class PesananController extends Controller
         return view('sukses', compact('linkWA'));
     }
 
-    
+    // Tambahkan fungsi ini di dalam class PesananController
+    public function cekStatus(Request $request)
+    {
+        // Ambil input 'kode' dari URL (?kode=...)
+        $keyword = $request->kode;
+
+        // Cari di database: Apakah ID Pesanan = keyword ATAU No WA = keyword?
+        $pesanan = \App\Models\Pesanan::where('id_pesanan', $keyword)
+                    ->orWhere('no_whatsapp', $keyword)
+                    ->latest('created_at') // Ambil yang terbaru jika ada duplikat
+                    ->first(); // Ambil satu saja
+
+        if ($pesanan) {
+            // Jika ketemu, kirim data JSON
+            return response()->json([
+                'status' => 'found',
+                'data' => $pesanan
+            ]);
+        } else {
+            // Jika tidak ketemu
+            return response()->json(['status' => 'not_found']);
+        }
+    }
+
+
 }
