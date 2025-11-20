@@ -29,6 +29,8 @@ Route::get('/admin/logout', [AdminController::class, 'logout'])->name('admin.log
 
 // Route untuk API Cek Status (AJAX)
 Route::get('/cek-status', [PesananController::class, 'cekStatus'])->name('pesanan.status');
+// Route untuk melihat Invoice (Bisa diakses publik jika punya kodenya)
+Route::get('/invoice/{kode}', [App\Http\Controllers\PesananController::class, 'invoice'])->name('pesanan.invoice');
 // Route Dashboard (Hanya bisa diakses ADMIN yang sudah LOGIN)
 // Kita gunakan middleware 'auth:admin' yang sudah kita setup di config tadi
 Route::middleware(['auth:admin'])->group(function () {

@@ -45,19 +45,20 @@ class PesananController extends Controller
             // 'file_desain' => $namaFile (Jika ada upload file, tambahkan logika upload di sini)
         ]);
 
+        $linkInvoice = url('/invoice/' . $kodeUnik);
+
         // D. Siapkan Link WhatsApp untuk Admin
-        $nomorAdmin = '6281937536701'; // Nomor Admin (Format 628...)
+        $nomorAdmin = '6281937536701'; 
         
         $pesanWA = "Halo Aneka Usaha, saya ingin memesan.%0A";
-        $pesanWA .= "Kode Order: *" . $kodeUnik . "*%0A";
+        $pesanWA .= "No Order: *" . $kodeUnik . "*%0A";
         $pesanWA .= "Nama: " . $request->nama . "%0A";
-        $pesanWA .= "No WA: " . $request->no_wa . "%0A";
-        $pesanWA .= "Detail: " . $request->detail;
+        $pesanWA .= "Detail: " . $request->detail . "%0A";
+        $pesanWA .= "%0A--------------------%0A";
+        $pesanWA .= "Lihat Invoice Saya:%0A" . $linkInvoice; // <--- INI TAMBAHANNYA
 
         $linkWA = "https://wa.me/$nomorAdmin?text=$pesanWA";
 
-        // E. Tampilkan Halaman Sukses (Bukan langsung redirect)
-        // Agar user bisa melihat konfirmasi dulu sebelum ke WA
         return view('sukses', compact('linkWA'));
     }
 
@@ -84,5 +85,16 @@ class PesananController extends Controller
             // Jika tidak ditemukan
             return response()->json(['status' => 'not_found']);
         }
+    }
+
+    public function invoice($kode)
+    {
+        // Cari pesanan berdasarkan Kode Unik
+        $pesanan = Pesanan::where('kode_pesanan', $kode)->firstOrFail();
+        
+        // Cari detail produk (opsional, jika ingin menampilkan foto produk di invoice)
+        // Karena di tabel pesanan belum ada id_produk, kita asumsikan detail pesanan teks saja dulu.
+        
+        return view('invoice', compact('pesanan'));
     }
 }
