@@ -43,7 +43,8 @@ class AdminController extends Controller
         $pesananTerbaru = Pesanan::latest('created_at')->limit(5)->get();
 
         // C. Data untuk Tabel Produk (Ambil 5 terbaru)
-        $produkTerbaru = Produk::latest('id_produk')->limit(5)->get();
+        // Kode BARU (Ambil SEMUA data)
+$produkTerbaru = Produk::latest('id_produk')->get();
 
         return view('admin.dashboard', compact(
             'totalProses', 'totalSelesai', 'totalDesain', 

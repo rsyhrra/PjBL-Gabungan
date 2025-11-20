@@ -161,6 +161,30 @@
             transition: 0.3s;
         }
         .btn-submit:hover { background: #b0855b; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+    
+    /* --- CSS UNTUK SCROLLABLE TABLE --- */
+        .table-scroll-frame {
+            max-height: 500px; /* Tinggi maksimal bingkai */
+            overflow-y: auto;  /* Aktifkan scroll vertikal */
+            border-radius: 10px;
+            border: 1px solid #eee;
+        }
+
+        /* Scrollbar Cantik (Optional - Webkit) */
+        .table-scroll-frame::-webkit-scrollbar { width: 8px; }
+        .table-scroll-frame::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        .table-scroll-frame::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
+        .table-scroll-frame::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+        /* Agar Header Tabel Tetap Diam (Sticky) saat di-scroll */
+        .table-scroll-frame thead th {
+            position: sticky;
+            top: 0;
+            background-color: #fff; /* Wajib ada background */
+            z-index: 5;
+            box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
+        }
+    
     </style>
 </head>
 <body>
@@ -267,12 +291,13 @@
 
             <div class="table-section" id="daftar-produk">
                 <div class="section-header">
-                    <span><i class="fas fa-images" style="color:var(--accent); margin-right:10px;"></i> Manajemen Produk</span>
+                    <span><i class="fas fa-images" style="color:var(--accent); margin-right:10px;"></i> Manajemen Produk ({{ $produkTerbaru->count() }} Item)</span>
                     <button class="btn btn-add" onclick="openModal('modalAdd')">
                         <i class="fas fa-plus"></i> Tambah Produk
                     </button>
                 </div>
-                <div class="table-responsive">
+
+                <div class="table-responsive table-scroll-frame">
                     <table>
                         <thead>
                             <tr>
