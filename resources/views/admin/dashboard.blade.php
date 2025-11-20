@@ -233,50 +233,63 @@
                 </div>
                 <div class="table-scroll-frame">
                     <table>
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Customer</th>
-                                <th>WhatsApp</th>
-                                <th>Status</th>
-                                <th>Detail Pesanan</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($pesananTerbaru as $index => $p)
-                            <tr>
-                                <td>{{ $index + 1 }}</td>
-                                <td style="font-weight: 600;">{{ $p->nama_pelanggan }}</td>
-                                <td>
-                                    <a href="https://wa.me/{{ $p->no_whatsapp }}" target="_blank" style="color: #25D366; text-decoration: none; font-weight: 600;">
-                                        <i class="fab fa-whatsapp"></i> {{ $p->no_whatsapp }}
-                                    </a>
-                                </td>
-                                <td>
-                                    <form action="{{ route('admin.pesanan.update', $p->id_pesanan) }}" method="POST">
-                                        @csrf @method('PUT')
-                                        <select name="status" onchange="this.form.submit()" 
-                                            class="status-select {{ $p->status == 'Baru Masuk' ? 'status-baru' : ($p->status == 'Proses' ? 'status-proses' : 'status-selesai') }}">
-                                            <option value="Baru Masuk" {{ $p->status == 'Baru Masuk' ? 'selected' : '' }}>Baru Masuk</option>
-                                            <option value="Proses" {{ $p->status == 'Proses' ? 'selected' : '' }}>Proses</option>
-                                            <option value="Selesai" {{ $p->status == 'Selesai' ? 'selected' : '' }}>Selesai</option>
-                                        </select>
-                                    </form>
-                                </td>
-                                <td style="font-size: 0.85rem; color: #666;">{{ Str::limit($p->detail_pesanan, 40) }}</td>
-                                <td>
-                                    <form action="{{ route('admin.pesanan.delete', $p->id_pesanan) }}" method="POST" class="form-delete">
-                                        @csrf @method('DELETE')
-                                        <button type="button" class="btn btn-delete" onclick="confirmDelete(this)">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                    <thead>
+                        <tr>
+                            <th>
+                                <a href="{{ route('admin.dashboard', ['sort' => 'kode_pesanan', 'direction' => request('direction') == 'asc' ? 'desc' : 'asc']) }}" style="text-decoration:none; color:inherit;">
+                                    Kode <i class="fas fa-sort"></i>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="{{ route('admin.dashboard', ['sort' => 'nama_pelanggan', 'direction' => request('direction') == 'asc' ? 'desc' : 'asc']) }}" style="text-decoration:none; color:inherit;">
+                                    Customer <i class="fas fa-sort"></i>
+                                </a>
+                            </th>
+                            <th>WhatsApp</th>
+                            <th>
+                                <a href="{{ route('admin.dashboard', ['sort' => 'status', 'direction' => request('direction') == 'asc' ? 'desc' : 'asc']) }}" style="text-decoration:none; color:inherit;">
+                                    Status <i class="fas fa-sort"></i>
+                                </a>
+                            </th>
+                            <th>Detail Pesanan</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($pesananTerbaru as $p)
+                        <tr>
+                            <td style="font-weight: 700; color: var(--primary);">{{ $p->kode_pesanan }}</td>
+                            <td style="font-weight: 600;">{{ $p->nama_pelanggan }}</td>
+                            
+                            <td>
+                                <a href="https://wa.me/{{ $p->no_whatsapp }}" target="_blank" style="color: #25D366; text-decoration: none; font-weight: 600;">
+                                    <i class="fab fa-whatsapp"></i> {{ $p->no_whatsapp }}
+                                </a>
+                            </td>
+                            <td>
+                                <form action="{{ route('admin.pesanan.update', $p->id_pesanan) }}" method="POST">
+                                    @csrf @method('PUT')
+                                    <select name="status" onchange="this.form.submit()" 
+                                        class="status-select {{ $p->status == 'Baru Masuk' ? 'status-baru' : ($p->status == 'Proses' ? 'status-proses' : 'status-selesai') }}">
+                                        <option value="Baru Masuk" {{ $p->status == 'Baru Masuk' ? 'selected' : '' }}>Baru Masuk</option>
+                                        <option value="Proses" {{ $p->status == 'Proses' ? 'selected' : '' }}>Proses</option>
+                                        <option value="Selesai" {{ $p->status == 'Selesai' ? 'selected' : '' }}>Selesai</option>
+                                    </select>
+                                </form>
+                            </td>
+                            <td style="font-size: 0.85rem; color: #666;">{{ Str::limit($p->detail_pesanan, 40) }}</td>
+                            <td>
+                                <form action="{{ route('admin.pesanan.delete', $p->id_pesanan) }}" method="POST" class="form-delete">
+                                    @csrf @method('DELETE')
+                                    <button type="button" class="btn btn-delete" onclick="confirmDelete(this)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
                 </div>
             </div>
 

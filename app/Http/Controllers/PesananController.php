@@ -3,80 +3,86 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Pesanan; // Pastikan Model Pesanan sudah diimport
+use App\Models\Pesanan;
+use App\Models\Produk; // Pastikan Model Produk diimport
+use Illuminate\Support\Str;
 
 class PesananController extends Controller
 {
-    // 1. Fungsi Menampilkan Halaman Beranda & Katalog
-    // 1. Fungsi Menampilkan Halaman Beranda & Katalog
+    // 1. Halaman Beranda (Katalog)
     public function index()
     {
-        // HAPUS semua array $produk = [...] yang panjang itu.
-        
-        // GANTI DENGAN INI:
-        // Ambil semua data dari database, urutkan dari yang terbaru
-        $produk = \App\Models\Produk::latest()->get();
+        // Ambil semua produk dari database, urutkan dari yang terbaru
+        // Data ini akan dikirim ke view 'beranda' untuk ditampilkan di slider
+        $produk = Produk::latest('id_produk')->get();
 
         return view('beranda', compact('produk'));
     }
 
-    // 2. Fungsi Memproses Pesanan (Simpan DB -> Redirect WA)
+    // 2. Proses Kirim Pesanan (Form -> DB -> Halaman Sukses)
     public function kirimPesanan(Request $request)
     {
-        // 1. Validasi (Sama seperti sebelumnya)
+        // A. Validasi Input
         $request->validate([
-            'nama' => 'required',
+            'nama' => 'required|string|max:255',
             'no_wa' => 'required|numeric',
-            'detail' => 'required',
+            'detail' => 'required|string',
         ]);
 
-        // 2. Simpan ke Database (Sama seperti sebelumnya)
+        // B. Generate Kode Pesanan Unik (Format: AU-YYMMDD-XXX)
+        // Contoh: AU-251120-A7B
+        $tanggal = now()->format('ymd'); 
+        $random = strtoupper(Str::random(3));
+        $kodeUnik = 'AU-' . $tanggal . '-' . $random;
+
+        // C. Simpan ke Database
         Pesanan::create([
+            'kode_pesanan'   => $kodeUnik,
             'nama_pelanggan' => $request->nama,
             'no_whatsapp'    => $request->no_wa,
             'detail_pesanan' => $request->detail,
-            'status'         => 'Baru Masuk', 
+            'status'         => 'Baru Masuk', // Default status
+            // 'file_desain' => $namaFile (Jika ada upload file, tambahkan logika upload di sini)
         ]);
 
-        // 3. Siapkan Link WhatsApp
-        $nomorAdmin = '6281937536701'; // Ganti No HP Admin
+        // D. Siapkan Link WhatsApp untuk Admin
+        $nomorAdmin = '6281937536701'; // Nomor Admin (Format 628...)
         
         $pesanWA = "Halo Aneka Usaha, saya ingin memesan.%0A";
+        $pesanWA .= "Kode Order: *" . $kodeUnik . "*%0A";
         $pesanWA .= "Nama: " . $request->nama . "%0A";
         $pesanWA .= "No WA: " . $request->no_wa . "%0A";
         $pesanWA .= "Detail: " . $request->detail;
 
         $linkWA = "https://wa.me/$nomorAdmin?text=$pesanWA";
 
-        // --- PERUBAHAN DI SINI ---
-        // Jangan langsung redirect, tapi tampilkan halaman sukses
-        // Kita kirim variabel $linkWA ke view agar tombolnya berfungsi
+        // E. Tampilkan Halaman Sukses (Bukan langsung redirect)
+        // Agar user bisa melihat konfirmasi dulu sebelum ke WA
         return view('sukses', compact('linkWA'));
     }
 
-    // Tambahkan fungsi ini di dalam class PesananController
+    // 3. API Cek Status Pesanan (AJAX)
     public function cekStatus(Request $request)
     {
-        // Ambil input 'kode' dari URL (?kode=...)
+        // Ambil input keyword dari URL
         $keyword = $request->kode;
 
-        // Cari di database: Apakah ID Pesanan = keyword ATAU No WA = keyword?
-        $pesanan = \App\Models\Pesanan::where('id_pesanan', $keyword)
+        // Cari pesanan berdasarkan ID Pesanan, Kode Unik, atau No WA
+        $pesanan = Pesanan::where('kode_pesanan', $keyword)
+                    ->orWhere('id_pesanan', $keyword)
                     ->orWhere('no_whatsapp', $keyword)
-                    ->latest('created_at') // Ambil yang terbaru jika ada duplikat
-                    ->first(); // Ambil satu saja
+                    ->latest('created_at') // Ambil yang paling baru jika ada duplikat no WA
+                    ->first();
 
         if ($pesanan) {
-            // Jika ketemu, kirim data JSON
+            // Jika data ditemukan, kembalikan dalam format JSON
             return response()->json([
                 'status' => 'found',
                 'data' => $pesanan
             ]);
         } else {
-            // Jika tidak ketemu
+            // Jika tidak ditemukan
             return response()->json(['status' => 'not_found']);
         }
     }
-
-
 }

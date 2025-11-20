@@ -189,85 +189,72 @@
         .modal-nav-btn.prev { left: -25px; }
         .modal-nav-btn.next { right: -25px; }
 
-        /* --- MODAL CEK PESANAN (FIXED LAYOUT) --- */
+        /* --- MODAL CEK PESANAN (Redesign) --- */
         #modalCekPesanan .modal-content {
-            background: var(--white); 
-            padding: 40px 30px;
-            border-radius: 25px;
-            width: 100%;
-            max-width: 500px; /* Lebar pas */
-            display: flex; /* PENTING: Agar layout flex vertikal */
-            flex-direction: column; 
-            gap: 20px; 
-            text-align: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
-            animation: slideUp 0.4s ease;
-            position: relative;
+            background: var(--white); padding: 40px 30px; border-radius: 25px;
+            width: 100%; max-width: 450px; display: flex; flex-direction: column; gap: 20px; 
+            text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+            animation: slideUp 0.4s ease; position: relative;
         }
 
-        .search-wrapper { display: flex; gap: 10px; width: 100%; }
+        .modal-title { font-size: 1.3rem; font-weight: 700; color: var(--primary); margin-bottom: 5px; }
+        .modal-subtitle { font-size: 0.9rem; color: #888; margin-bottom: 20px; }
+
+        .search-wrapper { display: flex; gap: 10px; width: 100%; margin-bottom: 10px; }
         .search-input { 
-            flex-grow: 1; padding: 15px; border: 2px solid #eee; border-radius: 12px; 
-            font-size: 1rem; outline: none; background: #f9f9f9;
+            flex-grow: 1; background: #f0f4f8; border: none; border-radius: 12px;
+            padding: 15px 20px; font-size: 1rem; color: var(--primary); outline: none; transition: 0.3s;
         }
-        .search-input:focus { border-color: var(--accent); background: #fff; }
-        .search-btn { 
-            width: 55px; height: 55px; background: var(--primary); color: white; 
-            border: none; border-radius: 12px; cursor: pointer; font-size: 1.2rem;
+        .search-input:focus { box-shadow: 0 0 0 2px var(--accent); background: #fff; }
+        
+        .search-btn {
+            background: var(--primary); color: white; border: none; border-radius: 12px;
+            width: 55px; height: 55px; cursor: pointer; transition: 0.3s;
+            display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
         }
         .search-btn:hover { background: var(--accent); }
 
-        /* Result Card Style */
+        /* Result Card */
         .result-card {
-            background: #f8f9fa; border-radius: 15px; padding: 20px; 
-            text-align: left; display: none; border: 1px solid #eee;
+            background: #f9f9f9; border-radius: 15px; padding: 25px; text-align: left;
+            display: none; border: 1px solid #eee;
         }
-        .info-row { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px dashed #ddd; padding-bottom: 10px; }
-        .info-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; align-items: center;}
-        .label { color: #888; font-size: 0.9rem; }
-        .value { font-weight: 600; color: var(--primary); text-align: right; font-size: 0.95rem; }
-        
-        .badge { padding: 5px 15px; border-radius: 20px; color: white; font-size: 0.8rem; font-weight: 600; }
+        .info-row { display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px dashed #ddd; padding-bottom: 10px; }
+        .info-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; align-items: center; }
+        .label { font-size: 0.9rem; color: #888; }
+        .value { font-size: 0.95rem; font-weight: 600; color: var(--primary); text-align: right; }
+        .badge { padding: 8px 20px; border-radius: 30px; font-size: 0.85rem; font-weight: 600; color: white; display: inline-block; }
 
 
         /* --- 7. FOOTER / CONTACT --- */
         #contact { padding: 80px 50px; background: var(--bg-color); border-top: 1px solid #eee; margin-top: 50px; }
-        .contact-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
-            gap: 30px; 
-            align-items: start; /* PENTING: Agar kolom tidak stretching (memanjang) paksa */
-        }
+        .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; align-items: start; }
         .contact-item { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
         .icon-circle { width: 40px; height: 40px; background: #e0e0e0; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary); }
 
         @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        /* --- MEDIA QUERIES (PERBAIKAN MOBILE) --- */
+        /* --- MEDIA QUERIES (MOBILE RESPONSIVE) --- */
         @media (max-width: 768px) {
-            /* Navbar */
             nav { padding: 15px 20px; }
             .nav-links { display: none; }
             .hamburger { display: block; }
             
-            /* Hero */
             #home { 
                 flex-direction: column-reverse; text-align: center; 
-                padding: 40px 20px; gap: 20px; justify-content: center; min-height: auto; margin-top: 20px;
+                padding: 40px 20px; gap: 20px; justify-content: center;
+                min-height: auto; margin-top: 20px;
             }
             .hero-text { max-width: 100%; z-index: 10; }
             .hero-text h1 { font-size: 2rem; margin-bottom: 15px; }
-            .hero-text p { font-size: 0.95rem; margin-bottom: 20px; }
             
-            /* Hero Buttons */
+            /* Tombol Hero Full Width */
             .hero-text div { display: flex; flex-direction: column; gap: 10px; }
             .btn { width: 100%; margin: 0; }
 
-            /* Hero Image */
             .hero-image { width: 100%; height: 320px; margin-bottom: 20px; }
             .card-stack { 
-                width: 220px; height: 280px; 
-                left: 50%; top: 50%; 
+                width: 220px; height: 280px; left: 50%; top: 50%; 
                 transform: translate(-50%, -50%) rotate(-8deg); 
             }
             .card-stack.top { 
@@ -275,7 +262,6 @@
                 transform: translate(-40%, -60%) rotate(6deg); 
             }
             
-            /* Katalog */
             #katalog { padding: 40px 20px; }
             .catalog-header { flex-direction: column; align-items: stretch; gap: 15px; }
             .search-bar { width: 100%; }
@@ -283,49 +269,33 @@
             .slider-container { gap: 0; }
             .scroll-btn { display: none; } 
             
-            /* Contact */
             #contact { padding: 40px 20px; }
+            .contact-grid { grid-template-columns: 1fr; } /* 1 Kolom di HP */
             
             /* Modal Responsif */
-            #modalProduk .modal-content { width: 95%; padding: 20px; flex-direction: column; height: auto; max-height: 85vh; overflow-y: auto; }
+            #modalProduk .modal-content { width: 95%; padding: 20px; flex-direction: column; height: auto; max-height: 85vh; overflow-y: auto; min-height: auto; }
             #modalBody { flex-direction: column; gap: 20px; }
             .modal-nav-btn.prev { left: 5px; }
             .modal-nav-btn.next { right: 5px; }
-        }
-
-        /* --- PERBAIKAN MOBILE (UPDATE BAGIAN INI) --- */
-        @media (max-width: 768px) {
             
-            /* ... (kode navbar & hero lain biarkan saja) ... */
-
-            /* PERBAIKAN MODAL: Reset tinggi agar pas dengan konten */
-            .modal-content { 
-                width: 95%; 
-                padding: 25px 20px; 
-                flex-direction: column; 
-                height: auto;       /* Tinggi otomatis */
-                min-height: auto;   /* HAPUS tinggi minimal 400px dari desktop */
-                max-height: 85vh; 
-                overflow-y: auto; 
-            }
-            
-            /* PERBAIKAN GRID CONTACT: Agar tidak saling tarik tinggi */
-            .contact-grid { 
-                grid-template-columns: 1fr; /* 1 Kolom */
-                gap: 30px;
-            }
+            /* Modal Cek Pesanan Mobile */
+            #modalCekPesanan .modal-content { width: 95%; padding: 30px 20px; }
         }
     </style>
 </head>
 <body>
 
+    <!-- NAVBAR -->
     <nav>
         <div class="logo">ANEKA USAHA</div>
+        
+        <!-- Desktop Menu -->
         <div class="nav-links">
             <a href="#home">Home</a>
             <a href="#katalog">Katalog</a>
             <a href="#contact">Contact</a>
         </div>
+
         <div class="nav-icons">
             <i class="fas fa-receipt" onclick="openModal('modalCekPesanan')" title="Lacak Pesanan"></i>
             <div class="hamburger" onclick="toggleMenu()">
@@ -334,12 +304,14 @@
         </div>
     </nav>
 
+    <!-- Mobile Menu -->
     <div class="mobile-menu" id="mobileMenu">
         <a href="#home" onclick="toggleMenu()">Home</a>
         <a href="#katalog" onclick="toggleMenu()">Katalog</a>
         <a href="#contact" onclick="toggleMenu()">Contact</a>
     </div>
 
+    <!-- HERO SECTION -->
     <section id="home">
         <div class="hero-text">
             <h1>PERCETAKAN<br>UNDANGAN & ATK</h1>
@@ -355,12 +327,14 @@
         </div>
     </section>
 
+    <!-- KATALOG SECTION -->
     <section id="katalog">
         <div class="catalog-header">
             <div class="search-bar">
                 <i class="fas fa-search" style="color: #999;"></i>
-                <input type="text" id="searchInput" onkeyup="searchProduct()" placeholder="Cari produk...">
+                <input type="text" id="searchInput" onkeyup="searchProduct()" placeholder="Cari produk (Undangan, Spanduk)...">
             </div>
+
             <div style="display:flex; gap:10px; width:100%; justify-content: space-between; flex-wrap: wrap;">
                 <select id="sortSelect" onchange="sortProducts()" class="sort-dropdown" style="flex:1;">
                     <option value="default">Urutan Default</option>
@@ -368,6 +342,7 @@
                     <option value="price_desc">Harga: Tinggi ke Rendah</option>
                     <option value="name_asc">Nama: A - Z</option>
                 </select>
+
                 <button class="btn btn-secondary" onclick="openModal('modalCekPesanan')" style="flex:1; min-width: 150px;">
                     Cek Pesanan
                 </button>
@@ -393,7 +368,9 @@
                             <h3>{{ $item->nama_produk }}</h3>
                         </div>
                         <div class="price-info">
-                            <p class="price">Rp {{ number_format($item->harga, 0, ',', '.') }} <span>/pcs</span></p>
+                            <p class="price">
+                                Rp {{ number_format($item->harga, 0, ',', '.') }} <span>/pcs</span>
+                            </p>
                             <p class="min-order">Min. Order: {{ $item->min_order }}</p>
                         </div>
                     </div>
@@ -410,6 +387,7 @@
         </div>
     </section>
 
+    <!-- CONTACT SECTION -->
     <section id="contact">
         <div class="contact-grid">
             <div>
@@ -442,6 +420,7 @@
         </div>
     </section>
 
+    <!-- MODAL DETAIL PRODUK -->
     <div id="modalProduk" class="modal">
         <div class="modal-content">
             <button class="modal-nav-btn prev" onclick="switchProduct('prev')"><i class="fas fa-chevron-left"></i></button>
@@ -473,12 +452,13 @@
         </div>
     </div>
 
+    <!-- MODAL CEK PESANAN (REFINED) -->
     <div id="modalCekPesanan" class="modal">
         <div class="modal-content">
             <span class="modal-close" onclick="closeModal('modalCekPesanan')">&times;</span>
             
-            <h3 style="margin-bottom:10px; color:var(--primary); font-weight:700;">Lacak Pesanan Anda</h3>
-            <p style="font-size:0.9rem; color:#888; margin-bottom:20px;">Masukkan Kode Pesanan (ID) atau No. WhatsApp</p>
+            <h3 class="modal-title">Lacak Pesanan Anda</h3>
+            <p class="modal-subtitle">Masukkan Kode Pesanan (ID) atau No. WhatsApp</p>
             
             <div class="search-wrapper">
                 <input type="text" id="inputKode" class="search-input" placeholder="Contoh: 1 atau 0812...">
@@ -487,13 +467,14 @@
                 </button>
             </div>
             
+            <!-- Hasil Pencarian -->
             <div id="resultArea" class="result-card">
                 <div class="info-row">
                     <span class="label">Customer</span>
                     <span class="value" id="resNama">-</span>
                 </div>
                 <div class="info-row">
-                    <span class="label">No Pesan</span>
+                    <span class="label">Kode Pesan</span>
                     <span class="value" id="resId">-</span>
                 </div>
                 <div class="info-row">
@@ -510,12 +491,14 @@
                 </div>
             </div>
 
+            <!-- Pesan Error -->
             <div id="notFoundMsg" style="display: none; margin-top: 20px; color: #e74c3c; font-weight: 500;">
                 <i class="fas fa-times-circle"></i> Data tidak ditemukan.
             </div>
         </div>
     </div>
 
+    <!-- JAVASCRIPT LOGIC -->
     <script>
         function toggleMenu() { document.getElementById('mobileMenu').classList.toggle('active'); }
 
@@ -592,6 +575,9 @@
 
         async function cekPesanan() {
             let kode = document.getElementById('inputKode').value;
+            let resultArea = document.getElementById('resultArea');
+            let notFoundMsg = document.getElementById('notFoundMsg');
+
             if(!kode) { alert("Mohon isi data!"); return; }
 
             try {
@@ -600,7 +586,10 @@
 
                 if (data.status === 'found') {
                     document.getElementById('resNama').innerText = data.data.nama_pelanggan;
-                    document.getElementById('resId').innerText = data.data.id_pesanan;
+                    
+                    // PERBAIKAN UTAMA: Ganti id_pesanan menjadi kode_pesanan
+                    document.getElementById('resId').innerText = data.data.kode_pesanan;
+                    
                     let tgl = new Date(data.data.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
                     document.getElementById('resTgl').innerText = tgl;
                     document.getElementById('resDetail').innerText = data.data.detail_pesanan;
@@ -612,11 +601,11 @@
                     else if(st === 'Proses') badge.style.backgroundColor = '#ef6c00';
                     else badge.style.backgroundColor = '#c62828';
 
-                    document.getElementById('resultArea').style.display = 'block';
-                    document.getElementById('notFoundMsg').style.display = 'none';
+                    resultArea.style.display = 'block';
+                    notFoundMsg.style.display = 'none';
                 } else {
-                    document.getElementById('resultArea').style.display = 'none';
-                    document.getElementById('notFoundMsg').style.display = 'block';
+                    resultArea.style.display = 'none';
+                    notFoundMsg.style.display = 'block';
                 }
             } catch (error) { alert("Gagal menghubungi server."); }
         }

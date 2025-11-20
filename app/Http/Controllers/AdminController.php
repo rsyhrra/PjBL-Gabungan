@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Pesanan;
-use App\Models\Produk; // Pastikan Model Produk sudah ada (sesuai ERD Anda)
+use App\Models\Produk;
 
 class AdminController extends Controller
 {
+    // ================== BAGIAN OTENTIKASI (LOGIN/LOGOUT) ==================
+
     // 1. Tampilkan Halaman Login
     public function showLogin() {
         return view('admin.login');
@@ -32,19 +34,21 @@ class AdminController extends Controller
         return redirect()->route('admin.login');
     }
 
-    // 4. Halaman Dashboard (Sesuai Mockup)
+
+    // ================== BAGIAN DASHBOARD UTAMA ==================
+
+    // 4. Halaman Dashboard
     public function dashboard() {
-        // A. Data untuk Summary Cards
+        // A. Data Statistik untuk Kartu (Summary Cards)
         $totalProses = Pesanan::where('status', 'Proses')->count();
         $totalSelesai = Pesanan::where('status', 'Selesai')->count();
-        $totalDesain = Produk::count(); // Jumlah Desain/Produk
+        $totalDesain = Produk::count(); // Menghitung total produk
 
-        // B. Data untuk Tabel Pesanan (Ambil 5 terbaru)
-        $pesananTerbaru = Pesanan::latest('created_at')->limit(5)->get();
+        // B. Data Tabel Pesanan (Ambil semua atau limit tertentu, urutkan dari terbaru)
+        $pesananTerbaru = Pesanan::latest('created_at')->get();
 
-        // C. Data untuk Tabel Produk (Ambil 5 terbaru)
-        // Kode BARU (Ambil SEMUA data)
-$produkTerbaru = Produk::latest('id_produk')->get();
+        // C. Data Tabel Produk (Ambil SEMUA agar bisa di-scroll di dashboard)
+        $produkTerbaru = Produk::latest('id_produk')->get();
 
         return view('admin.dashboard', compact(
             'totalProses', 'totalSelesai', 'totalDesain', 
@@ -52,50 +56,55 @@ $produkTerbaru = Produk::latest('id_produk')->get();
         ));
     }
 
-    // ... (Fungsi login & dashboard yang lama biarkan saja) ...
 
-    // --- 1. LOGIKA TAMBAH PRODUK ---
-   // --- 1. LOGIKA TAMBAH PRODUK ---
+    // ================== BAGIAN CRUD PRODUK (MANAJEMEN PRODUK) ==================
+
+    // 5. Simpan Produk Baru
     public function storeProduk(Request $request)
     {
-        // Validasi
         $request->validate([
             'nama_produk' => 'required',
             'harga' => 'required|numeric',
-            'foto' => 'required|image|max:2048',
+            'foto' => 'required|image|mimes:jpeg,png,jpg|max:2048', // Validasi gambar
+            'min_order' => 'required',
         ]);
 
-        // Upload Gambar
+        // Upload Gambar ke folder public/img
         $imageName = time().'.'.$request->foto->extension();  
         $request->foto->move(public_path('img'), $imageName);
 
         // Simpan ke Database
-        \App\Models\Produk::create([
+        Produk::create([
             'nama_produk' => $request->nama_produk,
-            'kategori' => $request->kategori, // Ambil text dari dropdown
+            'kategori' => $request->kategori, // Dari select option
             'deskripsi_produk' => $request->deskripsi ?? '-',
             'harga' => $request->harga,
-            'min_order' => $request->min_order ?? '1 pcs', // Simpan min order
+            'min_order' => $request->min_order,
             'foto_produk' => $imageName,
         ]);
 
         return redirect()->back()->with('success', 'Produk berhasil ditambahkan!');
     }
 
-    // --- 2. LOGIKA UPDATE PRODUK ---
+    // 6. Update Produk
     public function updateProduk(Request $request, $id)
     {
-        $produk = \App\Models\Produk::findOrFail($id);
+        $produk = Produk::findOrFail($id);
 
+        // Update data teks
         $produk->nama_produk = $request->nama_produk;
         $produk->harga = $request->harga;
         $produk->deskripsi_produk = $request->deskripsi;
-        // Pastikan input hidden/select kategori ada di form edit dashboard
-        // Untuk simplifikasi, kita anggap user hanya edit nama/harga/deskripsi dulu
         
+        // Cek jika user mengupload foto baru
         if ($request->hasFile('foto')) {
+            // Upload foto baru
             $imageName = time().'.'.$request->foto->extension();  
             $request->foto->move(public_path('img'), $imageName);
+            
+            // Hapus foto lama (Opsional, praktik yang baik agar server tidak penuh)
+            // if(file_exists(public_path('img/'.$produk->foto_produk))){ unlink(public_path('img/'.$produk->foto_produk)); }
+            
             $produk->foto_produk = $imageName;
         }
 
@@ -103,29 +112,31 @@ $produkTerbaru = Produk::latest('id_produk')->get();
         return redirect()->back()->with('success', 'Produk berhasil diperbarui!');
     }
 
-    // --- 3. LOGIKA HAPUS PRODUK ---
+    // 7. Hapus Produk
     public function deleteProduk($id)
     {
-        $produk = \App\Models\Produk::findOrFail($id);
-        // Hapus file foto jika perlu: File::delete(public_path('img/'.$produk->foto_produk));
+        $produk = Produk::findOrFail($id);
         $produk->delete();
-        return redirect()->back()->with('success', 'Produk dihapus!');
+        return redirect()->back()->with('success', 'Produk berhasil dihapus!');
     }
 
-    // --- 4. LOGIKA UPDATE STATUS PESANAN ---
+
+    // ================== BAGIAN MANAJEMEN PESANAN ==================
+
+    // 8. Update Status Pesanan (Langsung dari Dropdown)
     public function updateStatusPesanan(Request $request, $id)
     {
-        $pesanan = \App\Models\Pesanan::findOrFail($id);
-        $pesanan->status = $request->status; // Ambil dari input select
+        $pesanan = Pesanan::findOrFail($id);
+        $pesanan->status = $request->status; // Baru Masuk / Proses / Selesai
         $pesanan->save();
         
         return redirect()->back()->with('success', 'Status pesanan diperbarui!');
     }
 
-    // --- 5. LOGIKA HAPUS PESANAN ---
+    // 9. Hapus Pesanan
     public function deletePesanan($id)
     {
-        \App\Models\Pesanan::findOrFail($id)->delete();
-        return redirect()->back()->with('success', 'Pesanan dihapus!');
+        Pesanan::findOrFail($id)->delete();
+        return redirect()->back()->with('success', 'Pesanan dihapus dari sistem!');
     }
 }

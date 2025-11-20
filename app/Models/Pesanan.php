@@ -16,7 +16,9 @@ class Pesanan extends Model
     protected $primaryKey = 'id_pesanan';
 
     // Kolom mana saja yang BOLEH diisi oleh pengguna (Security)
-    protected $fillable = [
+  protected $fillable = [
+        'kode_pesanan', // <--- TAMBAHKAN INI
+        'tgl_pesanan',
         'nama_pelanggan',
         'no_whatsapp',
         'detail_pesanan',
