@@ -174,7 +174,7 @@
     <div class="sidebar">
         <div class="logo-area">ANEKA USAHA</div>
         
-        <a href="#" class="nav-item active">
+        <a href="#" class="nav-item">
             <i class="fas fa-th-large"></i> Dashboard
         </a>
         <a href="#tabel-pesanan" class="nav-item">
