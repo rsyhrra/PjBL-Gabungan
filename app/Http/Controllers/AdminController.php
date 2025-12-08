@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Pesanan;
 use App\Models\Produk;
-use App\Models\LogPesanan;
+use App\Models\LogPesanan; // Pastikan Model LogPesanan sudah dibuat (opsional)
+use Carbon\Carbon; // Import Carbon untuk manipulasi tanggal
 
 class AdminController extends Controller
 {
@@ -40,20 +41,61 @@ class AdminController extends Controller
 
     // 4. Halaman Dashboard
     public function dashboard() {
-        // A. Data Statistik untuk Kartu (Summary Cards)
+        // A. Data Statistik Dasar
         $totalProses = Pesanan::where('status', 'Proses')->count();
         $totalSelesai = Pesanan::where('status', 'Selesai')->count();
         $totalDesain = Produk::count(); // Menghitung total produk
 
-        // B. Data Tabel Pesanan (Ambil semua atau limit tertentu, urutkan dari terbaru)
-        $pesananTerbaru = Pesanan::latest('created_at')->get();
+        // B. Hitung Total Pendapatan (Profit)
+        // Hanya menghitung pesanan yang statusnya 'Selesai'
+        $pesananSukses = Pesanan::where('status', 'Selesai')->get();
+        $totalPendapatan = 0;
 
-        // C. Data Tabel Produk (Ambil SEMUA agar bisa di-scroll di dashboard)
+        foreach($pesananSukses as $p) {
+            // Parsing JSON detail_pesanan
+            // Format JSON: {"items": [{"harga": 2000, "qty": 500, ...}], ...}
+            $detail = json_decode($p->detail_pesanan, true);
+            
+            // Cek apakah format JSON valid dan memiliki 'items'
+            if (json_last_error() === JSON_ERROR_NONE && isset($detail['items'])) {
+                foreach($detail['items'] as $item) {
+                    // Rumus: Harga x Qty
+                    $totalPendapatan += ($item['harga'] * $item['qty']);
+                }
+            }
+        }
+
+        // C. Data Grafik (Pesanan Masuk per Bulan di Tahun Ini)
+        $pesananTahunIni = Pesanan::select('created_at')
+                            ->whereYear('created_at', date('Y'))
+                            ->get()
+                            ->groupBy(function($date) {
+                                // Grouping berdasarkan bulan (format: 01, 02, dst)
+                                return Carbon::parse($date->created_at)->format('m');
+                            });
+
+        $grafikPesanan = [];
+        $grafikBulan = [];
+
+        // Loop 1 sampai 12 (Januari - Desember)
+        for ($i = 1; $i <= 12; $i++) {
+            $bulanKey = str_pad($i, 2, '0', STR_PAD_LEFT); // Ubah 1 jadi "01"
+            
+            // Simpan nama bulan untuk label grafik (Jan, Feb...)
+            $grafikBulan[] = Carbon::create()->month($i)->translatedFormat('M');
+            
+            // Jika ada pesanan di bulan tersebut, hitung jumlahnya. Jika tidak, 0.
+            $grafikPesanan[] = isset($pesananTahunIni[$bulanKey]) ? $pesananTahunIni[$bulanKey]->count() : 0;
+        }
+
+        // D. Data Tabel (Ambil data terbaru)
+        $pesananTerbaru = Pesanan::latest('created_at')->get();
         $produkTerbaru = Produk::latest('id_produk')->get();
 
         return view('admin.dashboard', compact(
-            'totalProses', 'totalSelesai', 'totalDesain', 
-            'pesananTerbaru', 'produkTerbaru'
+            'totalProses', 'totalSelesai', 'totalDesain', 'totalPendapatan',
+            'pesananTerbaru', 'produkTerbaru',
+            'grafikPesanan', 'grafikBulan'
         ));
     }
 
@@ -122,24 +164,29 @@ class AdminController extends Controller
     }
 
 
+    // ================== BAGIAN MANAJEMEN PESANAN ==================
+
     // 8. Update Status Pesanan (Langsung dari Dropdown)
     public function updateStatusPesanan(Request $request, $id)
     {
         $pesanan = Pesanan::findOrFail($id);
         
-        // --- LOGIKA LOG PESANAN (BARU) ---
-        // Cek apakah status yang dikirim berbeda dengan status saat ini?
+        // --- LOGIKA LOG PESANAN (OPSIONAL) ---
+        // Jika status berubah, catat ke tabel log_pesanan
         if ($pesanan->status !== $request->status) {
-            
-            // Catat ke tabel log_pesanan
-            LogPesanan::create([
-                'kode_pesanan'    => $pesanan->kode_pesanan,
-                'status_lama'     => $pesanan->status,       // Status sebelum diubah
-                'status_baru'     => $request->status,       // Status sesudah diubah
-                'waktu_perubahan' => now(),                  // Waktu sekarang
-            ]);
+            // Pastikan model LogPesanan ada, jika tidak, hapus blok if ini
+            try {
+                LogPesanan::create([
+                    'kode_pesanan'    => $pesanan->kode_pesanan,
+                    'status_lama'     => $pesanan->status,
+                    'status_baru'     => $request->status,
+                    'waktu_perubahan' => now(),
+                ]);
+            } catch (\Exception $e) {
+                // Abaikan error jika tabel log belum siap
+            }
         }
-        // ---------------------------------
+        // -------------------------------------
 
         $pesanan->status = $request->status; // Baru Masuk / Proses / Selesai
         $pesanan->save();

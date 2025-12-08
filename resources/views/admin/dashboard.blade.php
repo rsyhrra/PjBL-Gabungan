@@ -8,6 +8,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Tambahkan Library Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
         /* --- 1. TEMA WARNA --- */
@@ -86,7 +88,13 @@
         .content-area { padding: 40px; }
 
         /* --- 4. SUMMARY CARDS --- */
-        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; margin-bottom: 40px; }
+        .cards-grid { 
+            display: grid; 
+            /* Menggunakan auto-fit agar jumlah kolom menyesuaikan lebar layar */
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); 
+            gap: 25px; 
+            margin-bottom: 30px; 
+        }
         .card {
             background: var(--white); padding: 30px; border-radius: 20px; 
             box-shadow: var(--shadow); position: relative; overflow: hidden;
@@ -95,8 +103,28 @@
         .card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); border-color: var(--accent); }
         
         .card h3 { font-size: 0.9rem; margin-bottom: 10px; color: var(--text-grey); font-weight: 500; }
+        
+        /* Font size khusus untuk nilai uang agar muat */
         .card .val { font-size: 2.2rem; font-weight: 700; color: var(--primary); }
+        .card .val.money { font-size: 1.8rem; } 
+        
         .card-icon { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 3.5rem; color: var(--accent); opacity: 0.15; }
+
+        /* --- STYLE BARU UNTUK CARD GRAFIK --- */
+        .chart-section {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            border: 1px solid #f0f0f0;
+            margin-bottom: 40px;
+            height: 400px; /* Tinggi Fix agar rapi */
+            position: relative;
+        }
+        .chart-title {
+            font-size: 1.1rem; font-weight: 700; color: var(--primary);
+            margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+        }
 
         /* --- 5. TABLES & SCROLL FRAME --- */
         .table-section { margin-bottom: 50px; background: var(--white); border-radius: 20px; box-shadow: var(--shadow); padding: 30px; }
@@ -212,6 +240,9 @@
             
             .modal-content { padding: 25px; width: 95%; max-height: 90vh; overflow-y: auto; }
             .close-modal { top: 15px; right: 15px; }
+
+            /* Tinggi grafik di mobile */
+            .chart-section { height: 300px; padding: 20px; }
         }
     </style>
 </head>
@@ -263,6 +294,7 @@
             </script>
             @endif
 
+            <!-- 1. KARTU RINGKASAN (UPDATED: Tambah Profit) -->
             <div class="cards-grid">
                 <div class="card">
                     <h3>Pesanan Diproses</h3>
@@ -279,8 +311,25 @@
                     <div class="val">{{ $totalDesain }}</div>
                     <i class="fas fa-layer-group card-icon"></i>
                 </div>
+                <!-- Kartu Baru: Total Pendapatan -->
+                <div class="card">
+                    <h3>Total Pendapatan</h3>
+                    <div class="val money">Rp {{ number_format($totalPendapatan ?? 0, 0, ',', '.') }}</div>
+                    <i class="fas fa-wallet card-icon"></i>
+                </div>
             </div>
 
+            <!-- 2. SECTION GRAFIK (BARU) -->
+            <div class="chart-section">
+                <div class="chart-title">
+                    <i class="fas fa-chart-line" style="color: var(--accent);"></i>
+                    Tren Penjualan ({{ date('Y') }})
+                </div>
+                <!-- Canvas untuk Chart.js -->
+                <canvas id="salesChart"></canvas>
+            </div>
+
+            <!-- 3. TABEL PESANAN -->
             <div class="table-section" id="tabel-pesanan">
                 <div class="section-header">
                     <span><i class="fas fa-list-alt" style="color:var(--accent); margin-right:10px;"></i> Pesanan Masuk</span>
@@ -354,6 +403,7 @@
                 </div>
             </div>
 
+            <!-- 4. TABEL PRODUK -->
             <div class="table-section" id="daftar-produk">
                 <div class="section-header">
                     <span><i class="fas fa-images" style="color:var(--accent); margin-right:10px;"></i> Manajemen Produk ({{ $produkTerbaru->count() }})</span>
@@ -407,7 +457,7 @@
         </div>
     </div>
 
-    <!-- MODAL DETAIL PESANAN (BARU) -->
+    <!-- MODAL DETAIL PESANAN -->
     <div id="modalDetailPesanan" class="modal">
         <div class="modal-content" style="width: 600px;">
             <span class="close-modal" onclick="closeModal('modalDetailPesanan')">&times;</span>
@@ -447,6 +497,7 @@
         </div>
     </div>
 
+    <!-- MODAL ADD PRODUK -->
     <div id="modalAdd" class="modal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal('modalAdd')">&times;</span>
@@ -489,6 +540,7 @@
         </div>
     </div>
 
+    <!-- MODAL EDIT PRODUK -->
     <div id="modalEdit" class="modal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal('modalEdit')">&times;</span>
@@ -540,7 +592,7 @@
             }
         }
 
-        // FUNGSI TOGGLE SIDEBAR MOBILE (BARU)
+        // FUNGSI TOGGLE SIDEBAR MOBILE
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('active');
             document.querySelector('.sidebar-overlay').classList.toggle('active');
@@ -661,6 +713,64 @@
                 }
             })
         }
+
+        // 6. CHART.JS CONFIGURATION (INIT GRAFIK)
+        document.addEventListener("DOMContentLoaded", function() {
+            // Periksa apakah elemen canvas ada sebelum melanjutkan
+            var canvas = document.getElementById('salesChart');
+            if (!canvas) return; // Keluar jika tidak ada elemen
+
+            const ctx = canvas.getContext('2d');
+            
+            // Data dari Controller
+            const labels = @json($grafikBulan ?? []); // Default ke array kosong jika null
+            const data = @json($grafikPesanan ?? []); // Default ke array kosong jika null
+
+            new Chart(ctx, {
+                type: 'line', // Bisa diganti 'bar' jika suka grafik batang
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Jumlah Pesanan Masuk',
+                        data: data,
+                        borderColor: '#D4A373', // Warna Accent (Gold)
+                        backgroundColor: 'rgba(212, 163, 115, 0.2)', // Warna Accent transparan
+                        borderWidth: 3,
+                        pointBackgroundColor: '#2C3E50', // Warna Primary (Navy)
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#D4A373',
+                        fill: true,
+                        tension: 0.4 // Membuat garis melengkung halus (curved)
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: true, position: 'top' },
+                        tooltip: { 
+                            mode: 'index', 
+                            intersect: false,
+                            backgroundColor: 'rgba(44, 62, 80, 0.9)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: '#D4A373',
+                            borderWidth: 1
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1 } // Agar sumbu Y bilangan bulat (1, 2, 3...)
+                        },
+                        x: {
+                            grid: { display: false } // Hilangkan grid vertikal biar bersih
+                        }
+                    }
+                }
+            });
+        });
     </script>
 
 </body>

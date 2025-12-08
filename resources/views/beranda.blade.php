@@ -518,7 +518,7 @@
                     <div class="icon-box"><i class="fab fa-whatsapp"></i></div>
                     <div class="contact-text">
                         <h4>WhatsApp</h4>
-                        <p>0815-2728-0817</p>
+                        <p>+62 813-4113-6423</p>
                     </div>
                 </div>
                 <div class="contact-item">
@@ -532,7 +532,7 @@
                     <div class="icon-box"><i class="fas fa-map-marker-alt"></i></div>
                     <div class="contact-text">
                         <h4>Alamat</h4>
-                        <p>Jln. In aja dulu No.333<br>(Dekat Pusat Kota)</p>
+                        <p>HC2X+434, Pappa, Kec. Pattallassang, Kabupaten Takalar, Sulawesi Selatan 92211</p>
                     </div>
                 </div>
             </div>
