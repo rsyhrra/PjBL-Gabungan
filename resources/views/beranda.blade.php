@@ -537,7 +537,7 @@
                 </div>
             </div>
             <div class="map-box">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.057892699999!2d119.423!3d-5.147!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNcKwMDgnNDkuMiJTIDExOcKwMjUnMjIuOCJF!5e0!3m2!1sen!2sid!4v1630000000000!5m2!1sen!2sid" allowfullscreen="" loading="lazy"></iframe>
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d328.6166151517713!2d119.44777061955244!3d-5.449825626892442!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dbed7b00723386f%3A0xa5bfa049e4f6aa62!2sToko%20Aneka%20Usaha!5e1!3m2!1sid!2sid!4v1765176738010!5m2!1sid!2sid" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
             </div>
         </div>
     </section>
