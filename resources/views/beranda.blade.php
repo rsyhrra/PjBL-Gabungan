@@ -83,38 +83,75 @@
             top: 20px; left: 80px; border: 4px solid #fff;
         }
 
-        /* --- 4. KATALOG SLIDER --- */
+        /* --- 4. KATALOG SLIDER (UPDATED HEADER DESIGN) --- */
         #katalog { padding: 60px 50px; background: #fff; }
-        .catalog-header { display: flex; justify-content: space-between; margin-bottom: 30px; align-items: center; gap: 15px; flex-wrap: wrap; }
         
-        /* Product Search Box Styles */
-        .product-search-box { 
-            background: #f0f0f0; 
-            padding: 10px 20px; 
-            border-radius: 30px; 
-            display: flex; 
-            align-items: center; 
-            width: 350px; 
-            transition: 0.3s;
-            border: 1px solid transparent; 
+        /* CONTAINER TOOLBAR BARU */
+        .catalog-header { 
+            display: flex; flex-wrap: wrap; gap: 15px; 
+            background: #fff; padding: 20px; border-radius: 20px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); align-items: center; 
+            margin-bottom: 40px; border: 1px solid #f0f0f0;
         }
-        .product-search-box:focus-within { 
-            background: #fff; 
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(212, 163, 115, 0.1); 
+
+        /* Search Box Modern */
+        .search-container { flex: 2; min-width: 300px; position: relative; }
+        .search-input-modern {
+            width: 100%; padding: 15px 20px 15px 50px; border: 2px solid #f0f4f8;
+            border-radius: 50px; background: #f9fbfd; font-size: 0.95rem;
+            color: var(--primary); transition: all 0.3s ease; outline: none;
         }
-        .product-search-box i { color: #999; margin-right: 10px; }
-        .product-search-box input { 
-            border: none; background: transparent; outline: none; width: 100%; 
-            font-family: inherit; color: var(--primary); font-size: 0.95rem;
+        .search-input-modern:focus { background: #fff; border-color: var(--accent); box-shadow: 0 5px 20px rgba(212, 163, 115, 0.15); }
+        .search-icon-float {
+            position: absolute; left: 20px; top: 50%; transform: translateY(-50%);
+            color: #bdc3c7; font-size: 1.1rem; transition: 0.3s;
+        }
+        .search-input-modern:focus + .search-icon-float { color: var(--accent); }
+
+        /* Sort Dropdown Modern - FIXED CSS */
+        .sort-container { flex: 1; min-width: 200px; position: relative; }
+        .sort-select-modern {
+            width: 100%; padding: 15px 20px; appearance: none; -webkit-appearance: none;
+            background: #fff; border: 2px solid #f0f4f8; border-radius: 50px;
+            font-size: 0.9rem; color: var(--primary); cursor: pointer;
+            transition: all 0.3s ease; font-weight: 500; outline: none;
         }
         
-        .sort-dropdown {
-            padding: 10px 15px; border-radius: 30px; border: 1px solid #ccc; 
-            color: var(--primary); outline: none; cursor: pointer; font-family: inherit;
-            background-color: #fff; font-size: 0.9rem; min-width: 150px;
+        /* Efek Hover */
+        .sort-select-modern:hover { 
+            border-color: #dcdcdc; 
         }
-        .sort-dropdown:hover { border-color: var(--accent); }
+
+        /* Efek Focus (Saat diklik) - Disamakan dengan Search Box */
+        .sort-select-modern:focus { 
+            border-color: var(--accent); 
+            box-shadow: 0 5px 20px rgba(212, 163, 115, 0.15);
+            background-color: #fff;
+        }
+
+        .sort-icon {
+            position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
+            color: var(--primary); pointer-events: none; transition: 0.3s;
+        }
+        
+        /* Icon ikut berubah warna saat select fokus */
+        .sort-select-modern:focus + .sort-icon {
+            color: var(--accent);
+            transform: translateY(-50%) rotate(180deg); /* Animasi putar panah */
+        }
+
+        /* Button Cek Pesanan Modern */
+        .btn-check-modern {
+            flex: 1; min-width: 180px; padding: 15px 25px;
+            background: linear-gradient(135deg, var(--primary) 0%, #34495e 100%);
+            color: white; border: none; border-radius: 50px; font-weight: 600;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            gap: 10px; box-shadow: 0 10px 20px rgba(44, 62, 80, 0.2); transition: 0.3s;
+        }
+        .btn-check-modern:hover {
+            transform: translateY(-3px); box-shadow: 0 15px 30px rgba(44, 62, 80, 0.3);
+            background: linear-gradient(135deg, #34495e 0%, var(--primary) 100%);
+        }
 
         .slider-container { position: relative; display: flex; align-items: center; gap: 20px; }
         .product-scroll-wrapper {
@@ -212,8 +249,6 @@
             background: var(--white); padding: 0; border-radius: 20px;
             width: 100%; max-width: 900px; position: relative;
             box-shadow: var(--shadow-lg); display: flex;
-            /* HAPUS OVERFLOW HIDDEN AGAR TOMBOL KELUAR */
-            /* overflow: hidden; */
             min-height: 450px;
         }
         
@@ -221,7 +256,6 @@
         
         .modal-left { 
             width: 50%; background: #f9f9f9; display: flex; align-items: center; justify-content: center;
-            /* Tambahkan border radius manual karena overflow hidden dihapus */
             border-top-left-radius: 20px; border-bottom-left-radius: 20px;
         }
         .modal-left img { width: 100%; height: 100%; object-fit: cover; border-top-left-radius: 20px; border-bottom-left-radius: 20px; }
@@ -252,30 +286,10 @@
         .modal-nav-btn.next { right: -25px; }
         
         /* Input Quantity di Modal */
-        .qty-wrapper {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-            gap: 10px;
-        }
-        .qty-label {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--primary);
-        }
-        .qty-input {
-            width: 80px;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            text-align: center;
-            font-weight: 600;
-            color: var(--primary);
-            outline: none;
-        }
-        .qty-input:focus {
-            border-color: var(--accent);
-        }
+        .qty-wrapper { display: flex; align-items: center; margin-bottom: 15px; gap: 10px; }
+        .qty-label { font-size: 0.9rem; font-weight: 600; color: var(--primary); }
+        .qty-input { width: 80px; padding: 8px; border: 1px solid #ddd; border-radius: 8px; text-align: center; font-weight: 600; color: var(--primary); outline: none; }
+        .qty-input:focus { border-color: var(--accent); }
 
         /* Modal Cek Pesanan & Keranjang */
         #modalCekPesanan .modal-content, #modalKeranjang .modal-content {
@@ -302,9 +316,6 @@
         }
         .search-btn:hover { background: var(--accent); }
 
-        .order-input { width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 10px; font-size: 1rem; outline: none; transition: 0.3s; margin-bottom: 10px; }
-        .order-input:focus { border-color: var(--accent); }
-
         /* Result Card */
         .result-card {
             background: #f9f9f9; border-radius: 15px; padding: 25px; text-align: left;
@@ -316,6 +327,20 @@
         .value { font-size: 0.95rem; font-weight: 600; color: var(--primary); text-align: right; }
         .badge { padding: 8px 20px; border-radius: 30px; font-size: 0.85rem; font-weight: 600; color: white; display: inline-block; }
 
+        /* TABEL MINI DETAIL PESANAN */
+        .mini-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85rem; }
+        .mini-table th { background: #eee; padding: 8px; text-align: left; color: var(--primary); font-weight: 600; }
+        .mini-table td { border-bottom: 1px solid #f0f0f0; padding: 8px; color: #555; }
+        .mini-table td.price { text-align: right; font-family: monospace; font-weight: 600; }
+        
+        /* Tombol Link Invoice di Modal */
+        .btn-invoice-link {
+            display: block; width: 100%; text-align: center; margin-top: 15px;
+            padding: 10px; border: 1px solid var(--primary); border-radius: 10px;
+            color: var(--primary); text-decoration: none; font-weight: 600; transition: 0.3s;
+        }
+        .btn-invoice-link:hover { background: var(--primary); color: white; }
+
         /* ANIMATION */
         @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         @keyframes slideDown { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -323,12 +348,10 @@
 
         /* --- MEDIA QUERIES (MOBILE RESPONSIVE) --- */
         @media (max-width: 768px) {
-            /* Navbar */
             nav { padding: 15px 20px; }
             .nav-links { display: none; }
             .hamburger { display: block; }
             
-            /* Hero */
             #home { 
                 flex-direction: column-reverse; text-align: center; 
                 padding: 40px 20px; gap: 20px; justify-content: center;
@@ -336,7 +359,6 @@
             }
             .hero-text { max-width: 100%; z-index: 10; }
             .hero-text h1 { font-size: 2rem; margin-bottom: 15px; }
-            
             .hero-text div { display: flex; flex-direction: column; gap: 10px; }
             .btn { width: 100%; margin: 0; }
 
@@ -344,36 +366,32 @@
             .card-stack { width: 220px; height: 280px; left: 50%; top: 50%; transform: translate(-50%, -50%) rotate(-8deg); }
             .card-stack.top { left: 50%; top: 50%; transform: translate(-40%, -60%) rotate(6deg); }
             
-            /* Katalog */
             #katalog { padding: 40px 20px; }
-            .catalog-header { flex-direction: column; align-items: stretch; gap: 15px; }
             
-            /* Fix for search bar width in mobile */
+            /* Update Header Mobile */
+            .catalog-header { flex-direction: column; align-items: stretch; padding: 15px; }
+            .search-container, .sort-container, .btn-check-modern {
+                flex: auto; width: 100%; min-width: 0;
+            }
             .product-search-box { width: 100%; }
-            
             .sort-dropdown { width: 100%; margin-right: 0; }
             .slider-container { gap: 0; }
             .scroll-btn { display: none; } 
             
-            /* Contact */
             #contact { padding: 40px 20px; }
-            .contact-grid { grid-template-columns: 1fr; }
+            .contact-wrapper { grid-template-columns: 1fr; }
             
-            /* Modal Responsif */
             #modalProduk .modal-content { width: 95%; padding: 20px; flex-direction: column; height: auto; max-height: 85vh; overflow-y: auto; min-height: auto; }
             #modalBody { flex-direction: column; gap: 20px; }
             
-            /* Di Mobile, Gambar Radius atas saja */
             .modal-left { width: 100%; height: 250px; border-radius: 10px; }
             .modal-left img { border-radius: 10px; }
             .modal-right { width: 100%; padding: 0; }
 
-            /* Posisi Tombol Navigasi di Mobile */
             .modal-nav-btn { top: 50%; transform: translateY(-50%); }
             .modal-nav-btn.prev { left: 5px; }
             .modal-nav-btn.next { right: 5px; }
             
-            /* Modal Cek & Cart Mobile */
             #modalCekPesanan .modal-content, #modalKeranjang .modal-content { width: 95%; padding: 30px 20px; min-height: auto; }
             .cart-floating-btn { bottom: 20px; right: 20px; width: 55px; height: 55px; }
         }
@@ -430,23 +448,29 @@
             <p>Pilih kategori produk yang Anda butuhkan</p>
         </div>
 
+        <!-- NEW CATALOG HEADER DESIGN -->
         <div class="catalog-header">
-            <div class="product-search-box">
-                <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" onkeyup="searchProduct()" placeholder="Cari produk...">
+            <!-- Search -->
+            <div class="search-container">
+                <input type="text" id="searchInput" onkeyup="searchProduct()" class="search-input-modern" placeholder="Cari produk impianmu...">
+                <i class="fas fa-search search-icon-float"></i>
             </div>
 
-            <div style="display:flex; gap:10px; width:100%; justify-content: space-between; flex-wrap: wrap;">
-                <select id="sortSelect" onchange="sortProducts()" class="sort-dropdown" style="flex:1;">
-                    <option value="default">Urutan Default</option>
-                    <option value="price_asc">Harga Terendah</option>
-                    <option value="price_desc">Harga Tertinggi</option>
-                    <option value="name_asc">Nama A-Z</option>
+            <!-- Sort -->
+            <div class="sort-container">
+                <select id="sortSelect" onchange="sortProducts()" class="sort-select-modern">
+                    <option value="default">✨ Urutan Default</option>
+                    <option value="price_asc">💰 Harga Terendah</option>
+                    <option value="price_desc">💎 Harga Tertinggi</option>
+                    <option value="name_asc">🔤 Nama A-Z</option>
                 </select>
-                <button class="btn btn-secondary" onclick="openModal('modalCekPesanan')" style="flex:1; min-width: 150px;">
-                    Cek Pesanan
-                </button>
+                <i class="fas fa-chevron-down sort-icon"></i>
             </div>
+
+            <!-- Cek Pesanan -->
+            <button class="btn-check-modern" onclick="openModal('modalCekPesanan')">
+                <i class="fas fa-receipt"></i> Cek Status Pesanan
+            </button>
         </div>
 
         <div class="slider-container" id="sliderContainer">
@@ -521,6 +545,7 @@
     <!-- TOMBOL KERANJANG MELAYANG -->
     <div class="cart-floating-btn" onclick="openModal('modalKeranjang')">
         <i class="fas fa-shopping-cart"></i>
+        <!-- Update: Menampilkan jumlah jenis item -->
         <span class="cart-badge" id="cartCount">0</span>
     </div>
 
@@ -544,7 +569,7 @@
                         <h3 id="modalPrice" class="modal-price">Rp 0</h3>
                         <small id="modalMinOrder" class="modal-min-order">Min Order: -</small>
                         
-                        <!-- Update: Input Quantity -->
+                        <!-- Input Quantity -->
                         <div class="qty-wrapper">
                             <label class="qty-label">Jumlah Pesan:</label>
                             <input type="number" id="modalQty" class="qty-input" value="1" min="1">
@@ -565,7 +590,7 @@
         </div>
     </div>
 
-    <!-- MODAL CEK PESANAN (REFINED) -->
+    <!-- MODAL CEK PESANAN (UPDATE: TABEL MINI + LINK INVOICE) -->
     <div id="modalCekPesanan" class="modal">
         <div class="modal-content">
             <span class="modal-close" onclick="closeModal('modalCekPesanan')">&times;</span>
@@ -594,14 +619,25 @@
                     <span class="label">Tgl Pesan</span>
                     <span class="value" id="resTgl">-</span>
                 </div>
-                <div class="info-row">
-                    <span class="label">Detail</span>
-                    <span class="value" id="resDetail">-</span>
+                
+                <div class="info-row" style="border-bottom: none; padding-bottom: 0; margin-bottom: 5px;">
+                    <span class="label">Detail Item:</span>
                 </div>
-                <div class="info-row" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
+                
+                <!-- CONTAINER DETAIL ITEM (DINAMIS) -->
+                <div id="resDetailContainer" style="background: #fff; border: 1px solid #eee; border-radius: 8px; padding: 10px; margin-bottom: 15px;">
+                    <!-- Tabel akan dirender di sini oleh JS -->
+                </div>
+
+                <div class="info-row" style="border-top: 1px solid #eee; padding-top: 15px;">
                     <span class="label" style="font-weight: 700; color: var(--primary);">Status</span>
                     <span class="badge" id="resStatus">-</span>
                 </div>
+
+                <!-- TOMBOL LIHAT INVOICE FULL -->
+                <a href="#" id="linkInvoiceFull" target="_blank" class="btn-invoice-link">
+                    <i class="fas fa-file-invoice"></i> Buka Invoice Lengkap
+                </a>
             </div>
 
             <div id="notFoundMsg" style="display: none; margin-top: 20px; color: #e74c3c; font-weight: 500;">
@@ -610,7 +646,7 @@
         </div>
     </div>
 
-    <!-- MODAL KERANJANG (CHECKOUT VIA REDIRECT) -->
+    <!-- MODAL KERANJANG -->
     <div id="modalKeranjang" class="modal">
         <div class="modal-content">
             <span class="modal-close" onclick="closeModal('modalKeranjang')">&times;</span>
@@ -623,8 +659,6 @@
             </div>
             <p style="font-size:0.75rem; color:#999; margin-bottom:20px; text-align:right;">*Lanjut ke halaman pemesanan untuk mengisi data diri</p>
 
-            <!-- TOMBOL LANJUT PEMESANAN (REDIRECT) -->
-            <!-- PERBAIKAN: Tidak ada form di sini, hanya link ke halaman pesan -->
             <a href="{{ url('/pesan') }}" class="btn btn-primary" style="width:100%; display:block; text-align:center;">
                 Lanjut ke Pemesanan (<span id="btnTotalItem">0</span> Item) <i class="fas fa-arrow-right"></i>
             </a>
@@ -646,13 +680,10 @@
 
         function addToCartCurrent() {
             const item = allProducts[currentIndex];
-            // Ambil qty dari input
             const qtyInput = document.getElementById('modalQty');
             const qty = parseInt(qtyInput.value);
             
-            // Validasi min order
             const minOrderText = item.min_order || "";
-            // Mencoba mengekstrak angka dari string "400 lbr" -> 400. Default 1 jika gagal.
             const minOrderValue = parseInt(minOrderText.replace(/\D/g, '')) || 1; 
 
             if (qty < minOrderValue) {
@@ -661,7 +692,7 @@
             }
 
             const existingItem = cart.find(c => c.id === item.id_produk);
-            if(existingItem) { existingItem.qty += qty; } // Tambah sesuai input qty
+            if(existingItem) { existingItem.qty += qty; } 
             else { 
                 cart.push({ id: item.id_produk, nama: item.nama_produk, harga: item.harga, qty: qty }); 
             }
@@ -672,7 +703,6 @@
 
         function buyNow() {
             addToCartCurrent();
-            // Pastikan modal keranjang terbuka setelah produk ditambahkan
             setTimeout(() => { openModal('modalKeranjang'); }, 500);
         }
 
@@ -690,7 +720,6 @@
             const listDiv = document.getElementById('cartList');
             let totalQty = 0;
             let totalPrice = 0;
-            let detailString = "";
 
             listDiv.innerHTML = "";
             if (cart.length === 0) {
@@ -700,7 +729,6 @@
             cart.forEach((item, index) => {
                 totalQty += item.qty;
                 totalPrice += (item.harga * item.qty);
-                detailString += `- ${item.qty}x ${item.nama} (@ ${item.harga})\n`;
 
                 let div = document.createElement('div');
                 div.className = 'cart-item';
@@ -708,10 +736,91 @@
                 listDiv.appendChild(div);
             });
 
-            document.getElementById('cartCount').innerText = totalQty;
-            document.getElementById('btnTotalItem').innerText = totalQty;
+            // Update Badge dengan Jumlah JENIS Item (Unik)
+            document.getElementById('cartCount').innerText = cart.length;
+            document.getElementById('btnTotalItem').innerText = cart.length;
             document.getElementById('cartTotalPrice').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(totalPrice);
-            // document.getElementById('finalDetail').value = detailString; // Removed since input is gone
+        }
+
+        // --- CEK PESANAN LOGIC ---
+        async function cekPesanan() {
+            let kode = document.getElementById('inputKode').value;
+            if(!kode) { Swal.fire("Harap isi kode/nomor WA"); return; }
+
+            document.getElementById('resultArea').style.display = 'none';
+            document.getElementById('notFoundMsg').style.display = 'none';
+
+            try {
+                let response = await fetch(`/cek-status?kode=${kode}`);
+                let data = await response.json();
+
+                if (data.status === 'found') {
+                    document.getElementById('resNama').innerText = data.data.nama_pelanggan;
+                    document.getElementById('resId').innerText = data.data.kode_pesanan;
+                    let tgl = new Date(data.data.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+                    document.getElementById('resTgl').innerText = tgl;
+                    
+                    // Parsing Detail JSON
+                    let detailHtml = "";
+                    try {
+                        let detailObj = JSON.parse(data.data.detail_pesanan);
+                        if (detailObj.items && Array.isArray(detailObj.items)) {
+                            detailHtml = `<table class="mini-table">
+                                <thead><tr><th>Produk</th><th>Qty</th><th>Harga</th></tr></thead>
+                                <tbody>`;
+                            
+                            let total = 0;
+                            detailObj.items.forEach(item => {
+                                let subtotal = item.harga * item.qty;
+                                total += subtotal;
+                                detailHtml += `
+                                    <tr>
+                                        <td>${item.nama}</td>
+                                        <td style="text-align:center">${item.qty}</td>
+                                        <td class="price">Rp ${new Intl.NumberFormat('id-ID').format(subtotal)}</td>
+                                    </tr>
+                                `;
+                            });
+                            
+                            detailHtml += `
+                                <tr style="font-weight:bold; background:#fafafa;">
+                                    <td colspan="2">Total Est.</td>
+                                    <td class="price">Rp ${new Intl.NumberFormat('id-ID').format(total)}</td>
+                                </tr>
+                                </tbody></table>`;
+                                
+                            if(detailObj.catatan) {
+                                detailHtml += `<p style="font-size:0.8rem; color:#e67e22; margin-top:5px;"><em>Catatan: ${detailObj.catatan}</em></p>`;
+                            }
+                        } else {
+                            throw new Error("Bukan format item array");
+                        }
+                    } catch (e) {
+                        detailHtml = `<p style="font-size:0.9rem; color:#666;">${data.data.detail_pesanan}</p>`;
+                    }
+                    
+                    document.getElementById('resDetailContainer').innerHTML = detailHtml;
+
+                    let badge = document.getElementById('resStatus');
+                    let st = data.data.status;
+                    badge.innerText = st;
+                    if(st === 'Selesai') badge.style.backgroundColor = '#2e7d32';
+                    else if(st === 'Proses') badge.style.backgroundColor = '#ef6c00';
+                    else badge.style.backgroundColor = '#c62828';
+
+                    // Update Link Invoice
+                    document.getElementById('linkInvoiceFull').href = data.data.link_invoice;
+
+                    document.getElementById('resultArea').style.display = 'block';
+                    document.getElementById('notFoundMsg').style.display = 'none';
+                } else {
+                    document.getElementById('resultArea').style.display = 'none';
+                    document.getElementById('notFoundMsg').style.display = 'block';
+                }
+            } catch (error) { 
+                console.error(error);
+                Swal.fire("Gagal menghubungi server", "Silakan coba lagi", "error"); 
+            }
         }
 
         // --- COMMON ---
@@ -780,45 +889,11 @@
             document.getElementById('modalMinOrder').innerText = 'Min Order: ' + item.min_order;
             document.getElementById('modalImg').src = baseUrl + '/' + item.foto_produk;
             
-            // Set nilai input qty
             const qtyInput = document.getElementById('modalQty');
             const minOrderText = item.min_order || "";
-            // Ekstrak angka dari string min_order, misal "400 lbr" jadi 400. Default 1.
             const minOrderValue = parseInt(minOrderText.replace(/\D/g, '')) || 1;
-            
             qtyInput.value = minOrderValue;
             qtyInput.min = minOrderValue;
-        }
-
-        async function cekPesanan() {
-            let kode = document.getElementById('inputKode').value;
-            if(!kode) { alert("Masukkan kode dulu!"); return; }
-
-            try {
-                let response = await fetch(`/cek-status?kode=${kode}`);
-                let data = await response.json();
-
-                if (data.status === 'found') {
-                    document.getElementById('resNama').innerText = data.data.nama_pelanggan;
-                    document.getElementById('resId').innerText = data.data.kode_pesanan; // BENAR: Gunakan kode_pesanan
-                    let tgl = new Date(data.data.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-                    document.getElementById('resTgl').innerText = tgl;
-                    document.getElementById('resDetail').innerText = data.data.detail_pesanan;
-                    
-                    let badge = document.getElementById('resStatus');
-                    let st = data.data.status;
-                    badge.innerText = st;
-                    if(st === 'Selesai') badge.style.backgroundColor = '#2e7d32';
-                    else if(st === 'Proses') badge.style.backgroundColor = '#ef6c00';
-                    else badge.style.backgroundColor = '#c62828';
-
-                    document.getElementById('resultArea').style.display = 'block';
-                    document.getElementById('notFoundMsg').style.display = 'none';
-                } else {
-                    document.getElementById('resultArea').style.display = 'none';
-                    document.getElementById('notFoundMsg').style.display = 'block';
-                }
-            } catch (error) { alert("Gagal menghubungi server."); }
         }
     </script>
 

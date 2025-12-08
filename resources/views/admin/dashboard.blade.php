@@ -2,6 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Viewport penting untuk mobile -->
     <title>Admin Dashboard - Aneka Usaha</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -27,8 +28,9 @@
         .sidebar {
             width: 280px; background-color: var(--primary); color: #fff;
             display: flex; flex-direction: column; padding: 30px; 
-            position: fixed; height: 100%; z-index: 100;
+            position: fixed; height: 100%; z-index: 1000; left: 0; top: 0;
             box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease; /* Animasi Slide */
         }
         
         .logo-area {
@@ -47,28 +49,36 @@
             background-color: var(--accent); color: white; 
             transform: translateX(5px); box-shadow: 0 5px 15px rgba(212, 163, 115, 0.3);
         }
+
+        /* Overlay untuk Mobile Sidebar */
+        .sidebar-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 999;
+        }
         
         /* --- 3. MAIN CONTENT --- */
-        .main-content { margin-left: 280px; flex: 1; display: flex; flex-direction: column; }
+        .main-content { margin-left: 280px; flex: 1; display: flex; flex-direction: column; width: calc(100% - 280px); transition: margin-left 0.3s ease, width 0.3s ease; }
         
         /* Topbar */
         .topbar {
             background: var(--white); padding: 15px 40px; 
-            display: flex; justify-content: space-between; align-items: center;
+            display: flex; justify-content: space-between; align-items: center; gap: 20px;
             box-shadow: var(--shadow); position: sticky; top: 0; z-index: 90;
         }
+
+        .menu-toggle { display: none; font-size: 1.5rem; cursor: pointer; color: var(--primary); }
         
         /* Search Box Real-time */
         .search-box {
             background: #f0f0f0; padding: 10px 20px; border-radius: 25px; border: none;
-            width: 400px; color: var(--primary); outline: none; transition: 0.3s; font-family: inherit;
+            width: 100%; max-width: 400px; color: var(--primary); outline: none; transition: 0.3s; font-family: inherit;
         }
         .search-box:focus { background: #fff; box-shadow: 0 0 0 2px var(--accent); }
 
         .logout-btn { 
             text-decoration: none; color: var(--primary); font-weight: 600; 
             display: flex; align-items: center; gap: 10px; transition: 0.3s;
-            padding: 8px 15px; border-radius: 30px; border: 1px solid #eee;
+            padding: 8px 15px; border-radius: 30px; border: 1px solid #eee; white-space: nowrap;
         }
         .logout-btn:hover { background-color: #fee; border-color: #fcc; color: #e74c3c; }
 
@@ -93,7 +103,7 @@
         
         .section-header { 
             font-size: 1.3rem; font-weight: 700; margin-bottom: 20px; 
-            color: var(--primary); display: flex; justify-content: space-between; align-items: center; 
+            color: var(--primary); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
         }
 
         /* Bingkai Scroll untuk Tabel */
@@ -122,6 +132,10 @@
         .btn-edit { background: var(--primary); } .btn-edit:hover { background: var(--primary-light); }
         .btn-delete { background: #e74c3c; } .btn-delete:hover { background: #c0392b; }
         
+        /* Tombol Detail Baru */
+        .btn-view { background: #3498db; color: white; display: inline-flex; align-items: center; gap: 5px; } 
+        .btn-view:hover { background: #2980b9; }
+
         .btn-add { 
             background: var(--accent); padding: 12px 25px; font-size: 0.95rem; 
             font-weight: 600; box-shadow: 0 5px 15px rgba(212, 163, 115, 0.4);
@@ -143,12 +157,20 @@
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(44, 62, 80, 0.7); z-index: 9999; 
             justify-content: center; align-items: center; backdrop-filter: blur(3px);
+            overflow-y: auto; /* Memungkinkan scroll di dalam modal jika kontennya panjang */
         }
         .modal-content {
             background: var(--white); padding: 35px; border-radius: 20px; 
             width: 500px; max-width: 90%; position: relative;
             box-shadow: 0 20px 50px rgba(0,0,0,0.3); animation: slideUp 0.4s ease;
         }
+        
+        /* Modal Detail Table Style */
+        .detail-table { width: 100%; margin-top: 15px; border-collapse: collapse; }
+        .detail-table th { background: #f8f9fa; font-size: 0.8rem; padding: 10px; color: #666; }
+        .detail-table td { padding: 10px; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+        .detail-total { margin-top: 15px; padding-top: 15px; border-top: 2px dashed #eee; display: flex; justify-content: space-between; font-weight: 700; color: var(--primary); }
+
         @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
         .close-modal { position: absolute; top: 20px; right: 25px; font-size: 1.5rem; cursor: pointer; color: #ccc; }
@@ -167,11 +189,38 @@
             border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 1rem; margin-top: 10px;
         }
         .btn-submit:hover { background: #b0855b; }
+
+        /* --- 8. MOBILE RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); } /* Sembunyikan sidebar ke kiri */
+            .sidebar.active { transform: translateX(0); } /* Munculkan sidebar */
+            .sidebar-overlay.active { display: block; } /* Gelapkan background */
+            
+            .main-content { margin-left: 0; width: 100%; }
+            
+            .topbar { padding: 15px 20px; }
+            .menu-toggle { display: block; } /* Munculkan tombol hamburger */
+            
+            .search-box { width: 100%; font-size: 0.9rem; }
+            .logout-btn span { display: none; } /* Sembunyikan teks "Logout" di HP, sisakan icon */
+            
+            .content-area { padding: 20px; }
+            .cards-grid { grid-template-columns: 1fr; } /* Kartu jadi 1 kolom ke bawah */
+            
+            .section-header { flex-direction: column; align-items: flex-start; }
+            .section-header .btn-add { width: 100%; text-align: center; margin-top: 10px; }
+            
+            .modal-content { padding: 25px; width: 95%; max-height: 90vh; overflow-y: auto; }
+            .close-modal { top: 15px; right: 15px; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="sidebar">
+    <!-- Overlay untuk menutup sidebar di mobile -->
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <div class="sidebar" id="sidebar">
         <div class="logo-area">ANEKA USAHA</div>
         
         <a href="#" class="nav-item">
@@ -188,10 +237,15 @@
     <div class="main-content">
         
         <div class="topbar">
-            <input type="text" id="globalSearch" class="search-box" placeholder="Cari pesanan, nama pelanggan, atau produk..." onkeyup="filterDashboard()">
+            <!-- Tombol Hamburger (Hanya muncul di Mobile) -->
+            <div class="menu-toggle" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </div>
+
+            <input type="text" id="globalSearch" class="search-box" placeholder="Cari pesanan..." onkeyup="filterDashboard()">
             
             <a href="{{ route('admin.logout') }}" class="logout-btn">
-                <i class="fas fa-sign-out-alt"></i> Logout
+                <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
             </a>
         </div>
 
@@ -277,7 +331,14 @@
                                     </select>
                                 </form>
                             </td>
-                            <td style="font-size: 0.85rem; color: #666;">{{ Str::limit($p->detail_pesanan, 40) }}</td>
+                            
+                            <!-- MODIFIKASI: Kolom Detail Pesanan dengan Tombol Lihat -->
+                            <td>
+                                <button class="btn btn-view" onclick='showDetailPesanan(@json($p))'>
+                                    <i class="fas fa-eye"></i> Lihat Detail
+                                </button>
+                            </td>
+
                             <td>
                                 <form action="{{ route('admin.pesanan.delete', $p->id_pesanan) }}" method="POST" class="form-delete">
                                     @csrf @method('DELETE')
@@ -343,6 +404,46 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+
+    <!-- MODAL DETAIL PESANAN (BARU) -->
+    <div id="modalDetailPesanan" class="modal">
+        <div class="modal-content" style="width: 600px;">
+            <span class="close-modal" onclick="closeModal('modalDetailPesanan')">&times;</span>
+            <h3 class="modal-title" style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px;">Detail Pesanan</h3>
+            
+            <!-- Info Header Pelanggan -->
+            <div style="background: #f9f9f9; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                <p><strong>Kode:</strong> <span id="detKode" style="color: var(--accent); font-weight: bold;">-</span></p>
+                <p><strong>Customer:</strong> <span id="detNama">-</span></p>
+                <p><strong>Tanggal:</strong> <span id="detTgl">-</span></p>
+            </div>
+
+            <!-- Tabel Detail Item -->
+            <div style="max-height: 250px; overflow-y: auto;">
+                <table class="detail-table">
+                    <thead>
+                        <tr>
+                            <th>Item Produk</th>
+                            <th style="text-align: center;">Qty</th>
+                            <th style="text-align: right;">Harga</th>
+                            <th style="text-align: right;">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody id="detTabelBody">
+                        <!-- Diisi via JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Catatan & Total -->
+            <div id="detCatatan" style="margin-top: 15px; font-size: 0.85rem; color: #e67e22; font-style: italic;"></div>
+            
+            <div class="detail-total">
+                <span>Estimasi Total</span>
+                <span id="detTotal">Rp 0</span>
+            </div>
         </div>
     </div>
 
@@ -419,14 +520,99 @@
 
     <script>
         // 1. MODAL HANDLER
-        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        function openModal(id) { 
+            document.getElementById(id).style.display = 'flex'; 
+            // Matikan scroll pada body saat modal terbuka
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeModal(id) { 
+            document.getElementById(id).style.display = 'none'; 
+            // Hidupkan kembali scroll pada body saat modal tertutup
+            document.body.style.overflow = 'auto';
+        }
         
         window.onclick = function(event) {
-            if (event.target.className === 'modal') { event.target.style.display = 'none'; }
+            if (event.target.className === 'modal') { 
+                event.target.style.display = 'none'; 
+                // Hidupkan kembali scroll jika user klik di luar modal (overlay)
+                document.body.style.overflow = 'auto';
+            }
         }
 
-        // 2. EDIT PRODUCT FILLER
+        // FUNGSI TOGGLE SIDEBAR MOBILE (BARU)
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.querySelector('.sidebar-overlay').classList.toggle('active');
+        }
+
+        // 2. FUNGSI MENAMPILKAN DETAIL PESANAN
+        function showDetailPesanan(data) {
+            // Isi Header
+            document.getElementById('detKode').innerText = data.kode_pesanan;
+            document.getElementById('detNama').innerText = data.nama_pelanggan;
+            let tgl = new Date(data.created_at).toLocaleDateString('id-ID', { 
+                day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' 
+            });
+            document.getElementById('detTgl').innerText = tgl;
+
+            // Parsing Detail Pesanan (JSON atau Text Manual)
+            let tbody = document.getElementById('detTabelBody');
+            tbody.innerHTML = ""; // Bersihkan isi lama
+            
+            let grandTotal = 0;
+            let catatan = "";
+
+            try {
+                // Coba parsing JSON
+                let detailObj = JSON.parse(data.detail_pesanan);
+                
+                // Jika formatnya array/object yang benar
+                if (detailObj.items && Array.isArray(detailObj.items)) {
+                    detailObj.items.forEach(item => {
+                        let subtotal = item.harga * item.qty;
+                        grandTotal += subtotal;
+                        
+                        let row = `
+                            <tr>
+                                <td>${item.nama}</td>
+                                <td style="text-align:center;">${item.qty}</td>
+                                <td style="text-align:right;">Rp ${new Intl.NumberFormat('id-ID').format(item.harga)}</td>
+                                <td style="text-align:right; font-weight:600;">Rp ${new Intl.NumberFormat('id-ID').format(subtotal)}</td>
+                            </tr>
+                        `;
+                        tbody.innerHTML += row;
+                    });
+                    
+                    if (detailObj.catatan) {
+                        catatan = "Catatan: " + detailObj.catatan;
+                    }
+                } else {
+                    throw new Error("Format JSON lama atau berbeda");
+                }
+            } catch (e) {
+                // FALLBACK: Jika bukan JSON (Data lama / manual text)
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="4" style="color:#666; font-style:italic;">
+                            ${data.detail_pesanan}
+                        </td>
+                    </tr>
+                `;
+                document.getElementById('detTotal').innerText = "Hubungi Admin";
+                document.getElementById('detCatatan').innerText = "";
+                openModal('modalDetailPesanan');
+                return; // Stop di sini
+            }
+
+            // Update Footer Modal
+            document.getElementById('detTotal').innerText = "Rp " + new Intl.NumberFormat('id-ID').format(grandTotal);
+            document.getElementById('detCatatan').innerText = catatan;
+
+            openModal('modalDetailPesanan');
+        }
+
+        // 3. EDIT PRODUCT FILLER
         function editProduk(id, nama, harga, deskripsi) {
             document.getElementById('editNama').value = nama;
             document.getElementById('editHarga').value = harga;
@@ -439,7 +625,7 @@
             openModal('modalEdit');
         }
 
-        // 3. REAL-TIME SEARCH FUNCTION
+        // 4. REAL-TIME SEARCH FUNCTION
         function filterDashboard() {
             let input = document.getElementById('globalSearch').value.toLowerCase();
             
@@ -458,7 +644,7 @@
             });
         }
 
-        // 4. SWEETALERT CONFIRM DELETE
+        // 5. SWEETALERT CONFIRM DELETE
         function confirmDelete(button) {
             Swal.fire({
                 title: 'Hapus Data?',

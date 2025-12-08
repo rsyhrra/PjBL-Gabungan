@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Pesanan;
 use App\Models\Produk;
+use App\Models\LogPesanan;
 
 class AdminController extends Controller
 {
@@ -121,12 +122,25 @@ class AdminController extends Controller
     }
 
 
-    // ================== BAGIAN MANAJEMEN PESANAN ==================
-
     // 8. Update Status Pesanan (Langsung dari Dropdown)
     public function updateStatusPesanan(Request $request, $id)
     {
         $pesanan = Pesanan::findOrFail($id);
+        
+        // --- LOGIKA LOG PESANAN (BARU) ---
+        // Cek apakah status yang dikirim berbeda dengan status saat ini?
+        if ($pesanan->status !== $request->status) {
+            
+            // Catat ke tabel log_pesanan
+            LogPesanan::create([
+                'kode_pesanan'    => $pesanan->kode_pesanan,
+                'status_lama'     => $pesanan->status,       // Status sebelum diubah
+                'status_baru'     => $request->status,       // Status sesudah diubah
+                'waktu_perubahan' => now(),                  // Waktu sekarang
+            ]);
+        }
+        // ---------------------------------
+
         $pesanan->status = $request->status; // Baru Masuk / Proses / Selesai
         $pesanan->save();
         
