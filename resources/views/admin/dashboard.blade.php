@@ -90,8 +90,7 @@
         /* --- 4. SUMMARY CARDS --- */
         .cards-grid { 
             display: grid; 
-            /* Menggunakan auto-fit agar jumlah kolom menyesuaikan lebar layar */
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); 
+            grid-template-columns: repeat(3, 1fr); 
             gap: 25px; 
             margin-bottom: 30px; 
         }
@@ -103,11 +102,7 @@
         .card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); border-color: var(--accent); }
         
         .card h3 { font-size: 0.9rem; margin-bottom: 10px; color: var(--text-grey); font-weight: 500; }
-        
-        /* Font size khusus untuk nilai uang agar muat */
         .card .val { font-size: 2.2rem; font-weight: 700; color: var(--primary); }
-        .card .val.money { font-size: 1.8rem; } 
-        
         .card-icon { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 3.5rem; color: var(--accent); opacity: 0.15; }
 
         /* --- STYLE BARU UNTUK CARD GRAFIK --- */
@@ -263,6 +258,12 @@
         <a href="#daftar-produk" class="nav-item">
             <i class="fas fa-box-open"></i> Manajemen Produk
         </a>
+        
+        <!-- --- ITEM MENU BARU: KE LANDING PAGE --- -->
+        <a href="{{ url('/') }}" class="nav-item" target="_blank" style="margin-top: auto;">
+            <i class="fas fa-home"></i> Home
+        </a>
+        <!-- ----------------------------------------- -->
     </div>
 
     <div class="main-content">
@@ -294,7 +295,7 @@
             </script>
             @endif
 
-            <!-- 1. KARTU RINGKASAN (UPDATED: Tambah Profit) -->
+            <!-- 1. KARTU RINGKASAN -->
             <div class="cards-grid">
                 <div class="card">
                     <h3>Pesanan Diproses</h3>
@@ -311,7 +312,6 @@
                     <div class="val">{{ $totalDesain }}</div>
                     <i class="fas fa-layer-group card-icon"></i>
                 </div>
-                <!-- Kartu Baru: Total Pendapatan -->
                 <div class="card">
                     <h3>Total Pendapatan</h3>
                     <div class="val money">Rp {{ number_format($totalPendapatan ?? 0, 0, ',', '.') }}</div>
