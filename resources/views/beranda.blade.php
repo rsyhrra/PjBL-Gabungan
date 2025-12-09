@@ -525,7 +525,7 @@
                     <div class="icon-box"><i class="fas fa-envelope"></i></div>
                     <div class="contact-text">
                         <h4>Email</h4>
-                        <p>admin@anekausaha.com</p>
+                        <p>anekausaha160370@gmail.com</p>
                     </div>
                 </div>
                 <div class="contact-item">

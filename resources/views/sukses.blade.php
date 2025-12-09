@@ -38,14 +38,14 @@
         </a>
         
         <p style="font-size: 0.8rem; margin-top: 20px; color: #999;">
-            *WhatsApp akan terbuka otomatis dalam 5 detik...
+            *WhatsApp akan terbuka otomatis dalam 3 detik...
         </p>
     </div>
 
     <script>
         setTimeout(function() {
             window.location.href = "{{ $linkWA }}";
-        }, 5000); // Redirect setelah 3 detik
+        }, 3000); // Redirect setelah 3 detik
     </script>
 
 </body>
