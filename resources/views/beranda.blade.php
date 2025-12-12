@@ -32,6 +32,10 @@
             overflow-x: hidden; scrollbar-width: none; -ms-overflow-style: none;  
         }
 
+        .swal2-container {
+            z-index: 9999 !important;
+        }
+
         /* --- 2. NAVBAR --- */
         nav {
             display: flex; justify-content: space-between; align-items: center;
@@ -381,7 +385,7 @@
         /* --- TOMBOL INVOICE MENARIK & TERPUSAT (FIXED) --- */
         .btn-invoice-link {
             display: flex; align-items: center; justify-content: center; /* Center Content */
-            width: 100%; /* Tidak full agar tidak keluar batas */
+            width: 80%; /* Tidak full agar tidak keluar batas */
             margin: 20px auto 0 auto; /* Tengah secara horizontal */
             padding: 12px 20px; 
             background: white; 
@@ -748,52 +752,6 @@
         </div>
     </section>
 
-<!-- SECTION CARA PEMESANAN (BARU) -->
-    <section id="cara-pesan" style="padding: 60px 5%; background: #fff;">
-        <div class="section-title" style="margin-bottom: 50px; text-align: center;">
-            <h2 style="font-size: 2rem; color: var(--primary); margin-bottom: 10px;">Cara Pemesanan Mudah</h2>
-            <p style="color: #666;">Cukup 4 langkah mudah untuk mendapatkan hasil cetakan terbaik.</p>
-        </div>
-
-        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 30px;">
-            <!-- Langkah 1 -->
-            <div style="flex: 1; min-width: 200px; text-align: center; position: relative;">
-                <div style="width: 80px; height: 80px; background: var(--bg-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto; border: 2px dashed var(--accent);">
-                    <i class="fas fa-search" style="font-size: 1.8rem; color: var(--primary);"></i>
-                </div>
-                <h4 style="color: var(--primary); margin-bottom: 10px;">1. Pilih Produk</h4>
-                <p style="font-size: 0.9rem; color: #666; line-height: 1.6;">Cari produk yang Anda butuhkan di katalog kami, lalu masukkan ke keranjang.</p>
-            </div>
-
-            <!-- Langkah 2 -->
-            <div style="flex: 1; min-width: 200px; text-align: center;">
-                <div style="width: 80px; height: 80px; background: var(--bg-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto; border: 2px dashed var(--accent);">
-                    <i class="fab fa-whatsapp" style="font-size: 2rem; color: var(--primary);"></i>
-                </div>
-                <h4 style="color: var(--primary); margin-bottom: 10px;">2. Checkout WA</h4>
-                <p style="font-size: 0.9rem; color: #666; line-height: 1.6;">Klik tombol pesan via WhatsApp. Admin kami akan mengkonfirmasi detail & file desain.</p>
-            </div>
-
-            <!-- Langkah 3 -->
-            <div style="flex: 1; min-width: 200px; text-align: center;">
-                <div style="width: 80px; height: 80px; background: var(--bg-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto; border: 2px dashed var(--accent);">
-                    <i class="fas fa-file-invoice-dollar" style="font-size: 1.8rem; color: var(--primary);"></i>
-                </div>
-                <h4 style="color: var(--primary); margin-bottom: 10px;">3. Pembayaran</h4>
-                <p style="font-size: 0.9rem; color: #666; line-height: 1.6;">Lakukan pembayaran DP atau Full sesuai kesepakatan, pesanan langsung diproses.</p>
-            </div>
-
-            <!-- Langkah 4 -->
-            <div style="flex: 1; min-width: 200px; text-align: center;">
-                <div style="width: 80px; height: 80px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto; box-shadow: 0 10px 20px rgba(212, 163, 115, 0.3);">
-                    <i class="fas fa-box-open" style="font-size: 1.8rem; color: white;"></i>
-                </div>
-                <h4 style="color: var(--primary); margin-bottom: 10px;">4. Selesai & Kirim</h4>
-                <p style="font-size: 0.9rem; color: #666; line-height: 1.6;">Pesanan selesai! Kami kirim ke alamat Anda atau bisa diambil langsung di toko.</p>
-            </div>
-        </div>
-    </section>
-
     <!-- FAQ SECTION -->
     <section id="faq">
         <div class="section-title" style="margin-bottom:30px;">
@@ -913,6 +871,17 @@
                         <i class="fas fa-star"></i> Beri Ulasan Pesanan
                     </a>
                 </div>
+
+                <!-- [BARU] TOMBOL BATALKAN PESANAN -->
+                <div id="btnCancelContainer" style="display:none; margin-top: 15px;">
+                    <button onclick="ajukanPembatalan()" class="btn" style="width:100%; background:white; color:#e74c3c; border:1px solid #e74c3c; padding:12px; border-radius:50px; font-weight:600; cursor:pointer; transition:0.3s;">
+                        <i class="fas fa-times-circle"></i> Ajukan Pembatalan
+                    </button>
+                    <p style="font-size:0.75rem; color:#999; text-align:center; margin-top:5px;">
+                        *Hanya bisa dilakukan jika status masih "Baru Masuk"
+                    </p>
+                </div>
+
             </div>
             
              <div id="notFoundMsg" class="not-found-box">
@@ -928,6 +897,7 @@
             <h3 class="modal-title-small">Keranjang Belanja</h3>
             <div id="cartList" style="max-height:250px; overflow-y:auto; margin-bottom:15px; border:1px solid #eee; border-radius:10px; padding: 5px;"></div>
             <div class="cart-total"><span>Total Estimasi:</span><span id="cartTotalPrice">Rp 0</span></div>
+            <p style="font-size:0.75rem; color:#999; margin-bottom:20px; text-align:right;">*Data hilang jika tab ditutup (Session)</p>
             <a href="{{ url('/pesan') }}" class="btn btn-primary" style="width:100%; display:block; text-align:center;">Lanjut ke Pemesanan (<span id="btnTotalItem">0</span> Item) <i class="fas fa-arrow-right"></i></a>
         </div>
     </div>
@@ -1181,9 +1151,46 @@
                         btnReview.style.display = 'none';
                     }
 
+                    // --- LOGIC CANCEL (BARU) ---
+                    let btnCancel = document.getElementById('btnCancelContainer');
+                    window.currentOrderData = {
+                        kode: data.data.kode_pesanan,
+                        nama: data.data.nama_pelanggan
+                    };
+                    
+                    if (st === 'Baru Masuk') {
+                        btnCancel.style.display = 'block';
+                    } else {
+                        btnCancel.style.display = 'none';
+                    }
+                    // ----------------------------
+
                     document.getElementById('resultArea').style.display = 'block';
                 } else { document.getElementById('notFoundMsg').style.display = 'block'; }
             } catch (error) { Swal.fire("Gagal menghubungi server"); }
+        }
+
+        // FUNGSI PEMBATALAN (BARU)
+        function ajukanPembatalan() {
+            const data = window.currentOrderData;
+            if (!data) return;
+
+            Swal.fire({
+                title: 'Batalkan Pesanan?',
+                text: "Anda akan diarahkan ke WhatsApp Admin untuk konfirmasi pembatalan.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#e74c3c',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Hubungi Admin',
+                cancelButtonText: 'Kembali'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const nomorAdmin = "6281937536701"; 
+                    const pesan = `Halo Admin Aneka Usaha,%0a%0aSaya ingin mengajukan pembatalan untuk pesanan:%0a*Kode: ${data.kode}*%0a*Atas Nama: ${data.nama}*%0a%0aMohon diproses pembatalannya. Terima kasih.`;
+                    window.open(`https://api.whatsapp.com/send?phone=${nomorAdmin}&text=${pesan}`, '_blank');
+                }
+            });
         }
 
         function searchProduct() {
