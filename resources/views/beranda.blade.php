@@ -748,6 +748,52 @@
         </div>
     </section>
 
+<!-- SECTION CARA PEMESANAN (BARU) -->
+    <section id="cara-pesan" style="padding: 60px 5%; background: #fff;">
+        <div class="section-title" style="margin-bottom: 50px; text-align: center;">
+            <h2 style="font-size: 2rem; color: var(--primary); margin-bottom: 10px;">Cara Pemesanan Mudah</h2>
+            <p style="color: #666;">Cukup 4 langkah mudah untuk mendapatkan hasil cetakan terbaik.</p>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 30px;">
+            <!-- Langkah 1 -->
+            <div style="flex: 1; min-width: 200px; text-align: center; position: relative;">
+                <div style="width: 80px; height: 80px; background: var(--bg-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto; border: 2px dashed var(--accent);">
+                    <i class="fas fa-search" style="font-size: 1.8rem; color: var(--primary);"></i>
+                </div>
+                <h4 style="color: var(--primary); margin-bottom: 10px;">1. Pilih Produk</h4>
+                <p style="font-size: 0.9rem; color: #666; line-height: 1.6;">Cari produk yang Anda butuhkan di katalog kami, lalu masukkan ke keranjang.</p>
+            </div>
+
+            <!-- Langkah 2 -->
+            <div style="flex: 1; min-width: 200px; text-align: center;">
+                <div style="width: 80px; height: 80px; background: var(--bg-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto; border: 2px dashed var(--accent);">
+                    <i class="fab fa-whatsapp" style="font-size: 2rem; color: var(--primary);"></i>
+                </div>
+                <h4 style="color: var(--primary); margin-bottom: 10px;">2. Checkout WA</h4>
+                <p style="font-size: 0.9rem; color: #666; line-height: 1.6;">Klik tombol pesan via WhatsApp. Admin kami akan mengkonfirmasi detail & file desain.</p>
+            </div>
+
+            <!-- Langkah 3 -->
+            <div style="flex: 1; min-width: 200px; text-align: center;">
+                <div style="width: 80px; height: 80px; background: var(--bg-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto; border: 2px dashed var(--accent);">
+                    <i class="fas fa-file-invoice-dollar" style="font-size: 1.8rem; color: var(--primary);"></i>
+                </div>
+                <h4 style="color: var(--primary); margin-bottom: 10px;">3. Pembayaran</h4>
+                <p style="font-size: 0.9rem; color: #666; line-height: 1.6;">Lakukan pembayaran DP atau Full sesuai kesepakatan, pesanan langsung diproses.</p>
+            </div>
+
+            <!-- Langkah 4 -->
+            <div style="flex: 1; min-width: 200px; text-align: center;">
+                <div style="width: 80px; height: 80px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto; box-shadow: 0 10px 20px rgba(212, 163, 115, 0.3);">
+                    <i class="fas fa-box-open" style="font-size: 1.8rem; color: white;"></i>
+                </div>
+                <h4 style="color: var(--primary); margin-bottom: 10px;">4. Selesai & Kirim</h4>
+                <p style="font-size: 0.9rem; color: #666; line-height: 1.6;">Pesanan selesai! Kami kirim ke alamat Anda atau bisa diambil langsung di toko.</p>
+            </div>
+        </div>
+    </section>
+
     <!-- FAQ SECTION -->
     <section id="faq">
         <div class="section-title" style="margin-bottom:30px;">
