@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;   // Gunakan DB Facade
-use Illuminate\Support\Facades\File; // PENTING: Untuk menghapus file gambar fisik
+use Illuminate\Support\Facades\DB;   
+use Illuminate\Support\Facades\File; 
 use App\Models\Pesanan;
 use App\Models\Produk;
 use App\Models\Testimoni; 
@@ -42,11 +42,12 @@ class AdminController extends Controller
         $totalSelesai = Pesanan::where('status', 'Selesai')->count();
         $totalDesain = Produk::count();
 
-        // B. Hitung Profit
-        $semuaPesanan = Pesanan::all(); 
+        // B. Hitung Profit (HANYA PESANAN SELESAI)
+        // PERUBAHAN DISINI: Filter hanya status 'Selesai'
+        $pesananSelesai = Pesanan::where('status', 'Selesai')->get(); 
         $totalPendapatan = 0;
 
-        foreach($semuaPesanan as $p) {
+        foreach($pesananSelesai as $p) {
             $detail = json_decode($p->detail_pesanan, true);
             if (json_last_error() === JSON_ERROR_NONE && isset($detail['items']) && is_array($detail['items'])) {
                 foreach($detail['items'] as $item) {
@@ -57,7 +58,9 @@ class AdminController extends Controller
             }
         }
 
-        // C. Data Grafik
+        // C. Data Grafik (Pesanan Selesai per Bulan Tahun Ini)
+        // Opsional: Grafik juga bisa difokuskan ke pesanan selesai jika diinginkan
+        // Saat ini grafik menampilkan SEMUA pesanan masuk (Proses + Selesai + Baru) agar terlihat trafiknya
         $pesananTahunIni = Pesanan::select('created_at')
                             ->whereYear('created_at', date('Y'))
                             ->get()
@@ -81,15 +84,14 @@ class AdminController extends Controller
         // E. Data Testimoni
         $ulasan = Testimoni::latest()->paginate(5);
 
-        // F. Data Portofolio (BARU - TAHAP 3)
-        // Ambil semua data portofolio dari tabel tbl_portofolio
+        // F. Data Portofolio
         $portofolio = DB::table('tbl_portofolio')->latest()->get();
 
         return view('admin.dashboard', compact(
             'totalProses', 'totalSelesai', 'totalDesain', 'totalPendapatan',
             'pesananTerbaru', 'produkTerbaru', 
             'ulasan', 
-            'portofolio', // Variabel baru dikirim ke view
+            'portofolio',
             'grafikPesanan', 'grafikBulan'
         ));
     }
@@ -204,22 +206,18 @@ class AdminController extends Controller
         // ... (kode store testimoni manual jika ada) ...
     }
 
-    // ================== 6. MANAJEMEN PORTOFOLIO (BARU - TAHAP 3) ==================
+    // ================== 6. MANAJEMEN PORTOFOLIO ==================
 
     public function storePortofolio(Request $request) {
-        // 1. Validasi Input
         $request->validate([
             'judul'    => 'required|string|max:255',
             'kategori' => 'required|string',
-            'foto'     => 'required|image|mimes:jpeg,png,jpg|max:2048' // Max 2MB
+            'foto'     => 'required|image|mimes:jpeg,png,jpg|max:2048'
         ]);
 
-        // 2. Upload Gambar
         $imageName = time().'_porto.'.$request->foto->extension();
-        // Simpan ke folder public/img/portfolio (Pastikan folder ini ada)
         $request->foto->move(public_path('img/portfolio'), $imageName);
 
-        // 3. Simpan ke Database
         DB::table('tbl_portofolio')->insert([
             'judul'      => $request->judul,
             'kategori'   => $request->kategori,
@@ -232,18 +230,13 @@ class AdminController extends Controller
     }
 
     public function deletePortofolio($id) {
-        // Cari data berdasarkan ID
         $item = DB::table('tbl_portofolio')->where('id', $id)->first();
         
         if($item) {
-            // Hapus file gambar fisik jika ada
             if(File::exists(public_path('img/portfolio/'.$item->foto))) {
                 File::delete(public_path('img/portfolio/'.$item->foto));
             }
-            
-            // Hapus record dari database
             DB::table('tbl_portofolio')->where('id', $id)->delete();
-            
             return redirect()->back()->with('success', 'Portofolio berhasil dihapus!');
         }
         

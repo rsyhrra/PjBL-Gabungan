@@ -70,22 +70,22 @@ class PesananController extends Controller
 
         $nomorAdmin = '6281937536701'; 
         
-        $pesanWA  = "Halo Admin Aneka Usaha! 👋%0A";
+        $pesanWA  = "Halo Admin Aneka Usaha! %0A";
         $pesanWA .= "Saya ingin konfirmasi pesanan baru.%0A%0A";
-        $pesanWA .= "🧾 *KODE ORDER:* " . $kodeUnik . "%0A";
-        $pesanWA .= "🕒 *Waktu:* " . $waktuFormat . "%0A";
-        $pesanWA .= "👤 *Nama:* " . $request->nama . "%0A%0A";
-        $pesanWA .= "📦 *DETAIL BELANJA:*%0A";
+        $pesanWA .= "*KODE ORDER:* " . $kodeUnik . "%0A";
+        $pesanWA .= "*Waktu:* " . $waktuFormat . "%0A";
+        $pesanWA .= "*Nama:* " . $request->nama . "%0A%0A";
+        $pesanWA .= "*DETAIL BELANJA:*%0A";
         $pesanWA .= $waItemsList; 
         $pesanWA .= "----------------------------------%0A";
-        $pesanWA .= "💰 *TOTAL ESTIMASI:* Rp " . number_format($totalEstimasi,0,',','.') . "%0A";
+        $pesanWA .= "*TOTAL ESTIMASI:* Rp " . number_format($totalEstimasi,0,',','.') . "%0A";
         
         if($request->catatan) {
-            $pesanWA .= "%0A📝 *Catatan:*%0A" . $request->catatan . "%0A";
+            $pesanWA .= "%0A*Catatan:*%0A" . $request->catatan . "%0A";
         }
         
         $pesanWA .= "%0A";
-        $pesanWA .= "📄 *Link Invoice:*%0A" . $linkInvoice . "%0A%0A";
+        $pesanWA .= "*Link Invoice:*%0A" . $linkInvoice . "%0A%0A";
         $pesanWA .= "Mohon diproses ya, terima kasih! 🙏";
 
         $linkWA = "https://wa.me/$nomorAdmin?text=$pesanWA";
