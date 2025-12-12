@@ -1,53 +1,73 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BerandaController;
 use App\Http\Controllers\PesananController;
-use App\Http\Controllers\AdminController; // Panggil Controller yang Anda buat sebelumnya
+use App\Http\Controllers\TestimoniController;
+use App\Http\Controllers\AdminController;
 
-// 1. Rute untuk Halaman Beranda
-Route::get('/', function () {
-    return view('beranda');
-});
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+*/
 
-// 2. Rute untuk Menampilkan Halaman Formulir
-Route::get('/pesan', function () {
-    return view('pesan');
-});
+// ==========================================
+// 1. RUTE PUBLIK (Bisa diakses tanpa login)
+// ==========================================
 
-// 3. Rute untuk Memproses Data Formulir (Logika Hibrid)
-// Ini akan memanggil fungsi kirimPesanan di PesananController
+// Halaman Utama (Beranda)
+Route::get('/', [BerandaController::class, 'index'])->name('home');
+
+// Halaman Pesan (Jika ada)
+Route::get('/pesan', function () { return view('pesan'); });
+
+// Fitur Cek Status & Invoice
+Route::get('/cek-status', [PesananController::class, 'cekStatus'])->name('pesanan.status');
+Route::get('/invoice/{kode}', [PesananController::class, 'invoice'])->name('pesanan.invoice');
 Route::post('/proses-pesanan', [PesananController::class, 'kirimPesanan'])->name('pesanan.kirim');
 
-Route::get('/', [PesananController::class, 'index'])->name('home');
-Route::get('/cek-status', [PesananController::class, 'cekStatus'])->name('pesanan.status');
-// Route post proses-pesanan yang lama tetap ada
+// Fitur Tulis Testimoni (Frontend)
+Route::get('/tulis_testimoni/{kode_pesanan}', [TestimoniController::class, 'halamanTulisTestimoni'])->name('testimoni.form');
+Route::post('/kirim-testimoni', [TestimoniController::class, 'kirimTestimoni'])->name('testimoni.kirim');
 
-// Route Login (Bisa diakses siapa saja yang belum login)
+
+// ==========================================
+// 2. RUTE OTENTIKASI ADMIN
+// ==========================================
 Route::get('/admin/login', [AdminController::class, 'showLogin'])->name('admin.login');
 Route::post('/admin/login', [AdminController::class, 'processLogin'])->name('admin.login.proses');
 Route::get('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
 
-// Route untuk API Cek Status (AJAX)
-Route::get('/cek-status', [PesananController::class, 'cekStatus'])->name('pesanan.status');
-// Route untuk melihat Invoice (Bisa diakses publik jika punya kodenya)
-Route::get('/invoice/{kode}', [App\Http\Controllers\PesananController::class, 'invoice'])->name('pesanan.invoice');
-// Route Dashboard (Hanya bisa diakses ADMIN yang sudah LOGIN)
-// Kita gunakan middleware 'auth:admin' yang sudah kita setup di config tadi
-Route::middleware(['auth:admin'])->group(function () {
+
+// ==========================================
+// 3. RUTE ADMIN DASHBOARD (Wajib Login)
+// ==========================================
+Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(function () {
+
     // Dashboard Utama
-    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
 
-    // --- CRUD PRODUK ---
-    // Simpan Produk Baru
-    Route::post('/admin/produk/store', [AdminController::class, 'storeProduk'])->name('admin.produk.store');
-    // Update Produk
-    Route::put('/admin/produk/update/{id}', [AdminController::class, 'updateProduk'])->name('admin.produk.update');
-    // Hapus Produk
-    Route::delete('/admin/produk/delete/{id}', [AdminController::class, 'deleteProduk'])->name('admin.produk.delete');
+    // --- MANAJEMEN PRODUK ---
+    Route::post('/produk/store', [AdminController::class, 'storeProduk'])->name('produk.store');
+    Route::put('/produk/update/{id}', [AdminController::class, 'updateProduk'])->name('produk.update');
+    Route::delete('/produk/delete/{id}', [AdminController::class, 'deleteProduk'])->name('produk.delete');
 
-    // --- CRUD PESANAN ---
-    // Update Status Pesanan (Proses/Selesai)
-    Route::put('/admin/pesanan/update-status/{id}', [AdminController::class, 'updateStatusPesanan'])->name('admin.pesanan.update');
-    // Hapus Pesanan
-    Route::delete('/admin/pesanan/delete/{id}', [AdminController::class, 'deletePesanan'])->name('admin.pesanan.delete');
+    // --- MANAJEMEN PESANAN ---
+    Route::put('/pesanan/update-status/{id}', [AdminController::class, 'updateStatusPesanan'])->name('pesanan.update');
+    Route::delete('/pesanan/delete/{id}', [AdminController::class, 'deletePesanan'])->name('pesanan.delete');
+
+    // --- MANAJEMEN ULASAN / TESTIMONI ---
+    Route::post('/testimoni/reply/{id}', [AdminController::class, 'replyTestimoni'])->name('testimoni.reply');
+    Route::get('/testimoni/toggle/{id}', [AdminController::class, 'toggleTestimoni'])->name('testimoni.toggle');
+    Route::delete('/testimoni/delete/{id}', [AdminController::class, 'deleteTestimoni'])->name('testimoni.delete');
+    Route::post('/testimoni/store', [AdminController::class, 'storeTestimoni'])->name('testimoni.store');
+
+    // --- MANAJEMEN PORTOFOLIO (BARU) ---
+    // Rute untuk menyimpan data portofolio baru
+    Route::post('/portofolio/store', [AdminController::class, 'storePortofolio'])->name('portofolio.store');
+    
+    // Rute untuk menghapus portofolio
+    Route::delete('/portofolio/delete/{id}', [AdminController::class, 'deletePortofolio'])->name('portofolio.delete');
+
 });

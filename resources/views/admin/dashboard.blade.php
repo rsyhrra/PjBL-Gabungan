@@ -2,13 +2,12 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Viewport penting untuk mobile -->
-    <title>Admin Dashboard - Aneka Usaha</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- Tambahkan Library Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
@@ -32,14 +31,26 @@
             display: flex; flex-direction: column; padding: 30px; 
             position: fixed; height: 100%; z-index: 1000; left: 0; top: 0;
             box-shadow: 5px 0 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease; /* Animasi Slide */
+            transition: transform 0.3s ease;
         }
         
         .logo-area {
             text-align: center; margin-bottom: 50px;
+            /* Mengembalikan style font untuk teks */
             font-size: 1.5rem; font-weight: 700; letter-spacing: 1px;
-            color: var(--accent); border-bottom: 1px solid rgba(255,255,255,0.1);
+            color: var(--accent); 
+            border-bottom: 1px solid rgba(255,255,255,0.1);
             padding-bottom: 20px;
+            /* Flex column agar logo di atas teks */
+            display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 10px;
+        }
+
+        /* Style logo agar ukurannya pas di atas teks */
+        .logo-img {
+            max-width: 80px; /* Ukuran logo disesuaikan agar proporsional dengan teks */
+            height: auto;   
+            display: block;
+            border-radius: 10px; /* Opsional: membuat sudut logo sedikit melengkung */
         }
 
         .nav-item {
@@ -52,7 +63,6 @@
             transform: translateX(5px); box-shadow: 0 5px 15px rgba(212, 163, 115, 0.3);
         }
 
-        /* Overlay untuk Mobile Sidebar */
         .sidebar-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.5); z-index: 999;
@@ -61,7 +71,6 @@
         /* --- 3. MAIN CONTENT --- */
         .main-content { margin-left: 280px; flex: 1; display: flex; flex-direction: column; width: calc(100% - 280px); transition: margin-left 0.3s ease, width 0.3s ease; }
         
-        /* Topbar */
         .topbar {
             background: var(--white); padding: 15px 40px; 
             display: flex; justify-content: space-between; align-items: center; gap: 20px;
@@ -70,7 +79,6 @@
 
         .menu-toggle { display: none; font-size: 1.5rem; cursor: pointer; color: var(--primary); }
         
-        /* Search Box Real-time */
         .search-box {
             background: #f0f0f0; padding: 10px 20px; border-radius: 25px; border: none;
             width: 100%; max-width: 400px; color: var(--primary); outline: none; transition: 0.3s; font-family: inherit;
@@ -84,15 +92,11 @@
         }
         .logout-btn:hover { background-color: #fee; border-color: #fcc; color: #e74c3c; }
 
-        /* Container */
         .content-area { padding: 40px; }
 
-        /* --- 4. SUMMARY CARDS --- */
+        /* --- 4. CARDS & CHARTS --- */
         .cards-grid { 
-            display: grid; 
-            grid-template-columns: repeat(3, 1fr); 
-            gap: 25px; 
-            margin-bottom: 30px; 
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-bottom: 30px; 
         }
         .card {
             background: var(--white); padding: 30px; border-radius: 20px; 
@@ -105,48 +109,32 @@
         .card .val { font-size: 2.2rem; font-weight: 700; color: var(--primary); }
         .card-icon { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 3.5rem; color: var(--accent); opacity: 0.15; }
 
-        /* --- STYLE BARU UNTUK CARD GRAFIK --- */
         .chart-section {
-            background: var(--white);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: var(--shadow);
-            border: 1px solid #f0f0f0;
-            margin-bottom: 40px;
-            height: 400px; /* Tinggi Fix agar rapi */
-            position: relative;
+            background: var(--white); border-radius: 20px; padding: 30px;
+            box-shadow: var(--shadow); border: 1px solid #f0f0f0; margin-bottom: 40px;
+            height: 400px; position: relative;
         }
         .chart-title {
             font-size: 1.1rem; font-weight: 700; color: var(--primary);
             margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
         }
 
-        /* --- 5. TABLES & SCROLL FRAME --- */
+        /* --- 5. TABLES --- */
         .table-section { margin-bottom: 50px; background: var(--white); border-radius: 20px; box-shadow: var(--shadow); padding: 30px; }
-        
         .section-header { 
             font-size: 1.3rem; font-weight: 700; margin-bottom: 20px; 
             color: var(--primary); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
         }
-
-        /* Bingkai Scroll untuk Tabel */
         .table-scroll-frame {
             max-height: 500px; overflow-y: auto; border-radius: 10px; border: 1px solid #eee;
         }
-        .table-scroll-frame::-webkit-scrollbar { width: 8px; }
-        .table-scroll-frame::-webkit-scrollbar-track { background: #f9f9f9; }
-        .table-scroll-frame::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
-        
         table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 800px; }
-        
-        /* Sticky Header */
         thead th { 
             position: sticky; top: 0; background: var(--white); z-index: 5;
             text-align: left; padding: 15px; color: var(--text-grey); font-size: 0.85rem; 
             text-transform: uppercase; letter-spacing: 1px; font-weight: 600;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
-        
         td { background: #fff; padding: 15px; vertical-align: middle; border-bottom: 1px solid #f5f5f5; }
         tr:hover td { background: #fafafa; }
 
@@ -154,297 +142,151 @@
         .btn { padding: 8px 15px; border-radius: 8px; border: none; cursor: pointer; color: white; font-size: 0.85rem; transition: 0.3s; }
         .btn-edit { background: var(--primary); } .btn-edit:hover { background: var(--primary-light); }
         .btn-delete { background: #e74c3c; } .btn-delete:hover { background: #c0392b; }
-        
-        /* Tombol Detail Baru */
         .btn-view { background: #3498db; color: white; display: inline-flex; align-items: center; gap: 5px; } 
-        .btn-view:hover { background: #2980b9; }
-
+        .btn-reply { background: var(--accent); color: white; } 
+        .btn-toggle-on { background: #2ecc71; color: white; }
+        .btn-toggle-off { background: #95a5a6; color: white; }
         .btn-add { 
             background: var(--accent); padding: 12px 25px; font-size: 0.95rem; 
             font-weight: 600; box-shadow: 0 5px 15px rgba(212, 163, 115, 0.4);
             color: white; border: none; cursor: pointer; border-radius: 8px;
         }
-        .btn-add:hover { transform: translateY(-2px); background: #b0855b; }
-
-        /* Warna-warni Status Dropdown */
-        .status-select { 
-            padding: 8px 12px; border-radius: 20px; border: 1px solid #eee; 
-            font-family: 'Poppins', sans-serif; cursor: pointer; outline: none; font-weight: 600; font-size: 0.85rem;
-        }
+        .status-select { padding: 8px 12px; border-radius: 20px; border: 1px solid #eee; font-weight: 600; font-size: 0.85rem; }
         .status-baru { background-color: #ffebee; color: #c62828; border-color: #ef9a9a; }
         .status-proses { background-color: #fff3e0; color: #ef6c00; border-color: #ffcc80; }
         .status-selesai { background-color: #e8f5e9; color: #2e7d32; border-color: #a5d6a7; }
 
-        /* --- 7. MODAL POPUP --- */
+        /* --- 7. MODALS --- */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(44, 62, 80, 0.7); z-index: 9999; 
-            justify-content: center; align-items: center; backdrop-filter: blur(3px);
-            overflow-y: auto; /* Memungkinkan scroll di dalam modal jika kontennya panjang */
+            justify-content: center; align-items: center; backdrop-filter: blur(3px); overflow-y: auto;
         }
         .modal-content {
             background: var(--white); padding: 35px; border-radius: 20px; 
             width: 500px; max-width: 90%; position: relative;
             box-shadow: 0 20px 50px rgba(0,0,0,0.3); animation: slideUp 0.4s ease;
         }
-        
-        /* Modal Detail Table Style */
         .detail-table { width: 100%; margin-top: 15px; border-collapse: collapse; }
         .detail-table th { background: #f8f9fa; font-size: 0.8rem; padding: 10px; color: #666; }
         .detail-table td { padding: 10px; border-bottom: 1px solid #eee; font-size: 0.9rem; }
         .detail-total { margin-top: 15px; padding-top: 15px; border-top: 2px dashed #eee; display: flex; justify-content: space-between; font-weight: 700; color: var(--primary); }
-
-        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
         .close-modal { position: absolute; top: 20px; right: 25px; font-size: 1.5rem; cursor: pointer; color: #ccc; }
-        .close-modal:hover { color: var(--accent); }
-
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.9rem; color: var(--primary); }
-        .form-control {
-            width: 100%; padding: 12px 15px; border: 2px solid #eee; border-radius: 10px;
-            font-family: 'Poppins', sans-serif; outline: none; transition: 0.3s;
-        }
+        .form-control { width: 100%; padding: 12px 15px; border: 2px solid #eee; border-radius: 10px; outline: none; transition: 0.3s; }
         .form-control:focus { border-color: var(--accent); background: #fff; }
-        
-        .btn-submit { 
-            width: 100%; background: var(--accent); color: white; padding: 15px; 
-            border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 1rem; margin-top: 10px;
-        }
-        .btn-submit:hover { background: #b0855b; }
+        .btn-submit { width: 100%; background: var(--accent); color: white; padding: 15px; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 1rem; margin-top: 10px; }
 
-        /* --- 8. MOBILE RESPONSIVE --- */
         @media (max-width: 768px) {
-            .sidebar { transform: translateX(-100%); } /* Sembunyikan sidebar ke kiri */
-            .sidebar.active { transform: translateX(0); } /* Munculkan sidebar */
-            .sidebar-overlay.active { display: block; } /* Gelapkan background */
-            
-            .main-content { margin-left: 0; width: 100%; }
-            
-            .topbar { padding: 15px 20px; }
-            .menu-toggle { display: block; } /* Munculkan tombol hamburger */
-            
-            .search-box { width: 100%; font-size: 0.9rem; }
-            .logout-btn span { display: none; } /* Sembunyikan teks "Logout" di HP, sisakan icon */
-            
-            .content-area { padding: 20px; }
-            .cards-grid { grid-template-columns: 1fr; } /* Kartu jadi 1 kolom ke bawah */
-            
+            .sidebar { transform: translateX(-100%); } .sidebar.active { transform: translateX(0); }
+            .sidebar-overlay.active { display: block; } .main-content { margin-left: 0; width: 100%; }
+            .topbar { padding: 15px 20px; } .menu-toggle { display: block; }
+            .cards-grid { grid-template-columns: 1fr; } 
             .section-header { flex-direction: column; align-items: flex-start; }
-            .section-header .btn-add { width: 100%; text-align: center; margin-top: 10px; }
-            
-            .modal-content { padding: 25px; width: 95%; max-height: 90vh; overflow-y: auto; }
-            .close-modal { top: 15px; right: 15px; }
-
-            /* Tinggi grafik di mobile */
-            .chart-section { height: 300px; padding: 20px; }
+            .section-header .btn-add { width: 100%; margin-top: 10px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Overlay untuk menutup sidebar di mobile -->
     <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
 
     <div class="sidebar" id="sidebar">
-        <div class="logo-area">ANEKA USAHA</div>
+        <!-- AREA LOGO DIPERBARUI: LOGO + TEKS -->
+        <div class="logo-area">
+            <img src="{{ asset('img/logo.png') }}" alt="Logo Usaha" class="logo-img">
+            <span>ANEKA USAHA</span>
+        </div>
         
-        <a href="#" class="nav-item">
-            <i class="fas fa-th-large"></i> Dashboard
-        </a>
-        <a href="#tabel-pesanan" class="nav-item">
-            <i class="fas fa-shopping-cart"></i> Pesanan Masuk
-        </a>
-        <a href="#daftar-produk" class="nav-item">
-            <i class="fas fa-box-open"></i> Manajemen Produk
-        </a>
-        
-        <!-- --- ITEM MENU BARU: KE LANDING PAGE --- -->
-        <a href="{{ url('/') }}" class="nav-item" target="_blank" style="margin-top: auto;">
-            <i class="fas fa-home"></i> Home
-        </a>
-        <!-- ----------------------------------------- -->
+        <a href="#" class="nav-item"><i class="fas fa-th-large"></i> Dashboard</a>
+        <a href="#tabel-pesanan" class="nav-item"><i class="fas fa-shopping-cart"></i> Pesanan Masuk</a>
+        <a href="#daftar-produk" class="nav-item"><i class="fas fa-box-open"></i> Manajemen Produk</a>
+        <a href="#manajemen-portofolio" class="nav-item"><i class="fas fa-images"></i> Galeri Portofolio</a>
+        <a href="#manajemen-ulasan" class="nav-item"><i class="fas fa-comments"></i> Ulasan</a>
+        <a href="{{ url('/') }}" class="nav-item" target="_blank" style="margin-top: auto;"><i class="fas fa-home"></i> Home</a>
     </div>
 
     <div class="main-content">
-        
         <div class="topbar">
-            <!-- Tombol Hamburger (Hanya muncul di Mobile) -->
-            <div class="menu-toggle" onclick="toggleSidebar()">
-                <i class="fas fa-bars"></i>
-            </div>
-
-            <input type="text" id="globalSearch" class="search-box" placeholder="Cari pesanan..." onkeyup="filterDashboard()">
-            
-            <a href="{{ route('admin.logout') }}" class="logout-btn">
-                <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
-            </a>
+            <div class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></div>
+            <input type="text" id="globalSearch" class="search-box" placeholder="Cari pesanan atau ulasan..." onkeyup="filterDashboard()">
+            <a href="{{ route('admin.logout') }}" class="logout-btn"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a>
         </div>
 
         <div class="content-area">
             
             @if(session('success'))
             <script>
+                Swal.fire({ icon: 'success', title: 'Berhasil!', text: '{{ session('success') }}', confirmButtonColor: '#2C3E50', timer: 2000 });
+            </script>
+            @endif
+
+            @if($errors->any())
+            <script>
                 Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: '{{ session('success') }}',
-                    confirmButtonColor: '#2C3E50',
-                    timer: 2000
+                    icon: 'error',
+                    title: 'Gagal!',
+                    html: '<ul style="text-align:left;">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>',
+                    confirmButtonColor: '#e74c3c'
                 });
             </script>
             @endif
 
-            <!-- 1. KARTU RINGKASAN -->
+            <!-- 2. KARTU STATISTIK -->
             <div class="cards-grid">
                 <div class="card">
-                    <h3>Pesanan Diproses</h3>
-                    <div class="val">{{ $totalProses }}</div>
-                    <i class="fas fa-spinner card-icon"></i>
+                    <h3>Pesanan Diproses</h3><div class="val">{{ $totalProses }}</div><i class="fas fa-spinner card-icon"></i>
                 </div>
                 <div class="card">
-                    <h3>Pesanan Selesai</h3>
-                    <div class="val">{{ $totalSelesai }}</div>
-                    <i class="fas fa-check-circle card-icon"></i>
+                    <h3>Pesanan Selesai</h3><div class="val">{{ $totalSelesai }}</div><i class="fas fa-check-circle card-icon"></i>
                 </div>
                 <div class="card">
-                    <h3>Total Produk</h3>
-                    <div class="val">{{ $totalDesain }}</div>
-                    <i class="fas fa-layer-group card-icon"></i>
+                    <h3>Total Produk</h3><div class="val">{{ $totalDesain }}</div><i class="fas fa-layer-group card-icon"></i>
                 </div>
                 <div class="card">
-                    <h3>Total Pendapatan</h3>
-                    <div class="val money">Rp {{ number_format($totalPendapatan ?? 0, 0, ',', '.') }}</div>
-                    <i class="fas fa-wallet card-icon"></i>
+                    <h3>Total Pendapatan</h3><div class="val money">Rp {{ number_format($totalPendapatan ?? 0, 0, ',', '.') }}</div><i class="fas fa-wallet card-icon"></i>
                 </div>
             </div>
 
-            <!-- 2. SECTION GRAFIK (BARU) -->
+            <!-- 3. GRAFIK -->
             <div class="chart-section">
-                <div class="chart-title">
-                    <i class="fas fa-chart-line" style="color: var(--accent);"></i>
-                    Tren Penjualan ({{ date('Y') }})
-                </div>
-                <!-- Canvas untuk Chart.js -->
+                <div class="chart-title"><i class="fas fa-chart-line" style="color: var(--accent);"></i> Tren Penjualan ({{ date('Y') }})</div>
                 <canvas id="salesChart"></canvas>
             </div>
 
-            <!-- 3. TABEL PESANAN -->
+            <!-- 4. TABEL PESANAN -->
             <div class="table-section" id="tabel-pesanan">
-                <div class="section-header">
-                    <span><i class="fas fa-list-alt" style="color:var(--accent); margin-right:10px;"></i> Pesanan Masuk</span>
-                </div>
-                <div class="table-scroll-frame">
-                    <table>
-                    <thead>
-                        <tr>
-                            <th>
-                                <a href="{{ route('admin.dashboard', ['sort' => 'kode_pesanan', 'direction' => request('direction') == 'asc' ? 'desc' : 'asc']) }}" style="text-decoration:none; color:inherit;">
-                                    Kode <i class="fas fa-sort"></i>
-                                </a>
-                            </th>
-                            <th>
-                                <a href="{{ route('admin.dashboard', ['sort' => 'nama_pelanggan', 'direction' => request('direction') == 'asc' ? 'desc' : 'asc']) }}" style="text-decoration:none; color:inherit;">
-                                    Customer <i class="fas fa-sort"></i>
-                                </a>
-                            </th>
-                            <th>WhatsApp</th>
-                            <th>
-                                <a href="{{ route('admin.dashboard', ['sort' => 'status', 'direction' => request('direction') == 'asc' ? 'desc' : 'asc']) }}" style="text-decoration:none; color:inherit;">
-                                    Status <i class="fas fa-sort"></i>
-                                </a>
-                            </th>
-                            <th>Detail Pesanan</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($pesananTerbaru as $p)
-                        <tr>
-                            <td style="font-weight: 700; color: var(--primary);">{{ $p->kode_pesanan }}</td>
-                            <td style="font-weight: 600;">{{ $p->nama_pelanggan }}</td>
-                            
-                            <td>
-                                <a href="https://wa.me/{{ $p->no_whatsapp }}" target="_blank" style="color: #25D366; text-decoration: none; font-weight: 600;">
-                                    <i class="fab fa-whatsapp"></i> {{ $p->no_whatsapp }}
-                                </a>
-                            </td>
-                            <td>
-                                <form action="{{ route('admin.pesanan.update', $p->id_pesanan) }}" method="POST">
-                                    @csrf @method('PUT')
-                                    <select name="status" onchange="this.form.submit()" 
-                                        class="status-select {{ $p->status == 'Baru Masuk' ? 'status-baru' : ($p->status == 'Proses' ? 'status-proses' : 'status-selesai') }}">
-                                        <option value="Baru Masuk" {{ $p->status == 'Baru Masuk' ? 'selected' : '' }}>Baru Masuk</option>
-                                        <option value="Proses" {{ $p->status == 'Proses' ? 'selected' : '' }}>Proses</option>
-                                        <option value="Selesai" {{ $p->status == 'Selesai' ? 'selected' : '' }}>Selesai</option>
-                                    </select>
-                                </form>
-                            </td>
-                            
-                            <!-- MODIFIKASI: Kolom Detail Pesanan dengan Tombol Lihat -->
-                            <td>
-                                <button class="btn btn-view" onclick='showDetailPesanan(@json($p))'>
-                                    <i class="fas fa-eye"></i> Lihat Detail
-                                </button>
-                            </td>
-
-                            <td>
-                                <form action="{{ route('admin.pesanan.delete', $p->id_pesanan) }}" method="POST" class="form-delete">
-                                    @csrf @method('DELETE')
-                                    <button type="button" class="btn btn-delete" onclick="confirmDelete(this)">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-                </div>
-            </div>
-
-            <!-- 4. TABEL PRODUK -->
-            <div class="table-section" id="daftar-produk">
-                <div class="section-header">
-                    <span><i class="fas fa-images" style="color:var(--accent); margin-right:10px;"></i> Manajemen Produk ({{ $produkTerbaru->count() }})</span>
-                    <button class="btn btn-add" onclick="openModal('modalAdd')">
-                        <i class="fas fa-plus"></i> Tambah Produk
-                    </button>
-                </div>
+                <div class="section-header"><span><i class="fas fa-list-alt" style="color:var(--accent); margin-right:10px;"></i> Pesanan Masuk</span></div>
                 <div class="table-scroll-frame">
                     <table>
                         <thead>
                             <tr>
-                                <th>Foto</th>
-                                <th>Nama Produk</th>
-                                <th>Harga</th>
-                                <th>Min. Order</th> <th>Deskripsi</th>
-                                <th>Aksi</th>
+                                <th>Kode</th><th>Customer</th><th>WhatsApp</th><th>Status</th><th>Detail</th><th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($produkTerbaru as $prod)
+                            @foreach($pesananTerbaru as $p)
                             <tr>
+                                <td style="font-weight:700; color:var(--primary);">{{ $p->kode_pesanan }}</td>
+                                <td>{{ $p->nama_pelanggan }}</td>
+                                <td><a href="https://wa.me/{{ $p->no_whatsapp }}" target="_blank" style="color:#25D366; text-decoration:none;"><i class="fab fa-whatsapp"></i> {{ $p->no_whatsapp }}</a></td>
                                 <td>
-                                    <img src="{{ asset('img/'.$prod->foto_produk) }}" width="60" height="60" style="border-radius: 10px; object-fit: cover; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                                    <form action="{{ route('admin.pesanan.update', $p->id_pesanan) }}" method="POST">
+                                        @csrf @method('PUT')
+                                        <select name="status" onchange="this.form.submit()" class="status-select {{ $p->status == 'Baru Masuk' ? 'status-baru' : ($p->status == 'Proses' ? 'status-proses' : 'status-selesai') }}">
+                                            <option value="Baru Masuk" {{ $p->status == 'Baru Masuk' ? 'selected' : '' }}>Baru Masuk</option>
+                                            <option value="Proses" {{ $p->status == 'Proses' ? 'selected' : '' }}>Proses</option>
+                                            <option value="Selesai" {{ $p->status == 'Selesai' ? 'selected' : '' }}>Selesai</option>
+                                        </select>
+                                    </form>
                                 </td>
-                                <td style="font-weight: 600;">{{ $prod->nama_produk }}</td>
-                                <td style="color: var(--accent); font-weight: 600;">Rp {{ number_format($prod->harga) }}</td>
-                                <td style="font-size: 0.85rem;">{{ $prod->min_order }}</td>
-                                <td style="font-size: 0.85rem; color: #888;">{{ Str::limit($prod->deskripsi_produk, 30) }}</td>
-                                <td style="display: flex; gap: 8px; align-items: center; height: 100px;">
-                                    <button class="btn btn-edit" onclick="editProduk(
-                                        '{{ $prod->id_produk }}',
-                                        '{{ $prod->nama_produk }}',
-                                        '{{ $prod->harga }}',
-                                        '{{ $prod->deskripsi_produk }}'
-                                    )"><i class="fas fa-pen"></i></button>
-
-                                    <form action="{{ route('admin.produk.delete', $prod->id_produk) }}" method="POST" class="form-delete">
+                                <td><button class="btn btn-view" onclick='showDetailPesanan(@json($p))'><i class="fas fa-eye"></i> Lihat</button></td>
+                                <td>
+                                    <form action="{{ route('admin.pesanan.delete', $p->id_pesanan) }}" method="POST">
                                         @csrf @method('DELETE')
-                                        <button type="button" class="btn btn-delete" onclick="confirmDelete(this)">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
+                                        <button type="button" class="btn btn-delete" onclick="confirmDelete(this)"><i class="fas fa-trash"></i></button>
                                     </form>
                                 </td>
                             </tr>
@@ -454,324 +296,273 @@
                 </div>
             </div>
 
+            <!-- 5. TABEL PRODUK -->
+            <div class="table-section" id="daftar-produk">
+                <div class="section-header">
+                    <span><i class="fas fa-box-open" style="color:var(--accent); margin-right:10px;"></i> Manajemen Produk</span>
+                    <button class="btn btn-add" onclick="openModal('modalAdd')"><i class="fas fa-plus"></i> Tambah Produk</button>
+                </div>
+                <div class="table-scroll-frame">
+                    <table>
+                        <thead>
+                            <tr><th>Foto</th><th>Nama</th><th>Harga</th><th>Min. Order</th><th>Aksi</th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach($produkTerbaru as $prod)
+                            <tr>
+                                <td><img src="{{ asset('img/'.$prod->foto_produk) }}" width="50" height="50" style="border-radius:8px; object-fit:cover;"></td>
+                                <td>{{ $prod->nama_produk }}</td>
+                                <td style="color:var(--accent); font-weight:600;">Rp {{ number_format($prod->harga) }}</td>
+                                <td>{{ $prod->min_order }}</td>
+                                <td>
+                                    <button class="btn btn-edit" onclick="editProduk('{{ $prod->id_produk }}','{{ $prod->nama_produk }}','{{ $prod->harga }}','{{ $prod->deskripsi_produk }}')"><i class="fas fa-pen"></i></button>
+                                    <form action="{{ route('admin.produk.delete', $prod->id_produk) }}" method="POST" style="display:inline;">
+                                        @csrf @method('DELETE')
+                                        <button type="button" class="btn btn-delete" onclick="confirmDelete(this)"><i class="fas fa-trash"></i></button>
+                                    </form>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 6. MANAJEMEN PORTOFOLIO -->
+            <div class="table-section" id="manajemen-portofolio">
+                <div class="section-header">
+                    <span><i class="fas fa-images" style="color:var(--accent); margin-right:10px;"></i> Galeri Portofolio</span>
+                    <button class="btn btn-add" onclick="openModal('modalAddPorto')"><i class="fas fa-plus"></i> Upload Karya</button>
+                </div>
+                <div class="cards-grid" style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-top:20px;">
+                    @forelse($portofolio as $porto)
+                    <div class="card" style="padding: 10px; min-height: auto;">
+                        <img src="{{ asset('img/portfolio/'.$porto->foto) }}" style="width: 100%; height: 150px; object-fit: cover; border-radius: 10px; margin-bottom: 10px;">
+                        <h4 style="font-size: 0.9rem; margin-bottom: 2px;">{{ $porto->judul }}</h4>
+                        <span class="badge" style="background: #eee; color: #666; padding: 2px 8px; font-size: 0.75rem; border-radius: 4px;">{{ $porto->kategori }}</span>
+                        <form action="{{ route('admin.portofolio.delete', $porto->id) }}" method="POST" style="margin-top: 10px;">
+                            @csrf @method('DELETE')
+                            <button type="button" class="btn btn-delete" style="width: 100%; font-size: 0.8rem;" onclick="confirmDelete(this)"><i class="fas fa-trash"></i> Hapus</button>
+                        </form>
+                    </div>
+                    @empty
+                    <p style="grid-column: 1/-1; text-align: center; color: #999;">Belum ada portofolio.</p>
+                    @endforelse
+                </div>
+            </div>
+
+            <!-- 7. MANAJEMEN ULASAN -->
+            <div class="table-section" id="manajemen-ulasan">
+                <div class="section-header"><span><i class="fas fa-comments" style="color:var(--accent); margin-right:10px;"></i> Ulasan Pelanggan</span></div>
+                <div class="table-scroll-frame">
+                    <table>
+                        <thead><tr><th>Pelanggan</th><th>Rating</th><th>Ulasan</th><th>Status</th><th>Aksi</th></tr></thead>
+                        <tbody>
+                            @forelse($ulasan as $u)
+                            <tr>
+                                <td>{{ $u->nama_pelanggan }}<br><small>{{ $u->kode_pesanan }}</small></td>
+                                <td style="color:#ffc107;">{{ $u->rating }} <i class="fas fa-star"></i></td>
+                                <td>"{{ Str::limit($u->isi_testimoni, 50) }}"<br>
+                                    @if($u->admin_reply)<small style="color:blue;">Replied</small>@endif
+                                </td>
+                                <td>
+                                    @if($u->is_visible) <span class="badge" style="color:green;">Tampil</span> 
+                                    @else <span class="badge" style="color:red;">Hidden</span> @endif
+                                </td>
+                                <td>
+                                    <button class="btn btn-reply" onclick="openReplyModal('{{ $u->id }}', '{{ $u->nama_pelanggan }}', '{{ addslashes($u->isi_testimoni) }}', '{{ addslashes($u->admin_reply ?? '') }}')"><i class="fas fa-reply"></i></button>
+                                    <a href="{{ route('admin.testimoni.toggle', $u->id) }}" class="btn {{ $u->is_visible ? 'btn-toggle-off' : 'btn-toggle-on' }}"><i class="fas {{ $u->is_visible ? 'fa-eye-slash' : 'fa-eye' }}"></i></a>
+                                    <form action="{{ route('admin.testimoni.delete', $u->id) }}" method="POST" style="display:inline;">
+                                        @csrf @method('DELETE')
+                                        <button type="button" class="btn btn-delete" onclick="confirmDelete(this)"><i class="fas fa-trash"></i></button>
+                                    </form>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr><td colspan="5" style="text-align:center;">Belum ada ulasan.</td></tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+                <div style="margin-top:20px; display:flex; justify-content:flex-end;">{{ $ulasan->links() }}</div>
+            </div>
+
         </div>
     </div>
 
-    <!-- MODAL DETAIL PESANAN -->
-    <div id="modalDetailPesanan" class="modal">
-        <div class="modal-content" style="width: 600px;">
-            <span class="close-modal" onclick="closeModal('modalDetailPesanan')">&times;</span>
-            <h3 class="modal-title" style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px;">Detail Pesanan</h3>
-            
-            <!-- Info Header Pelanggan -->
-            <div style="background: #f9f9f9; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
-                <p><strong>Kode:</strong> <span id="detKode" style="color: var(--accent); font-weight: bold;">-</span></p>
-                <p><strong>Customer:</strong> <span id="detNama">-</span></p>
-                <p><strong>Tanggal:</strong> <span id="detTgl">-</span></p>
-            </div>
-
-            <!-- Tabel Detail Item -->
-            <div style="max-height: 250px; overflow-y: auto;">
-                <table class="detail-table">
-                    <thead>
-                        <tr>
-                            <th>Item Produk</th>
-                            <th style="text-align: center;">Qty</th>
-                            <th style="text-align: right;">Harga</th>
-                            <th style="text-align: right;">Subtotal</th>
-                        </tr>
-                    </thead>
-                    <tbody id="detTabelBody">
-                        <!-- Diisi via JS -->
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Catatan & Total -->
-            <div id="detCatatan" style="margin-top: 15px; font-size: 0.85rem; color: #e67e22; font-style: italic;"></div>
-            
-            <div class="detail-total">
-                <span>Estimasi Total</span>
-                <span id="detTotal">Rp 0</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL ADD PRODUK -->
-    <div id="modalAdd" class="modal">
+    <!-- MODAL ADD PORTOFOLIO -->
+    <div id="modalAddPorto" class="modal">
         <div class="modal-content">
-            <span class="close-modal" onclick="closeModal('modalAdd')">&times;</span>
-            <h3 class="modal-title">Tambah Produk Baru</h3>
-            
-            <form action="{{ route('admin.produk.store') }}" method="POST" enctype="multipart/form-data">
+            <span class="close-modal" onclick="closeModal('modalAddPorto')">&times;</span>
+            <h3 class="modal-title">Upload Portofolio</h3>
+            <form action="{{ route('admin.portofolio.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="form-group">
-                    <label>Nama Produk</label>
-                    <input type="text" name="nama_produk" class="form-control" placeholder="Contoh: Undangan Gold..." required>
-                </div>
-                <div style="display:flex; gap:10px;">
-                    <div class="form-group" style="flex:1;">
-                        <label>Harga (Rp)</label>
-                        <input type="number" name="harga" class="form-control" placeholder="2500" required>
-                    </div>
-                    <div class="form-group" style="flex:1;">
-                        <label>Min. Order</label>
-                        <input type="text" name="min_order" class="form-control" placeholder="400 lbr" required>
-                    </div>
+                    <label>Judul Karya</label>
+                    <input type="text" name="judul" class="form-control" required placeholder="Contoh: Undangan Hardcover">
                 </div>
                 <div class="form-group">
                     <label>Kategori</label>
                     <select name="kategori" class="form-control">
                         <option value="Undangan">Undangan</option>
                         <option value="Spanduk">Spanduk</option>
-                        <option value="ATK">ATK</option>
+                        <option value="Kemasan">Kemasan</option>
+                        <option value="Kartu Nama">Kartu Nama</option>
+                        <option value="Lainnya">Lainnya</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Deskripsi Singkat</label>
-                    <textarea name="deskripsi" class="form-control" rows="3" placeholder="Spesifikasi produk..."></textarea>
+                    <label>Foto (Max 2MB)</label>
+                    <input type="file" name="foto" class="form-control" required accept="image/*">
                 </div>
-                <div class="form-group">
-                    <label>Upload Foto Produk</label>
-                    <input type="file" name="foto" class="form-control" required>
-                </div>
-                <button type="submit" class="btn-submit">Simpan Produk</button>
+                <button type="submit" class="btn-submit">Upload Sekarang</button>
             </form>
         </div>
     </div>
 
-    <!-- MODAL EDIT PRODUK -->
+    <!-- MODAL LAINNYA -->
+    <!-- FIX MODAL DETAIL PESANAN OVERFLOW -->
+    <div id="modalDetailPesanan" class="modal">
+        <div class="modal-content" style="width:100%; max-width:700px;"> <!-- Fixed width logic -->
+            <span class="close-modal" onclick="closeModal('modalDetailPesanan')">&times;</span>
+            <h3>Detail Pesanan</h3>
+            <div style="background:#f9f9f9; padding:10px; margin-bottom:10px;">
+                Kode: <span id="detKode" style="font-weight:bold;"></span><br>
+                Nama: <span id="detNama"></span><br>
+                Tgl: <span id="detTgl"></span>
+            </div>
+            
+            <!-- Tambahkan wrapper overflow-x agar tabel lebar bisa di-scroll di HP -->
+            <div style="overflow-x: auto; max-height:400px; overflow-y:auto;">
+                <table class="detail-table" style="min-width: 600px;"> <!-- Min-width memastikan kolom tidak gepeng -->
+                    <thead><tr><th>Item</th><th style="text-align:center;">Qty</th><th style="text-align:right;">Harga</th><th style="text-align:right;">Subtotal</th></tr></thead>
+                    <tbody id="detTabelBody"></tbody>
+                </table>
+            </div>
+
+            <div id="detCatatan" style="margin-top:10px; font-style:italic;"></div>
+            <div class="detail-total"><span>Total</span><span id="detTotal"></span></div>
+        </div>
+    </div>
+
+    <div id="modalAdd" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modalAdd')">&times;</span>
+            <h3>Tambah Produk</h3>
+            <form action="{{ route('admin.produk.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <input type="text" name="nama_produk" class="form-control" placeholder="Nama Produk" required style="margin-bottom:10px;">
+                <input type="number" name="harga" class="form-control" placeholder="Harga" required style="margin-bottom:10px;">
+                <input type="text" name="min_order" class="form-control" placeholder="Min Order" required style="margin-bottom:10px;">
+                <select name="kategori" class="form-control" style="margin-bottom:10px;"><option>Undangan</option><option>Spanduk</option><option>ATK</option></select>
+                <textarea name="deskripsi" class="form-control" placeholder="Deskripsi" style="margin-bottom:10px;"></textarea>
+                <input type="file" name="foto" class="form-control" required>
+                <button type="submit" class="btn-submit">Simpan</button>
+            </form>
+        </div>
+    </div>
+
     <div id="modalEdit" class="modal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal('modalEdit')">&times;</span>
-            <h3 class="modal-title">Edit Produk</h3>
-            
+            <h3>Edit Produk</h3>
             <form id="formEdit" action="" method="POST" enctype="multipart/form-data">
                 @csrf @method('PUT')
-                <div class="form-group">
-                    <label>Nama Produk</label>
-                    <input type="text" name="nama_produk" id="editNama" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label>Harga (Rp)</label>
-                    <input type="number" name="harga" id="editHarga" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label>Deskripsi</label>
-                    <textarea name="deskripsi" id="editDeskripsi" class="form-control" rows="3"></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Ganti Foto (Opsional)</label>
-                    <input type="file" name="foto" class="form-control">
-                    <small style="color: #888;">*Kosongkan jika tidak ingin mengubah foto</small>
-                </div>
-                <button type="submit" class="btn-submit">Update Produk</button>
+                <input type="text" id="editNama" name="nama_produk" class="form-control" required style="margin-bottom:10px;">
+                <input type="number" id="editHarga" name="harga" class="form-control" required style="margin-bottom:10px;">
+                <textarea id="editDeskripsi" name="deskripsi" class="form-control" style="margin-bottom:10px;"></textarea>
+                <label>Ganti Foto (Opsional)</label>
+                <input type="file" name="foto" class="form-control">
+                <button type="submit" class="btn-submit">Update</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="modalReply" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modalReply')">&times;</span>
+            <h3>Balas Ulasan</h3>
+            <form id="formReply" action="" method="POST">
+                @csrf
+                <div style="background:#f9f9f9; padding:10px; margin-bottom:10px; font-style:italic;" id="replyContent"></div>
+                <textarea name="admin_reply" id="replyInput" class="form-control" rows="4" required placeholder="Balasan Anda..."></textarea>
+                <button type="submit" class="btn-submit">Kirim</button>
             </form>
         </div>
     </div>
 
     <script>
-        // 1. MODAL HANDLER
-        function openModal(id) { 
-            document.getElementById(id).style.display = 'flex'; 
-            // Matikan scroll pada body saat modal terbuka
-            document.body.style.overflow = 'hidden';
-        }
+        function openModal(id) { document.getElementById(id).style.display='flex'; document.body.style.overflow='hidden'; }
+        function closeModal(id) { document.getElementById(id).style.display='none'; document.body.style.overflow='auto'; }
+        window.onclick = function(e) { if(e.target.className==='modal') { e.target.style.display='none'; document.body.style.overflow='auto'; } }
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); document.querySelector('.sidebar-overlay').classList.toggle('active'); }
         
-        function closeModal(id) { 
-            document.getElementById(id).style.display = 'none'; 
-            // Hidupkan kembali scroll pada body saat modal tertutup
-            document.body.style.overflow = 'auto';
-        }
-        
-        window.onclick = function(event) {
-            if (event.target.className === 'modal') { 
-                event.target.style.display = 'none'; 
-                // Hidupkan kembali scroll jika user klik di luar modal (overlay)
-                document.body.style.overflow = 'auto';
-            }
+        function confirmDelete(btn) {
+            Swal.fire({ title:'Yakin hapus?', icon:'warning', showCancelButton:true, confirmButtonColor:'#d33', confirmButtonText:'Ya, Hapus!' }).then((res)=>{ if(res.isConfirmed) btn.closest('form').submit(); });
         }
 
-        // FUNGSI TOGGLE SIDEBAR MOBILE
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
-            document.querySelector('.sidebar-overlay').classList.toggle('active');
-        }
-
-        // 2. FUNGSI MENAMPILKAN DETAIL PESANAN
-        function showDetailPesanan(data) {
-            // Isi Header
-            document.getElementById('detKode').innerText = data.kode_pesanan;
-            document.getElementById('detNama').innerText = data.nama_pelanggan;
-            let tgl = new Date(data.created_at).toLocaleDateString('id-ID', { 
-                day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' 
-            });
-            document.getElementById('detTgl').innerText = tgl;
-
-            // Parsing Detail Pesanan (JSON atau Text Manual)
-            let tbody = document.getElementById('detTabelBody');
-            tbody.innerHTML = ""; // Bersihkan isi lama
-            
-            let grandTotal = 0;
-            let catatan = "";
-
-            try {
-                // Coba parsing JSON
-                let detailObj = JSON.parse(data.detail_pesanan);
-                
-                // Jika formatnya array/object yang benar
-                if (detailObj.items && Array.isArray(detailObj.items)) {
-                    detailObj.items.forEach(item => {
-                        let subtotal = item.harga * item.qty;
-                        grandTotal += subtotal;
-                        
-                        let row = `
-                            <tr>
-                                <td>${item.nama}</td>
-                                <td style="text-align:center;">${item.qty}</td>
-                                <td style="text-align:right;">Rp ${new Intl.NumberFormat('id-ID').format(item.harga)}</td>
-                                <td style="text-align:right; font-weight:600;">Rp ${new Intl.NumberFormat('id-ID').format(subtotal)}</td>
-                            </tr>
-                        `;
-                        tbody.innerHTML += row;
-                    });
-                    
-                    if (detailObj.catatan) {
-                        catatan = "Catatan: " + detailObj.catatan;
-                    }
-                } else {
-                    throw new Error("Format JSON lama atau berbeda");
-                }
-            } catch (e) {
-                // FALLBACK: Jika bukan JSON (Data lama / manual text)
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="4" style="color:#666; font-style:italic;">
-                            ${data.detail_pesanan}
-                        </td>
-                    </tr>
-                `;
-                document.getElementById('detTotal').innerText = "Hubungi Admin";
-                document.getElementById('detCatatan').innerText = "";
-                openModal('modalDetailPesanan');
-                return; // Stop di sini
-            }
-
-            // Update Footer Modal
-            document.getElementById('detTotal').innerText = "Rp " + new Intl.NumberFormat('id-ID').format(grandTotal);
-            document.getElementById('detCatatan').innerText = catatan;
-
-            openModal('modalDetailPesanan');
-        }
-
-        // 3. EDIT PRODUCT FILLER
-        function editProduk(id, nama, harga, deskripsi) {
+        function editProduk(id, nama, harga, desc) {
             document.getElementById('editNama').value = nama;
             document.getElementById('editHarga').value = harga;
-            document.getElementById('editDeskripsi').value = deskripsi;
-            
-            let url = "{{ route('admin.produk.update', ':id') }}";
-            url = url.replace(':id', id);
-            document.getElementById('formEdit').action = url;
-
+            document.getElementById('editDeskripsi').value = desc;
+            document.getElementById('formEdit').action = "{{ route('admin.produk.update', ':id') }}".replace(':id', id);
             openModal('modalEdit');
         }
 
-        // 4. REAL-TIME SEARCH FUNCTION
-        function filterDashboard() {
-            let input = document.getElementById('globalSearch').value.toLowerCase();
-            
-            // Filter Pesanan
-            let tablePesanan = document.querySelectorAll('#tabel-pesanan tbody tr');
-            tablePesanan.forEach(row => {
-                let text = row.innerText.toLowerCase();
-                row.style.display = text.includes(input) ? '' : 'none';
-            });
-
-            // Filter Produk
-            let tableProduk = document.querySelectorAll('#daftar-produk tbody tr');
-            tableProduk.forEach(row => {
-                let text = row.innerText.toLowerCase();
-                row.style.display = text.includes(input) ? '' : 'none';
-            });
+        function openReplyModal(id, name, content, reply) {
+            document.getElementById('replyContent').innerHTML = `<b>${name}:</b> "${content}"`;
+            document.getElementById('replyInput').value = reply;
+            document.getElementById('formReply').action = "{{ route('admin.testimoni.reply', ':id') }}".replace(':id', id);
+            openModal('modalReply');
         }
 
-        // 5. SWEETALERT CONFIRM DELETE
-        function confirmDelete(button) {
-            Swal.fire({
-                title: 'Hapus Data?',
-                text: "Data yang dihapus tidak bisa dikembalikan!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#e74c3c',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Ya, Hapus!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    button.closest('form').submit();
+        function showDetailPesanan(data) {
+            document.getElementById('detKode').innerText=data.kode_pesanan;
+            document.getElementById('detNama').innerText=data.nama_pelanggan;
+            document.getElementById('detTgl').innerText=new Date(data.created_at).toLocaleDateString();
+            let tbody = document.getElementById('detTabelBody'); tbody.innerHTML="";
+            let total=0;
+            try {
+                let detail = JSON.parse(data.detail_pesanan);
+                if(detail.items) {
+                    detail.items.forEach(i => {
+                        let sub = i.harga*i.qty; total+=sub;
+                        tbody.innerHTML += `<tr><td>${i.nama}</td><td style="text-align:center;">${i.qty}</td><td style="text-align:right;">Rp ${new Intl.NumberFormat('id-ID').format(i.harga)}</td><td style="text-align:right;">Rp ${new Intl.NumberFormat('id-ID').format(sub)}</td></tr>`;
+                    });
+                    document.getElementById('detCatatan').innerText = detail.catatan ? "Catatan: "+detail.catatan : "";
                 }
-            })
+            } catch(e) { tbody.innerHTML=`<tr><td colspan="4">${data.detail_pesanan}</td></tr>`; }
+            document.getElementById('detTotal').innerText = "Rp "+total.toLocaleString('id-ID');
+            openModal('modalDetailPesanan');
         }
 
-        // 6. CHART.JS CONFIGURATION (INIT GRAFIK)
+        // CHART JS
         document.addEventListener("DOMContentLoaded", function() {
-            // Periksa apakah elemen canvas ada sebelum melanjutkan
             var canvas = document.getElementById('salesChart');
-            if (!canvas) return; // Keluar jika tidak ada elemen
-
+            if (!canvas) return;
             const ctx = canvas.getContext('2d');
-            
-            // Data dari Controller
-            const labels = @json($grafikBulan ?? []); // Default ke array kosong jika null
-            const data = @json($grafikPesanan ?? []); // Default ke array kosong jika null
-
+            const labels = @json($grafikBulan ?? []);
+            const data = @json($grafikPesanan ?? []);
             new Chart(ctx, {
-                type: 'line', // Bisa diganti 'bar' jika suka grafik batang
+                type: 'line',
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: 'Jumlah Pesanan Masuk',
-                        data: data,
-                        borderColor: '#D4A373', // Warna Accent (Gold)
-                        backgroundColor: 'rgba(212, 163, 115, 0.2)', // Warna Accent transparan
-                        borderWidth: 3,
-                        pointBackgroundColor: '#2C3E50', // Warna Primary (Navy)
-                        pointBorderColor: '#fff',
-                        pointHoverBackgroundColor: '#fff',
-                        pointHoverBorderColor: '#D4A373',
-                        fill: true,
-                        tension: 0.4 // Membuat garis melengkung halus (curved)
+                        label: 'Pesanan', data: data,
+                        borderColor: '#D4A373', backgroundColor: 'rgba(212, 163, 115, 0.2)',
+                        borderWidth: 3, fill: true, tension: 0.4
                     }]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: true, position: 'top' },
-                        tooltip: { 
-                            mode: 'index', 
-                            intersect: false,
-                            backgroundColor: 'rgba(44, 62, 80, 0.9)',
-                            titleColor: '#fff',
-                            bodyColor: '#fff',
-                            borderColor: '#D4A373',
-                            borderWidth: 1
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: { stepSize: 1 } // Agar sumbu Y bilangan bulat (1, 2, 3...)
-                        },
-                        x: {
-                            grid: { display: false } // Hilangkan grid vertikal biar bersih
-                        }
-                    }
-                }
+                options: { responsive:true, maintainAspectRatio:false, scales:{y:{beginAtZero:true}} }
             });
         });
-    </script>
 
+        function filterDashboard() {
+            let input = document.getElementById('globalSearch').value.toLowerCase();
+            document.querySelectorAll('tbody tr').forEach(row => {
+                row.style.display = row.innerText.toLowerCase().includes(input) ? '' : 'none';
+            });
+        }
+    </script>
 </body>
 </html>

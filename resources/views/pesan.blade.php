@@ -127,7 +127,7 @@
     <script>
         // 1. Tampilkan Preview Keranjang saat Load
         window.onload = function() {
-            const rawCart = localStorage.getItem('myCart');
+            const rawCart = sessionStorage.getItem('myCart');
             if(rawCart) {
                 const cart = JSON.parse(rawCart);
                 if(cart.length > 0) {
@@ -161,10 +161,7 @@
         
         // 3. Bersihkan Keranjang setelah Submit (Opsional)
         document.getElementById('orderForm').onsubmit = function() {
-            // Kita biarkan localStorage agar user masih bisa lihat history di beranda kalau mau,
-            // atau dihapus: localStorage.removeItem('myCart');
-            // Untuk flow ini, biasanya dihapus agar keranjang kosong kembali.
-            localStorage.removeItem('myCart');
+            sessionStorage.removeItem('myCart');
         };
     </script>
 
