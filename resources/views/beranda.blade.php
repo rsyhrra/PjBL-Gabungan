@@ -381,7 +381,7 @@
         /* --- TOMBOL INVOICE MENARIK & TERPUSAT (FIXED) --- */
         .btn-invoice-link {
             display: flex; align-items: center; justify-content: center; /* Center Content */
-            width: 80%; /* Tidak full agar tidak keluar batas */
+            width: 100%; /* Tidak full agar tidak keluar batas */
             margin: 20px auto 0 auto; /* Tengah secara horizontal */
             padding: 12px 20px; 
             background: white; 
@@ -391,6 +391,7 @@
             text-decoration: none; font-weight: 700; 
             transition: all 0.3s; gap: 10px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            text-align: center;
         }
         .btn-invoice-link:hover { 
             background: var(--primary); 
@@ -881,7 +882,6 @@
             <h3 class="modal-title-small">Keranjang Belanja</h3>
             <div id="cartList" style="max-height:250px; overflow-y:auto; margin-bottom:15px; border:1px solid #eee; border-radius:10px; padding: 5px;"></div>
             <div class="cart-total"><span>Total Estimasi:</span><span id="cartTotalPrice">Rp 0</span></div>
-            <p style="font-size:0.75rem; color:#999; margin-bottom:20px; text-align:right;">*Data hilang jika tab ditutup (Session)</p>
             <a href="{{ url('/pesan') }}" class="btn btn-primary" style="width:100%; display:block; text-align:center;">Lanjut ke Pemesanan (<span id="btnTotalItem">0</span> Item) <i class="fas fa-arrow-right"></i></a>
         </div>
     </div>
