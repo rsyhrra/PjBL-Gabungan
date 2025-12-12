@@ -22,6 +22,8 @@
             --shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
 
+        ::-webkit-scrollbar { display: none; }
+
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { display: flex; min-height: 100vh; background-color: var(--bg-color); color: var(--primary); overflow-x: hidden; }
 

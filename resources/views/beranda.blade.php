@@ -256,6 +256,8 @@
             width: 45px; height: 45px; background: white; border-radius: 10px; 
             display: flex; align-items: center; justify-content: center; color: var(--accent); font-size: 1.2rem;
         }
+        .contact-info h3 { margin-bottom: 30px; font-size: 1.5rem; color: var(--primary); }
+        
         .map-box { width: 100%; height: 100%; min-height: 250px; background: #eee; border-radius: 15px; overflow: hidden; }
         .map-box iframe { width: 100%; height: 100%; border: none; }
 
@@ -542,7 +544,12 @@
         @media (max-width: 768px) {
             nav { padding: 15px 20px; } .nav-links { display: none; } .hamburger { display: block; }
             #home { flex-direction: column-reverse; padding: 40px 20px; text-align: center; min-height: auto; }
-            .hero-text { max-width: 100%; } .hero-image { width: 100%; height: 300px; }
+            .hero-text { max-width: 100%; } 
+            
+            /* FIX OVERLAP GAMBAR DAN TEKS PADA MOBILE */
+            .hero-image { width: 100%; height: 400px; /* Ditambah tinggi agar kartu muat */ }
+            .hero-text { margin-top: 30px; /* Ditambah margin agar tidak tertutup */ }
+            
             .catalog-header { flex-direction: column; } .search-container, .sort-container, .btn-check-modern { width: 100%; }
             .contact-wrapper { grid-template-columns: 1fr; }
             #modalProduk .modal-content { width: 95%; flex-direction: column; height: auto; max-height: 90vh; overflow-y: auto; }
