@@ -123,13 +123,27 @@ class AdminController extends Controller
 
     public function updateProduk(Request $request, $id) {
         $produk = Produk::findOrFail($id);
+        
         $produk->nama_produk = $request->nama_produk;
         $produk->harga = $request->harga;
         $produk->deskripsi_produk = $request->deskripsi;
         
+        // JIKA ADA FOTO BARU YANG DIUPLOAD
         if ($request->hasFile('foto')) {
+            
+            // 1. HAPUS FOTO LAMA DULU (PENTING!)
+            // Cek apakah produk ini punya foto lama & apakah filenya ada di folder
+            $pathFotoLama = public_path('img/' . $produk->foto_produk);
+            
+            if ($produk->foto_produk && File::exists($pathFotoLama)) {
+                File::delete($pathFotoLama); // Hapus file fisik lama
+            }
+
+            // 2. BARU UPLOAD FOTO BARU
             $imageName = time().'.'.$request->foto->extension();  
             $request->foto->move(public_path('img'), $imageName);
+            
+            // 3. UPDATE NAMA DI DATABASE
             $produk->foto_produk = $imageName;
         }
 
