@@ -153,9 +153,13 @@ class AdminController extends Controller
 
     public function deleteProduk($id) {
         $produk = Produk::findOrFail($id);
-        if(file_exists(public_path('img/'.$produk->foto_produk))){
-            @unlink(public_path('img/'.$produk->foto_produk));
+        
+        // HAPUS FOTO FISIK JIKA ADA
+        $imagePath = public_path('img/' . $produk->foto_produk);
+        if ($produk->foto_produk && File::exists($imagePath)) {
+            File::delete($imagePath);
         }
+        
         $produk->delete();
         return redirect()->back()->with('success', 'Produk berhasil dihapus!');
     }
