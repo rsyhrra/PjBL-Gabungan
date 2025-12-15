@@ -1137,17 +1137,16 @@
                     btnInvoice.href = data.data.link_invoice;
                     btnInvoice.style.display = 'block'; 
                     
-                    // --- LOGIC TOMBOL REVIEW UPDATE (Direct Link) ---
+                    // Logic Button Review
                     let btnReview = document.getElementById('btnReviewContainer');
+
+                    // Tampilkan tombol HANYA JIKA: Status Selesai DAN (is_reviewed bernilai false/0)
                     if(st === 'Selesai' && !data.data.is_reviewed) {
                         btnReview.style.display = 'block';
-                        
-                        // Set HREF langsung ke rute tulis_testimoni
                         let linkReview = document.getElementById('btnReviewAction');
-                        // Pastikan URL digenerate dengan benar, bisa pakai base URL JS atau concat string sederhana
                         linkReview.href = "{{ url('tulis_testimoni') }}/" + data.data.kode_pesanan;
-                        
                     } else {
+                        // Jika sudah direview, sembunyikan tombol
                         btnReview.style.display = 'none';
                     }
 

@@ -530,7 +530,7 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Foto (Max 2MB)</label>
+                    <label>Foto (Max 10MB)</label>
                     <input type="file" name="foto" class="form-control" required accept="image/*">
                 </div>
                 <button type="submit" class="btn-submit">Upload Sekarang</button>

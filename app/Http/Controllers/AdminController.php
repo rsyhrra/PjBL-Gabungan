@@ -111,7 +111,7 @@ class AdminController extends Controller
         $request->validate([
             'nama_produk' => 'required',
             'harga' => 'required|numeric',
-            'foto' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'foto' => 'required|image|mimes:jpeg,png,jpg|max:10240',
             'min_order' => 'required',
         ]);
 

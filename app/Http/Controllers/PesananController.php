@@ -8,6 +8,7 @@ use App\Models\Produk;
 use App\Models\Testimoni; 
 use Illuminate\Support\Str;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class PesananController extends Controller
 {
@@ -94,49 +95,36 @@ class PesananController extends Controller
     }
 
     // 3. API Cek Status Pesanan (AJAX) - DIPERBARUI
-    public function cekStatus(Request $request)
+     public function cekStatus(Request $request)
     {
-        $keyword = $request->kode;
-        $query = Pesanan::query();
-
-        if (is_numeric($keyword)) {
-            $query->where('id_pesanan', $keyword)
-                  ->orWhere('no_whatsapp', 'like', "%{$keyword}%")
-                  ->orWhere('kode_pesanan', $keyword);
-        } else {
-            $query->where('kode_pesanan', $keyword)
-                  ->orWhere('no_whatsapp', $keyword);
-        }
-
-        $pesanan = $query->latest('created_at')->first();
+        $kode = $request->query('kode');
+        
+        // Cari pesanan berdasarkan kode atau no_wa
+        $pesanan = DB::table('tbl_pesanan')
+                    ->where('kode_pesanan', $kode)
+                    ->orWhere('no_whatsapp', $kode)
+                    ->first();
 
         if ($pesanan) {
-            $detailRaw = json_decode($pesanan->detail_pesanan, true);
-            $ringkasan = "";
+            // CEK APAKAH SUDAH DIULAS DI TABEL TESTIMONI JUGA (Double Check)
+            $sudahUlas = DB::table('tbl_testimoni')
+                            ->where('kode_pesanan', $pesanan->kode_pesanan)
+                            ->exists();
             
-            if(json_last_error() === JSON_ERROR_NONE && is_array($detailRaw)) {
-                $count = count($detailRaw['items'] ?? []);
-                $ringkasan = "$count jenis produk";
-            } else {
-                $ringkasan = Str::limit($pesanan->detail_pesanan, 50);
-            }
-            
-            // --- TAMBAHAN: CEK APAKAH SUDAH REVIEW ---
-            // Pastikan Anda sudah menambahkan kolom 'kode_pesanan' di tabel tbl_testimoni lewat migrasi
-            // Jika belum, lakukan: php artisan make:migration add_kode_pesanan_to_tbl_testimoni
-            try {
-                $isReviewed = Testimoni::where('kode_pesanan', $pesanan->kode_pesanan)->exists();
-            } catch (\Exception $e) {
-                $isReviewed = false; // Fallback jika kolom belum ada
-            }
-
-            $pesanan->setAttribute('is_reviewed', $isReviewed);
-            $pesanan->setAttribute('ringkasan_text', $ringkasan);
-            $pesanan->setAttribute('link_invoice', url('/invoice/' . $pesanan->kode_pesanan));
+            // Jika di tabel testimoni ada, paksa is_reviewed jadi true
+            $statusReview = $pesanan->is_reviewed || $sudahUlas;
 
             return response()->json([
                 'status' => 'found',
-                'data' => $pesanan
+                'data' => [
+                    'kode_pesanan' => $pesanan->kode_pesanan,
+                    'nama_pelanggan' => $pesanan->nama_pelanggan,
+                    'status' => $pesanan->status,
+                    'detail_pesanan' => $pesanan->detail_pesanan,
+                    'link_invoice' => route('pesanan.invoice', $pesanan->kode_pesanan),
+                    'created_at' => $pesanan->created_at,
+                    'is_reviewed' => $statusReview // Kirim status review yang valid
+                ]
             ]);
         } else {
             return response()->json(['status' => 'not_found']);
