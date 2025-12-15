@@ -36,17 +36,15 @@ class AdminController extends Controller
 
     // ================== 2. DASHBOARD (GABUNGAN STATISTIK, ULASAN & PORTOFOLIO) ==================
 
-    public function dashboard() {
-        // A. Statistik Ringkas
+    public function dashboard(Request $request) {
+        // A. Statistik Ringkas (Tetap)
         $totalProses = Pesanan::where('status', 'Proses')->count();
         $totalSelesai = Pesanan::where('status', 'Selesai')->count();
         $totalDesain = Produk::count();
 
-        // B. Hitung Profit (HANYA PESANAN SELESAI)
-        // PERUBAHAN DISINI: Filter hanya status 'Selesai'
+        // B. Hitung Profit (Tetap)
         $pesananSelesai = Pesanan::where('status', 'Selesai')->get(); 
         $totalPendapatan = 0;
-
         foreach($pesananSelesai as $p) {
             $detail = json_decode($p->detail_pesanan, true);
             if (json_last_error() === JSON_ERROR_NONE && isset($detail['items']) && is_array($detail['items'])) {
@@ -58,43 +56,54 @@ class AdminController extends Controller
             }
         }
 
-        // C. Data Grafik (Pesanan Selesai per Bulan Tahun Ini)
-        // Opsional: Grafik juga bisa difokuskan ke pesanan selesai jika diinginkan
-        // Saat ini grafik menampilkan SEMUA pesanan masuk (Proses + Selesai + Baru) agar terlihat trafiknya
+        // C. Data Grafik (Tetap)
         $pesananTahunIni = Pesanan::select('created_at')
                             ->whereYear('created_at', date('Y'))
                             ->get()
-                            ->groupBy(function($date) {
-                                return Carbon::parse($date->created_at)->format('m');
-                            });
+                            ->groupBy(function($date) { return Carbon::parse($date->created_at)->format('m'); });
 
         $grafikPesanan = [];
         $grafikBulan = [];
-
         for ($i = 1; $i <= 12; $i++) {
             $bulanKey = str_pad($i, 2, '0', STR_PAD_LEFT); 
             $grafikBulan[] = Carbon::create()->month($i)->translatedFormat('M');
             $grafikPesanan[] = isset($pesananTahunIni[$bulanKey]) ? $pesananTahunIni[$bulanKey]->count() : 0;
         }
 
-        // D. Data Tabel Pendukung
+        // D. Data Tabel Pesanan (Tetap 5 terbaru)
         $pesananTerbaru = Pesanan::latest('created_at')->limit(5)->get();
-        $produkTerbaru = Produk::latest('id_produk')->limit(5)->get();
-        
-        // E. Data Testimoni
-        $ulasan = Testimoni::latest()->paginate(5);
 
-        // F. Data Portofolio
+        // --- E. DATA PRODUK (UPDATE: SEARCHING, SORTING & PAGINATION) ---
+        $queryProduk = Produk::query();
+
+        // 1. Fitur Searching
+        if ($request->has('cari_produk') && $request->cari_produk != '') {
+            $queryProduk->where('nama_produk', 'LIKE', '%' . $request->cari_produk . '%');
+        }
+
+        // 2. Fitur Sorting
+        if ($request->has('sort_by') && $request->has('order_by')) {
+            $queryProduk->orderBy($request->sort_by, $request->order_by);
+        } else {
+            $queryProduk->latest('id_produk'); // Default urutan
+        }
+
+        // 3. Pagination (Ganti limit jadi paginate)
+        // Kita beri nama page 'produk_page' agar tidak bentrok dengan pagination ulasan
+        $produkTerbaru = $queryProduk->paginate(10, ['*'], 'produk_page')->withQueryString();
+        
+        // F. Data Testimoni & Portofolio (Tetap)
+        $ulasan = Testimoni::latest()->paginate(5, ['*'], 'ulasan_page');
         $portofolio = DB::table('tbl_portofolio')->latest()->get();
 
         return view('admin.dashboard', compact(
             'totalProses', 'totalSelesai', 'totalDesain', 'totalPendapatan',
             'pesananTerbaru', 'produkTerbaru', 
-            'ulasan', 
-            'portofolio',
+            'ulasan', 'portofolio',
             'grafikPesanan', 'grafikBulan'
         ));
     }
+
 
     // ================== 3. MANAJEMEN PRODUK ==================
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>Admin Dashboard - Aneka Usaha</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -22,8 +22,6 @@
             --shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
 
-        ::-webkit-scrollbar { display: none; }
-
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { display: flex; min-height: 100vh; background-color: var(--bg-color); color: var(--primary); overflow-x: hidden; }
 
@@ -38,21 +36,14 @@
         
         .logo-area {
             text-align: center; margin-bottom: 50px;
-            /* Mengembalikan style font untuk teks */
             font-size: 1.5rem; font-weight: 700; letter-spacing: 1px;
-            color: var(--accent); 
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            color: var(--accent); border-bottom: 1px solid rgba(255,255,255,0.1);
             padding-bottom: 20px;
-            /* Flex column agar logo di atas teks */
-            display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 10px;
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
         }
-
-        /* Style logo agar ukurannya pas di atas teks */
+        
         .logo-img {
-            max-width: 80px; /* Ukuran logo disesuaikan agar proporsional dengan teks */
-            height: auto;   
-            display: block;
-            border-radius: 10px; /* Opsional: membuat sudut logo sedikit melengkung */
+            max-width: 80px; height: auto; display: block; border-radius: 10px;
         }
 
         .nav-item {
@@ -140,6 +131,76 @@
         td { background: #fff; padding: 15px; vertical-align: middle; border-bottom: 1px solid #f5f5f5; }
         tr:hover td { background: #fafafa; }
 
+        /* --- FIX PAGINATION (MENGATASI TAMPILAN BERANTAKAN) --- */
+        
+        /* 1. Reset List Style untuk Pagination Bootstrap */
+        .pagination {
+            display: flex;
+            padding-left: 0;
+            list-style: none;
+            gap: 5px;
+            margin: 0;
+            justify-content: flex-end; /* Posisikan ke kanan */
+        }
+        
+        /* 2. Style untuk Item Halaman */
+        .page-item .page-link {
+            padding: 8px 14px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+            min-width: 35px;
+        }
+
+        /* 3. Style Halaman Aktif */
+        .page-item.active .page-link {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            font-weight: 600;
+        }
+
+        /* 4. Style Disabled */
+        .page-item.disabled .page-link {
+            color: #ccc;
+            pointer-events: none;
+            background-color: #f9f9f9;
+        }
+
+        /* 5. Hover Effect */
+        .page-item .page-link:hover {
+            background-color: #f0f0f0;
+            border-color: #ddd;
+        }
+
+        /* 6. Fix untuk Laravel Default (Tailwind) jika muncul SVG besar */
+        nav[role="navigation"] svg { 
+            width: 12px !important; 
+            height: 12px !important; 
+            display: inline-block;
+        }
+        nav[role="navigation"] > div {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        /* Sembunyikan teks 'Showing x to y' jika mengganggu di mobile */
+        p.text-sm.text-gray-700 {
+            margin: 0;
+            font-size: 0.85rem;
+            color: #666;
+        }
+        
         /* --- 6. BUTTONS & STATUS --- */
         .btn { padding: 8px 15px; border-radius: 8px; border: none; cursor: pointer; color: white; font-size: 0.85rem; transition: 0.3s; }
         .btn-edit { background: var(--primary); } .btn-edit:hover { background: var(--primary-light); }
@@ -153,6 +214,8 @@
             font-weight: 600; box-shadow: 0 5px 15px rgba(212, 163, 115, 0.4);
             color: white; border: none; cursor: pointer; border-radius: 8px;
         }
+        .btn-add:hover { transform: translateY(-2px); background: #b0855b; }
+
         .status-select { padding: 8px 12px; border-radius: 20px; border: 1px solid #eee; font-weight: 600; font-size: 0.85rem; }
         .status-baru { background-color: #ffebee; color: #c62828; border-color: #ef9a9a; }
         .status-proses { background-color: #fff3e0; color: #ef6c00; border-color: #ffcc80; }
@@ -161,7 +224,7 @@
         /* --- 7. MODALS --- */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(44, 62, 80, 0.7); z-index: 9999; 
+            background-color: rgba(44, 62, 80, 0.7); z-index: 9999; 
             justify-content: center; align-items: center; backdrop-filter: blur(3px); overflow-y: auto;
         }
         .modal-content {
@@ -169,10 +232,11 @@
             width: 500px; max-width: 90%; position: relative;
             box-shadow: 0 20px 50px rgba(0,0,0,0.3); animation: slideUp 0.4s ease;
         }
-        .detail-table { width: 100%; margin-top: 15px; border-collapse: collapse; }
-        .detail-table th { background: #f8f9fa; font-size: 0.8rem; padding: 10px; color: #666; }
-        .detail-table td { padding: 10px; border-bottom: 1px solid #eee; font-size: 0.9rem; }
-        .detail-total { margin-top: 15px; padding-top: 15px; border-top: 2px dashed #eee; display: flex; justify-content: space-between; font-weight: 700; color: var(--primary); }
+        .detail-table { width: 100%; margin-top: 0; border-collapse: separate; border-spacing: 0; }
+        .detail-table th { background: var(--primary) !important; color: white !important; font-size: 0.85rem; padding: 12px 15px; border: none; }
+        .detail-table td { padding: 12px 15px; border-bottom: 1px solid #eee; font-size: 0.9rem; vertical-align: top; }
+        .detail-table tr:last-child td { border-bottom: none; }
+
         .close-modal { position: absolute; top: 20px; right: 25px; font-size: 1.5rem; cursor: pointer; color: #ccc; }
         @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .form-group { margin-bottom: 15px; }
@@ -196,12 +260,10 @@
     <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
 
     <div class="sidebar" id="sidebar">
-        <!-- AREA LOGO DIPERBARUI: LOGO + TEKS -->
         <div class="logo-area">
             <img src="{{ asset('img/logo.png') }}" alt="Logo Usaha" class="logo-img">
             <span>ANEKA USAHA</span>
         </div>
-        
         <a href="#" class="nav-item"><i class="fas fa-th-large"></i> Dashboard</a>
         <a href="#tabel-pesanan" class="nav-item"><i class="fas fa-shopping-cart"></i> Pesanan Masuk</a>
         <a href="#daftar-produk" class="nav-item"><i class="fas fa-box-open"></i> Manajemen Produk</a>
@@ -265,7 +327,24 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>Kode</th><th>Customer</th><th>WhatsApp</th><th>Status</th><th>Detail</th><th>Aksi</th>
+                                <th>
+                                    <a href="{{ route('admin.dashboard', ['sort' => 'kode_pesanan', 'direction' => request('direction') == 'asc' ? 'desc' : 'asc']) }}" style="text-decoration:none; color:inherit;">
+                                        Kode <i class="fas fa-sort"></i>
+                                    </a>
+                                </th>
+                                <th>
+                                    <a href="{{ route('admin.dashboard', ['sort' => 'nama_pelanggan', 'direction' => request('direction') == 'asc' ? 'desc' : 'asc']) }}" style="text-decoration:none; color:inherit;">
+                                        Customer <i class="fas fa-sort"></i>
+                                    </a>
+                                </th>
+                                <th>WhatsApp</th>
+                                <th>
+                                    <a href="{{ route('admin.dashboard', ['sort' => 'status', 'direction' => request('direction') == 'asc' ? 'desc' : 'asc']) }}" style="text-decoration:none; color:inherit;">
+                                        Status <i class="fas fa-sort"></i>
+                                    </a>
+                                </th>
+                                <th>Detail Pesanan</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -298,24 +377,53 @@
                 </div>
             </div>
 
-            <!-- 5. TABEL PRODUK -->
+            <!-- 5. TABEL PRODUK (UPDATED: Fix Pagination) -->
             <div class="table-section" id="daftar-produk">
-                <div class="section-header">
-                    <span><i class="fas fa-box-open" style="color:var(--accent); margin-right:10px;"></i> Manajemen Produk</span>
-                    <button class="btn btn-add" onclick="openModal('modalAdd')"><i class="fas fa-plus"></i> Tambah Produk</button>
+                <div class="section-header" style="align-items: center; justify-content: space-between; margin-bottom: 20px;">
+                    <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+                        <span><i class="fas fa-box-open" style="color:var(--accent); margin-right:5px;"></i> Manajemen Produk ({{ $produkTerbaru->total() }})</span>
+                        <form action="{{ route('admin.dashboard') }}" method="GET" style="display: flex; align-items: center;">
+                            <input type="text" name="cari_produk" class="form-control" placeholder="Cari nama produk..." value="{{ request('cari_produk') }}" style="padding: 8px 15px; width: 200px; border-radius: 20px 0 0 20px; border-right: none;">
+                            <button type="submit" class="btn" style="background: var(--primary); border-radius: 0 20px 20px 0; padding: 9px 15px;">
+                                <i class="fas fa-search"></i>
+                            </button>
+                            @if(request('cari_produk'))
+                                <a href="{{ route('admin.dashboard') }}#daftar-produk" class="btn btn-delete" style="margin-left: 5px; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;" title="Reset Pencarian">
+                                    <i class="fas fa-times"></i>
+                                </a>
+                            @endif
+                        </form>
+                    </div>
+                    <button class="btn btn-add" onclick="openModal('modalAdd')">
+                        <i class="fas fa-plus"></i> Tambah
+                    </button>
                 </div>
                 <div class="table-scroll-frame">
                     <table>
                         <thead>
-                            <tr><th>Foto</th><th>Nama</th><th>Harga</th><th>Min. Order</th><th>Aksi</th></tr>
+                            <tr>
+                                <th>Foto</th>
+                                <th>
+                                    <a href="{{ route('admin.dashboard', ['sort_by' => 'nama_produk', 'order_by' => (request('order_by') == 'asc' ? 'desc' : 'asc'), 'cari_produk' => request('cari_produk')]) }}#daftar-produk" style="color: inherit; text-decoration: none;">
+                                        Nama Produk <i class="fas fa-sort"></i>
+                                    </a>
+                                </th>
+                                <th>
+                                    <a href="{{ route('admin.dashboard', ['sort_by' => 'harga', 'order_by' => (request('order_by') == 'asc' ? 'desc' : 'asc'), 'cari_produk' => request('cari_produk')]) }}#daftar-produk" style="color: inherit; text-decoration: none;">
+                                        Harga <i class="fas fa-sort"></i>
+                                    </a>
+                                </th>
+                                <th>Min. Order</th><th>Deskripsi</th><th>Aksi</th>
+                            </tr>
                         </thead>
                         <tbody>
-                            @foreach($produkTerbaru as $prod)
+                            @forelse($produkTerbaru as $prod)
                             <tr>
-                                <td><img src="{{ asset('img/'.$prod->foto_produk) }}" width="50" height="50" style="border-radius:8px; object-fit:cover;"></td>
-                                <td>{{ $prod->nama_produk }}</td>
-                                <td style="color:var(--accent); font-weight:600;">Rp {{ number_format($prod->harga) }}</td>
+                                <td><img src="{{ asset('img/'.$prod->foto_produk) }}" width="50" height="50" style="border-radius: 8px; object-fit: cover; border: 1px solid #eee;"></td>
+                                <td style="font-weight: 600;">{{ $prod->nama_produk }}</td>
+                                <td style="color: var(--accent); font-weight: 600;">Rp {{ number_format($prod->harga, 0, ',', '.') }}</td>
                                 <td>{{ $prod->min_order }}</td>
+                                <td>{{ Str::limit($prod->deskripsi_produk, 30) }}</td>
                                 <td>
                                     <button class="btn btn-edit" onclick="editProduk('{{ $prod->id_produk }}','{{ $prod->nama_produk }}','{{ $prod->harga }}','{{ $prod->deskripsi_produk }}')"><i class="fas fa-pen"></i></button>
                                     <form action="{{ route('admin.produk.delete', $prod->id_produk) }}" method="POST" style="display:inline;">
@@ -324,9 +432,14 @@
                                     </form>
                                 </td>
                             </tr>
-                            @endforeach
+                            @empty
+                            <tr><td colspan="6" style="text-align: center; padding: 30px; color: #999;">Produk tidak ditemukan.</td></tr>
+                            @endforelse
                         </tbody>
                     </table>
+                </div>
+                <div style="margin-top: 20px; display: flex; justify-content: flex-end;">
+                    {{ $produkTerbaru->appends(request()->query())->fragment('daftar-produk')->links() }}
                 </div>
             </div>
 
@@ -422,10 +535,10 @@
         </div>
     </div>
 
-    <!-- MODAL LAINNYA -->
-    <!-- FIX MODAL DETAIL PESANAN OVERFLOW -->
+    <!-- MODAL LAINNYA (Detail Pesanan, Add Produk, Edit Produk, Reply) -->
+    
     <div id="modalDetailPesanan" class="modal">
-        <div class="modal-content" style="width:100%; max-width:700px;"> <!-- Fixed width logic -->
+        <div class="modal-content" style="width:600px;">
             <span class="close-modal" onclick="closeModal('modalDetailPesanan')">&times;</span>
             <h3>Detail Pesanan</h3>
             <div style="background:#f9f9f9; padding:10px; margin-bottom:10px;">
@@ -433,15 +546,10 @@
                 Nama: <span id="detNama"></span><br>
                 Tgl: <span id="detTgl"></span>
             </div>
-            
-            <!-- Tambahkan wrapper overflow-x agar tabel lebar bisa di-scroll di HP -->
-            <div style="overflow-x: auto; max-height:400px; overflow-y:auto;">
-                <table class="detail-table" style="min-width: 600px;"> <!-- Min-width memastikan kolom tidak gepeng -->
-                    <thead><tr><th>Item</th><th style="text-align:center;">Qty</th><th style="text-align:right;">Harga</th><th style="text-align:right;">Subtotal</th></tr></thead>
-                    <tbody id="detTabelBody"></tbody>
-                </table>
-            </div>
-
+            <table class="detail-table">
+                <thead><tr><th>Item</th><th>Qty</th><th>Harga</th><th>Subtotal</th></tr></thead>
+                <tbody id="detTabelBody"></tbody>
+            </table>
             <div id="detCatatan" style="margin-top:10px; font-style:italic;"></div>
             <div class="detail-total"><span>Total</span><span id="detTotal"></span></div>
         </div>
@@ -529,7 +637,7 @@
                 if(detail.items) {
                     detail.items.forEach(i => {
                         let sub = i.harga*i.qty; total+=sub;
-                        tbody.innerHTML += `<tr><td>${i.nama}</td><td style="text-align:center;">${i.qty}</td><td style="text-align:right;">Rp ${new Intl.NumberFormat('id-ID').format(i.harga)}</td><td style="text-align:right;">Rp ${new Intl.NumberFormat('id-ID').format(sub)}</td></tr>`;
+                        tbody.innerHTML += `<tr><td>${i.nama}</td><td style="text-align:center;">${i.qty}</td><td style="text-align:right;">Rp ${new Intl.NumberFormat('id-ID').format(i.harga)}</td><td style="text-align:right; font-weight:600;">Rp ${new Intl.NumberFormat('id-ID').format(sub)}</td></tr>`;
                     });
                     document.getElementById('detCatatan').innerText = detail.catatan ? "Catatan: "+detail.catatan : "";
                 }
