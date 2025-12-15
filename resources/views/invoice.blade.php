@@ -4,130 +4,257 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invoice #{{ $pesanan->kode_pesanan }} - Aneka Usaha</title>
-    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> <!-- Tambahkan FontAwesome untuk Ikon -->
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
-        body { background: #555; font-family: 'Poppins', sans-serif; padding: 30px 0; }
-        .invoice-container { background: white; width: 100%; max-width: 700px; margin: 0 auto; padding: 40px; border-radius: 5px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 30px; }
-        .logo { font-size: 1.5rem; font-weight: 800; color: #2C3E50; }
-        .invoice-title { text-align: right; }
-        .invoice-title h1 { margin: 0; font-size: 2rem; color: #D4A373; text-transform: uppercase; }
-        .invoice-title p { margin: 0; color: #888; font-size: 0.9rem; }
-        .info-section { display: flex; justify-content: space-between; margin-bottom: 40px; }
-        .info-box h3 { font-size: 0.9rem; color: #999; text-transform: uppercase; margin-bottom: 5px; }
-        .info-box p { margin: 0; font-weight: 600; color: #333; font-size: 1.1rem; }
-        .address { font-size: 0.9rem; color: #555; line-height: 1.5; max-width: 250px; }
-        
-        /* Table Baru yang Lebih Rapi */
-        .table-wrapper { border: 1px solid #eee; border-radius: 10px; overflow: hidden; margin-bottom: 30px; }
+        /* --- CONFIG --- */
+        :root {
+            --primary: #2C3E50;  /* Navy Blue */
+            --accent: #D4A373;   /* Gold/Brown */
+            --bg: #F5F7FA;
+            --white: #ffffff;
+            --text: #333333;
+            --text-light: #777777;
+        }
+
+        body { 
+            background: var(--bg); 
+            font-family: 'Poppins', sans-serif; 
+            padding: 40px 20px; 
+            color: var(--text);
+            -webkit-print-color-adjust: exact; /* Agar warna background ikut terprint */
+            print-color-adjust: exact;
+        }
+
+        /* --- CONTAINER KERTAS --- */
+        .invoice-paper { 
+            background: var(--white); 
+            width: 100%; 
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 0; /* Padding dihandle oleh inner containers */
+            border-radius: 15px; 
+            box-shadow: 0 20px 60px rgba(0,0,0,0.08); 
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- DECORATIVE TOP BAR --- */
+        .top-bar {
+            height: 10px;
+            background: linear-gradient(90deg, var(--primary) 70%, var(--accent) 70%);
+        }
+
+        /* --- HEADER SECTION --- */
+        .header-section {
+            padding: 40px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .company-info { display: flex; flex-direction: column; gap: 5px; }
+        .logo-wrapper { 
+            display: flex; align-items: center; gap: 15px; margin-bottom: 15px;
+        }
+        .logo-img { height: 60px; width: auto; } /* Ukuran Logo */
+        .company-name { font-size: 1.5rem; font-weight: 800; color: var(--primary); letter-spacing: 0.5px; }
+        .company-details { font-size: 0.85rem; color: var(--text-light); line-height: 1.5; }
+
+        .invoice-details { text-align: right; }
+        .invoice-title { font-size: 3rem; font-weight: 800; color: #f0f2f5; line-height: 1; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
+        .invoice-number { font-size: 1.2rem; font-weight: 700; color: var(--primary); }
+        .invoice-date { font-size: 0.9rem; color: var(--text-light); }
+
+        /* --- STATUS BADGE --- */
+        .status-badge { 
+            display: inline-block; padding: 8px 20px; border-radius: 50px; 
+            font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;
+            margin-top: 10px;
+        }
+        .st-Baru { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
+        .st-Proses { background: #fff3e0; color: #ef6c00; border: 1px solid #ffe0b2; }
+        .st-Selesai { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+
+        /* --- BILL TO SECTION --- */
+        .bill-to-section {
+            background: #f8f9fa;
+            margin: 0 50px 30px 50px;
+            padding: 25px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            border-left: 5px solid var(--accent);
+        }
+        .bill-title { font-size: 0.8rem; text-transform: uppercase; color: var(--text-light); font-weight: 600; margin-bottom: 5px; }
+        .bill-name { font-size: 1.2rem; font-weight: 700; color: var(--primary); }
+        .bill-contact { font-size: 0.9rem; color: var(--text); display: flex; align-items: center; gap: 8px; margin-top: 5px; }
+
+        /* --- TABLE SECTION --- */
+        .table-section { padding: 0 50px; margin-bottom: 30px; }
         table { width: 100%; border-collapse: collapse; }
-        th { background: #f9f9f9; text-align: left; padding: 15px; color: #555; font-size: 0.85rem; text-transform: uppercase; border-bottom: 2px solid #eee; }
-        td { padding: 15px; border-bottom: 1px solid #eee; color: #333; font-size: 0.95rem; }
-        tr:last-child td { border-bottom: none; }
-        .text-right { text-align: right; }
+        thead th { 
+            background-color: var(--primary); 
+            color: var(--white); 
+            padding: 18px 15px; 
+            text-align: left; 
+            font-size: 0.85rem; 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+        }
+        thead th:first-child { border-top-left-radius: 8px; }
+        thead th:last-child { border-top-right-radius: 8px; }
+        
+        tbody td { padding: 15px; border-bottom: 1px solid #eee; font-size: 0.95rem; color: var(--text); }
+        tbody tr:nth-child(even) { background-color: #fcfcfc; } /* Zebra Striping */
+        
         .font-mono { font-family: 'Courier Prime', monospace; }
+        .text-right { text-align: right; }
+        .fw-bold { font-weight: 600; }
+
+        /* --- TOTAL SUMMARY --- */
+        .summary-section { 
+            padding: 0 50px 40px 50px; 
+            display: flex; 
+            justify-content: flex-end; 
+        }
+        .summary-box { width: 350px; }
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.95rem; color: var(--text-light); }
         
-        .total-section { display: flex; justify-content: flex-end; margin-bottom: 40px; }
-        .total-box { text-align: right; width: 300px; }
-        .total-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.9rem; }
-        .total-row.final { font-size: 1.2rem; font-weight: 800; color: #2C3E50; border-top: 2px solid #D4A373; padding-top: 10px; }
-        
-        .status-badge { display: inline-block; padding: 8px 15px; border-radius: 5px; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
-        .status-baru { background: #ffebee; color: #c62828; }
-        .status-proses { background: #fff3e0; color: #ef6c00; }
-        .status-selesai { background: #e8f5e9; color: #2e7d32; }
-        
-        .footer { text-align: center; color: #aaa; font-size: 0.8rem; margin-top: 50px; border-top: 1px dashed #ddd; padding-top: 20px; }
-        
-        /* --- STYLE TOMBOL AKSI BARU --- */
+        .total-row { 
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--primary); color: white;
+            padding: 15px 20px; border-radius: 8px;
+            font-size: 1.1rem; font-weight: 700;
+            margin-top: 15px;
+            box-shadow: 0 5px 15px rgba(44, 62, 80, 0.2);
+        }
+
+        /* --- NOTE & FOOTER --- */
+        .note-section {
+            padding: 20px 50px;
+            background: #fff;
+            border-top: 2px dashed #eee;
+            margin-bottom: 20px;
+        }
+        .note-title { font-size: 0.9rem; font-weight: 700; color: var(--primary); margin-bottom: 5px; }
+        .note-text { font-size: 0.85rem; color: var(--text-light); font-style: italic; }
+
+        .footer {
+            background: #f1f3f5;
+            padding: 20px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            border-top: 1px solid #eee;
+        }
+
+        /* --- BUTTONS --- */
         .actions-container {
-            max-width: 700px; margin: 20px auto; display: flex; gap: 15px;
+            max-width: 800px; margin: 30px auto; display: flex; gap: 20px; justify-content: center;
         }
         .btn-action {
-            flex: 1; padding: 15px; border-radius: 50px; text-align: center; text-decoration: none;
-            font-weight: 600; font-size: 1rem; transition: 0.3s; border: none; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            font-family: 'Poppins', sans-serif;
+            padding: 15px 30px; border-radius: 50px; text-decoration: none; font-weight: 600; 
+            font-size: 1rem; transition: 0.3s; border: none; cursor: pointer;
+            display: flex; align-items: center; gap: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
+        .btn-print { background: var(--primary); color: white; }
+        .btn-print:hover { background: #1a252f; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(44, 62, 80, 0.3); }
         
-        /* Tombol Print (Gelap) */
-        .btn-print { background: #2C3E50; color: white; box-shadow: 0 5px 15px rgba(44, 62, 80, 0.3); }
-        .btn-print:hover { background: #1a252f; transform: translateY(-2px); }
-        
-        /* Tombol Home (Putih/Terang) */
-        .btn-home { background: white; color: #2C3E50; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .btn-home:hover { background: #f8f9fa; color: #D4A373; transform: translateY(-2px); }
+        .btn-home { background: white; color: var(--primary); border: 2px solid #eee; }
+        .btn-home:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-3px); }
 
-        /* Media Print: Sembunyikan tombol saat dicetak */
+        /* --- PRINT MODE --- */
         @media print { 
             body { background: white; padding: 0; } 
-            .invoice-container { box-shadow: none; max-width: 100%; padding: 20px; } 
+            .invoice-paper { box-shadow: none; max-width: 100%; border-radius: 0; } 
             .actions-container { display: none !important; } 
+            .top-bar { -webkit-print-color-adjust: exact; }
+            thead th, .total-row { -webkit-print-color-adjust: exact; color: white !important; }
         }
         
-        /* Mobile Responsive */
         @media (max-width: 600px) {
-            .actions-container { flex-direction: column; }
+            .header-section { flex-direction: column; gap: 20px; padding: 30px; }
+            .invoice-details { text-align: left; }
+            .invoice-title { font-size: 2.5rem; }
+            .bill-to-section { margin: 0 30px 30px 30px; flex-direction: column; gap: 15px; }
+            .table-section { padding: 0 30px; overflow-x: auto; }
+            .summary-section { padding: 0 30px 40px 30px; }
+            .summary-box { width: 100%; }
         }
     </style>
 </head>
 <body>
 
-    <div class="invoice-container">
-        <!-- HEADER -->
-        <div class="header">
-            <div class="logo">ANEKA USAHA</div>
-            <div class="invoice-title">
-                <h1>INVOICE</h1>
-                <p>#{{ $pesanan->kode_pesanan }}</p>
-                @php
-                    $statusClass = 'status-baru';
-                    if($pesanan->status == 'Proses') $statusClass = 'status-proses';
-                    if($pesanan->status == 'Selesai') $statusClass = 'status-selesai';
-                @endphp
-                <div style="margin-top: 10px;">
-                    <span class="status-badge {{ $statusClass }}">{{ $pesanan->status }}</span>
+    <div class="invoice-paper">
+        <!-- Top Colored Bar -->
+        <div class="top-bar"></div>
+
+        <!-- Header -->
+        <div class="header-section">
+            <div class="company-info">
+                <div class="logo-wrapper">
+                    <!-- LOGO ANEKA USAHA -->
+                    <img src="{{ asset('img/logo.png') }}" alt="Logo Aneka Usaha" class="logo-img">
+                    <div class="company-name">ANEKA USAHA</div>
+                </div>
+                <div class="company-details">
+                    HC2X+434, Pappa, Kec. Pattallassang,<br>
+                    Kabupaten Takalar, Sulawesi Selatan<br>
+                    WA: +62 813-4113-6423 | anekausaha160370@gmail.com
                 </div>
             </div>
+            
+            <div class="invoice-details">
+                <div class="invoice-title">INVOICE</div>
+                <div class="invoice-number">#{{ $pesanan->kode_pesanan }}</div>
+                <div class="invoice-date">{{ date('d F Y, H:i', strtotime($pesanan->created_at)) }}</div>
+                
+                @php
+                    $statusColor = 'st-' . str_replace(' ', '', $pesanan->status); // st-BaruMasuk, st-Proses, st-Selesai
+                    if($pesanan->status == 'Baru Masuk') $statusColor = 'st-Baru';
+                @endphp
+                <span class="status-badge {{ $statusColor }}">{{ $pesanan->status }}</span>
+            </div>
         </div>
 
-        <!-- INFO -->
-        <div class="info-section">
-            <div class="info-box">
-                <h3>Ditagihkan Kepada:</h3>
-                <p>{{ $pesanan->nama_pelanggan }}</p>
-                <p style="font-size:0.9rem; color:#666; margin-top:5px;">{{ $pesanan->no_whatsapp }}</p>
+        <!-- Bill To Info -->
+        <div class="bill-to-section">
+            <div>
+                <div class="bill-title">Ditagihkan Kepada</div>
+                <div class="bill-name">{{ $pesanan->nama_pelanggan }}</div>
+                <div class="bill-contact"><i class="fab fa-whatsapp"></i> {{ $pesanan->no_whatsapp }}</div>
             </div>
-            <div class="info-box" style="text-align:right;">
-                <h3>Tanggal:</h3>
-                <p>{{ date('d M Y', strtotime($pesanan->created_at)) }}</p>
+            <div style="text-align: right;">
+                <div class="bill-title">Metode Pembayaran</div>
+                <div class="bill-name" style="font-size: 1rem;">Transfer / Tunai</div>
+                <!-- Bisa ditambahkan nama bank disini jika ada -->
             </div>
         </div>
 
-        <!-- LOGIC PARSING DATA JSON -->
+        <!-- Logic Parsing Data -->
         @php
-            // Coba decode JSON dari kolom detail_pesanan
             $dataDetail = json_decode($pesanan->detail_pesanan, true);
             $isJson = (json_last_error() === JSON_ERROR_NONE) && is_array($dataDetail);
-            
             $grandTotal = 0;
         @endphp
 
-        <!-- TABLE ITEM -->
-        <div class="table-wrapper">
+        <!-- Table Items -->
+        <div class="table-section">
             <table>
                 <thead>
                     <tr>
-                        <th style="width: 50%;">Produk</th>
+                        <th style="width: 50%;">Deskripsi Produk</th>
                         <th class="text-right">Qty</th>
-                        <th class="text-right">Harga Satuan</th>
-                        <th class="text-right">Subtotal</th>
+                        <th class="text-right">Harga</th>
+                        <th class="text-right">Total</th>
                     </tr>
                 </thead>
                 <tbody>
                     @if($isJson && isset($dataDetail['items']))
-                        {{-- LOOPING ITEM JIKA FORMATNYA JSON (PESANAN BARU) --}}
                         @foreach($dataDetail['items'] as $item)
                             @php 
                                 $subtotal = $item['harga'] * $item['qty'];
@@ -135,19 +262,20 @@
                             @endphp
                             <tr>
                                 <td>
-                                    <strong>{{ $item['nama'] }}</strong>
+                                    <div class="fw-bold">{{ $item['nama'] }}</div>
+                                    <!-- Jika ada varian/keterangan bisa ditambah disini -->
                                 </td>
                                 <td class="text-right">{{ $item['qty'] }}</td>
                                 <td class="text-right font-mono">Rp {{ number_format($item['harga'], 0, ',', '.') }}</td>
-                                <td class="text-right font-mono">Rp {{ number_format($subtotal, 0, ',', '.') }}</td>
+                                <td class="text-right font-mono fw-bold">Rp {{ number_format($subtotal, 0, ',', '.') }}</td>
                             </tr>
                         @endforeach
                     @else
-                        {{-- FALLBACK JIKA FORMATNYA TEKS BIASA (PESANAN LAMA) --}}
+                        <!-- Fallback untuk data lama (Non-JSON) -->
                         <tr>
                             <td colspan="4">
-                                <p style="font-weight:600; margin-bottom:5px;">Detail Manual</p>
-                                <p style="color:#666; font-size:0.9rem; white-space: pre-line;">{{ $pesanan->detail_pesanan }}</p>
+                                <div class="fw-bold">Pesanan Manual</div>
+                                <div style="color: #666; white-space: pre-line; margin-top: 5px;">{{ $pesanan->detail_pesanan }}</div>
                             </td>
                         </tr>
                     @endif
@@ -155,50 +283,50 @@
             </table>
         </div>
 
-        <!-- CATATAN TAMBAHAN (JIKA ADA DI JSON) -->
-        @if($isJson && !empty($dataDetail['catatan']))
-        <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem; color: #555;">
-            <strong>Catatan Tambahan:</strong><br>
-            {{ $dataDetail['catatan'] }}
-        </div>
-        @endif
-
-        <!-- TOTAL SECTION -->
-        <div class="total-section">
-            <div class="total-box">
+        <!-- Summary & Total -->
+        <div class="summary-section">
+            <div class="summary-box">
                 @if($grandTotal > 0)
-                <div class="total-row final">
-                    <span>Estimasi Total:</span>
-                    <span>Rp {{ number_format($grandTotal, 0, ',', '.') }}</span>
-                </div>
-                <p style="color:#888; font-size:0.8rem; font-style:italic; margin-top:10px;">
-                    *Harga final + ongkir akan dikonfirmasi Admin.
-                </p>
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span class="font-mono">Rp {{ number_format($grandTotal, 0, ',', '.') }}</span>
+                    </div>
+                    <!-- Diskon atau Pajak bisa ditambahkan disini -->
+                    <div class="total-row">
+                        <span>TOTAL ESTIMASI</span>
+                        <span class="font-mono">Rp {{ number_format($grandTotal, 0, ',', '.') }}</span>
+                    </div>
                 @else
-                <p style="color:#888; font-size:0.8rem; font-style:italic;">
-                    *Hubungi Admin untuk total harga.
-                </p>
+                    <div class="total-row" style="background:#95a5a6;">
+                        <span>TOTAL</span>
+                        <span style="font-size: 0.9rem;">Hubungi Admin</span>
+                    </div>
                 @endif
             </div>
         </div>
 
-        <!-- FOOTER -->
+        <!-- Catatan Tambahan -->
+        @if($isJson && !empty($dataDetail['catatan']))
+        <div class="note-section">
+            <div class="note-title">Catatan Tambahan:</div>
+            <div class="note-text">"{{ $dataDetail['catatan'] }}"</div>
+        </div>
+        @endif
+
+        <!-- Footer Invoice -->
         <div class="footer">
-            <p>Terima kasih telah berbelanja di Aneka Usaha.</p>
-            <p>www.aneka-usaha.com</p>
+            Terima kasih telah mempercayakan kebutuhan percetakan Anda pada <strong>Aneka Usaha</strong>.<br>
+            Harap simpan bukti ini untuk konfirmasi pembayaran atau pengambilan barang.
         </div>
     </div>
 
-    <!-- TOMBOL AKSI (Home & Print) -->
+    <!-- Actions Buttons -->
     <div class="actions-container">
-        <!-- Tombol Kembali ke Website -->
         <a href="{{ url('/') }}" class="btn-action btn-home">
-            <i class="fas fa-home"></i> Kembali ke Katalog
+            <i class="fas fa-arrow-left"></i> Kembali
         </a>
-
-        <!-- Tombol Cetak -->
         <button onclick="window.print()" class="btn-action btn-print">
-            <i class="fas fa-print"></i> Cetak / Simpan PDF
+            <i class="fas fa-print"></i> Cetak Invoice
         </button>
     </div>
 
