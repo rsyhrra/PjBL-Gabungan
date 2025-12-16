@@ -22,8 +22,11 @@
             --shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
 
-        /* Hilangkan Scrollbar */
-        ::-webkit-scrollbar { display: none; }
+        /* Hilangkan Scrollbar Window Utama */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #aaa; }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { display: flex; min-height: 100vh; background-color: var(--bg-color); color: var(--primary); overflow-x: hidden; }
@@ -45,9 +48,7 @@
             display: flex; flex-direction: column; align-items: center; gap: 10px;
         }
         
-        .logo-img {
-            max-width: 80px; height: auto; display: block; border-radius: 10px;
-        }
+        .logo-img { max-width: 80px; height: auto; display: block; border-radius: 10px; }
 
         .nav-item {
             padding: 15px 20px; color: rgba(255,255,255,0.7); text-decoration: none; 
@@ -91,16 +92,13 @@
         .content-area { padding: 40px; }
 
         /* --- 4. CARDS & CHARTS --- */
-        .cards-grid { 
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-bottom: 30px; 
-        }
+        .cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-bottom: 30px; }
         .card {
             background: var(--white); padding: 30px; border-radius: 20px; 
             box-shadow: var(--shadow); position: relative; overflow: hidden;
             transition: 0.3s; border: 1px solid #f0f0f0;
         }
         .card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); border-color: var(--accent); }
-        
         .card h3 { font-size: 0.9rem; margin-bottom: 10px; color: var(--text-grey); font-weight: 500; }
         .card .val { font-size: 2.2rem; font-weight: 700; color: var(--primary); }
         .card-icon { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 3.5rem; color: var(--accent); opacity: 0.15; }
@@ -115,108 +113,47 @@
             margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
         }
 
-        /* --- 5. TABLES --- */
+        /* --- 5. TABLES (MAIN DASHBOARD) --- */
         .table-section { margin-bottom: 50px; background: var(--white); border-radius: 20px; box-shadow: var(--shadow); padding: 30px; }
         .section-header { 
             font-size: 1.3rem; font-weight: 700; margin-bottom: 20px; 
             color: var(--primary); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
         }
+        
         .table-scroll-frame {
-            max-height: 500px; overflow-y: auto; border-radius: 10px; border: 1px solid #eee;
+            max-height: 500px; overflow-y: auto; overflow-x: auto; 
+            border-radius: 10px; border: 1px solid #eee; width: 100%;
         }
+        
         table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 800px; }
         thead th { 
             position: sticky; top: 0; background: var(--white); z-index: 5;
             text-align: left; padding: 15px; color: var(--text-grey); font-size: 0.85rem; 
             text-transform: uppercase; letter-spacing: 1px; font-weight: 600;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); white-space: nowrap;
         }
         td { background: #fff; padding: 15px; vertical-align: middle; border-bottom: 1px solid #f5f5f5; }
         tr:hover td { background: #fafafa; }
 
-        /* --- FIX PAGINATION (MENGATASI TAMPILAN BERANTAKAN) --- */
-        
-        /* 1. Reset List Style untuk Pagination Bootstrap */
-        .pagination {
-            display: flex;
-            padding-left: 0;
-            list-style: none;
-            gap: 5px;
-            margin: 0;
-            justify-content: flex-end; /* Posisikan ke kanan */
-        }
-        
-        /* 2. Style untuk Item Halaman */
-        .page-item .page-link {
-            padding: 8px 14px;
-            border: 1px solid #eee;
-            border-radius: 8px;
-            color: var(--primary);
-            text-decoration: none;
-            font-size: 0.85rem;
-            transition: 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: white;
-            min-width: 35px;
-        }
-
-        /* 3. Style Halaman Aktif */
-        .page-item.active .page-link {
-            background-color: var(--accent);
-            color: white;
-            border-color: var(--accent);
-            font-weight: 600;
-        }
-
-        /* 4. Style Disabled */
-        .page-item.disabled .page-link {
-            color: #ccc;
-            pointer-events: none;
-            background-color: #f9f9f9;
-        }
-
-        /* 5. Hover Effect */
-        .page-item .page-link:hover {
-            background-color: #f0f0f0;
-            border-color: #ddd;
-        }
-
-        /* 6. Fix untuk Laravel Default (Tailwind) jika muncul SVG besar */
-        nav[role="navigation"] svg { 
-            width: 12px !important; 
-            height: 12px !important; 
-            display: inline-block;
-        }
-        nav[role="navigation"] > div {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        /* Sembunyikan teks 'Showing x to y' jika mengganggu di mobile */
-        p.text-sm.text-gray-700 {
-            margin: 0;
-            font-size: 0.85rem;
-            color: #666;
-        }
+        /* --- FIX PAGINATION --- */
+        .pagination { display: flex; padding-left: 0; list-style: none; gap: 5px; margin: 0; justify-content: flex-end; }
+        .page-item .page-link { padding: 8px 14px; border: 1px solid #eee; border-radius: 8px; color: var(--primary); text-decoration: none; font-size: 0.85rem; transition: 0.3s; display: flex; align-items: center; justify-content: center; background-color: white; min-width: 35px; }
+        .page-item.active .page-link { background-color: var(--accent); color: white; border-color: var(--accent); font-weight: 600; }
+        .page-item.disabled .page-link { color: #ccc; pointer-events: none; background-color: #f9f9f9; }
+        .page-item .page-link:hover { background-color: #f0f0f0; border-color: #ddd; }
+        nav[role="navigation"] svg { width: 12px !important; height: 12px !important; display: inline-block; }
+        nav[role="navigation"] > div { display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 10px; }
+        p.text-sm.text-gray-700 { margin: 0; font-size: 0.85rem; color: #666; }
         
         /* --- 6. BUTTONS & STATUS --- */
-        .btn { padding: 8px 15px; border-radius: 8px; border: none; cursor: pointer; color: white; font-size: 0.85rem; transition: 0.3s; }
+        .btn { padding: 8px 15px; border-radius: 8px; border: none; cursor: pointer; color: white; font-size: 0.85rem; transition: 0.3s; white-space: nowrap; }
         .btn-edit { background: var(--primary); } .btn-edit:hover { background: var(--primary-light); }
         .btn-delete { background: #e74c3c; } .btn-delete:hover { background: #c0392b; }
         .btn-view { background: #3498db; color: white; display: inline-flex; align-items: center; gap: 5px; } 
         .btn-reply { background: var(--accent); color: white; } 
         .btn-toggle-on { background: #2ecc71; color: white; }
         .btn-toggle-off { background: #95a5a6; color: white; }
-        .btn-add { 
-            background: var(--accent); padding: 12px 25px; font-size: 0.95rem; 
-            font-weight: 600; box-shadow: 0 5px 15px rgba(212, 163, 115, 0.4);
-            color: white; border: none; cursor: pointer; border-radius: 8px;
-        }
+        .btn-add { background: var(--accent); padding: 12px 25px; font-size: 0.95rem; font-weight: 600; box-shadow: 0 5px 15px rgba(212, 163, 115, 0.4); color: white; border: none; cursor: pointer; border-radius: 8px; white-space: nowrap; }
         .btn-add:hover { transform: translateY(-2px); background: #b0855b; }
 
         .status-select { padding: 8px 12px; border-radius: 20px; border: 1px solid #eee; font-weight: 600; font-size: 0.85rem; }
@@ -224,24 +161,46 @@
         .status-proses { background-color: #fff3e0; color: #ef6c00; border-color: #ffcc80; }
         .status-selesai { background-color: #e8f5e9; color: #2e7d32; border-color: #a5d6a7; }
 
-        /* --- 7. MODALS --- */
-        .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        /* --- 7. MODALS (UPDATED UNTUK MENGATASI OVERFLOW) --- */
+        .modal { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background-color: rgba(44, 62, 80, 0.7); z-index: 9999; 
-            justify-content: center; align-items: center; backdrop-filter: blur(3px); overflow-y: auto;
+            justify-content: center; align-items: center; 
+            backdrop-filter: blur(3px); overflow-y: auto; padding: 20px;
         }
-        .modal-content {
+        
+        .modal-content { 
             background: var(--white); padding: 35px; border-radius: 20px; 
-            width: 500px; max-width: 90%; position: relative;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3); animation: slideUp 0.4s ease;
+            width: 100%; max-width: 600px; /* Gunakan Max-Width, bukan Fixed Width */
+            position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.3); 
+            animation: slideUp 0.4s ease;
+            overflow: hidden; /* Mencegah konten keluar box */
         }
-        .detail-table { width: 100%; margin-top: 0; border-collapse: separate; border-spacing: 0; }
-        .detail-table th { background: var(--primary) !important; color: white !important; font-size: 0.85rem; padding: 12px 15px; border: none; }
-        .detail-table td { padding: 12px 15px; border-bottom: 1px solid #eee; font-size: 0.9rem; vertical-align: top; }
+        
+        /* Wrapper untuk Tabel di Modal agar bisa scroll jika sempit */
+        .modal-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 15px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+        }
+
+        .detail-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+        .detail-table th { background: var(--primary) !important; color: white !important; font-size: 0.85rem; padding: 12px 15px; border: none; white-space: nowrap; }
+        
+        /* FIX: Agar teks panjang turun ke bawah (Wrap) */
+        .detail-table td { 
+            padding: 12px 15px; border-bottom: 1px solid #eee; 
+            font-size: 0.9rem; vertical-align: top;
+            white-space: normal; 
+            word-break: break-word; 
+        }
         .detail-table tr:last-child td { border-bottom: none; }
 
         .close-modal { position: absolute; top: 20px; right: 25px; font-size: 1.5rem; cursor: pointer; color: #ccc; }
         @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.9rem; color: var(--primary); }
         .form-control { width: 100%; padding: 12px 15px; border: 2px solid #eee; border-radius: 10px; outline: none; transition: 0.3s; }
@@ -301,7 +260,6 @@
             </script>
             @endif
 
-            <!-- 2. KARTU STATISTIK -->
             <div class="cards-grid">
                 <div class="card">
                     <h3>Pesanan Diproses</h3><div class="val">{{ $totalProses }}</div><i class="fas fa-spinner card-icon"></i>
@@ -317,13 +275,11 @@
                 </div>
             </div>
 
-            <!-- 3. GRAFIK -->
             <div class="chart-section">
                 <div class="chart-title"><i class="fas fa-chart-line" style="color: var(--accent);"></i> Tren Penjualan ({{ date('Y') }})</div>
                 <canvas id="salesChart"></canvas>
             </div>
 
-            <!-- 4. TABEL PESANAN -->
             <div class="table-section" id="tabel-pesanan">
                 <div class="section-header"><span><i class="fas fa-list-alt" style="color:var(--accent); margin-right:10px;"></i> Pesanan Masuk</span></div>
                 <div class="table-scroll-frame">
@@ -366,7 +322,10 @@
                                         </select>
                                     </form>
                                 </td>
+                                
+                                {{-- KEMBALI KE KODE AWAL: HANYA TOMBOL LIHAT --}}
                                 <td><button class="btn btn-view" onclick='showDetailPesanan(@json($p))'><i class="fas fa-eye"></i> Lihat</button></td>
+                                
                                 <td>
                                     <form action="{{ route('admin.pesanan.delete', $p->id_pesanan) }}" method="POST">
                                         @csrf @method('DELETE')
@@ -380,7 +339,6 @@
                 </div>
             </div>
 
-            <!-- 5. TABEL PRODUK (UPDATED: Fix Pagination) -->
             <div class="table-section" id="daftar-produk">
                 <div class="section-header" style="align-items: center; justify-content: space-between; margin-bottom: 20px;">
                     <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
@@ -446,7 +404,6 @@
                 </div>
             </div>
 
-            <!-- 6. MANAJEMEN PORTOFOLIO -->
             <div class="table-section" id="manajemen-portofolio">
                 <div class="section-header">
                     <span><i class="fas fa-images" style="color:var(--accent); margin-right:10px;"></i> Galeri Portofolio</span>
@@ -469,7 +426,6 @@
                 </div>
             </div>
 
-            <!-- 7. MANAJEMEN ULASAN -->
             <div class="table-section" id="manajemen-ulasan">
                 <div class="section-header"><span><i class="fas fa-comments" style="color:var(--accent); margin-right:10px;"></i> Ulasan Pelanggan</span></div>
                 <div class="table-scroll-frame">
@@ -508,7 +464,6 @@
         </div>
     </div>
 
-    <!-- MODAL ADD PORTOFOLIO -->
     <div id="modalAddPorto" class="modal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal('modalAddPorto')">&times;</span>
@@ -538,10 +493,8 @@
         </div>
     </div>
 
-    <!-- MODAL LAINNYA (Detail Pesanan, Add Produk, Edit Produk, Reply) -->
-    
     <div id="modalDetailPesanan" class="modal">
-        <div class="modal-content" style="width:600px;">
+        <div class="modal-content">
             <span class="close-modal" onclick="closeModal('modalDetailPesanan')">&times;</span>
             <h3>Detail Pesanan</h3>
             <div style="background:#f9f9f9; padding:10px; margin-bottom:10px;">
@@ -549,12 +502,18 @@
                 Nama: <span id="detNama"></span><br>
                 Tgl: <span id="detTgl"></span>
             </div>
-            <table class="detail-table">
-                <thead><tr><th>Item</th><th>Qty</th><th>Harga</th><th>Subtotal</th></tr></thead>
-                <tbody id="detTabelBody"></tbody>
-            </table>
+            
+            <div class="modal-table-wrapper">
+                <table class="detail-table">
+                    <thead><tr><th>Item</th><th>Qty</th><th>Harga</th><th>Subtotal</th></tr></thead>
+                    <tbody id="detTabelBody"></tbody>
+                </table>
+            </div>
+            
             <div id="detCatatan" style="margin-top:10px; font-style:italic;"></div>
-            <div class="detail-total"><span>Total</span><span id="detTotal"></span></div>
+            <div class="detail-total" style="text-align:right; margin-top:10px; font-weight:bold; font-size:1.1rem;">
+                Total: <span id="detTotal"></span>
+            </div>
         </div>
     </div>
 
