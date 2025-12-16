@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('admin_reply')->nullable();
             $table->boolean('is_visible')->default(true);
             $table->timestamps();
+            $table->text('foto_profil')->nullable();
         });
     }
 
