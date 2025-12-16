@@ -25,4 +25,10 @@ class Pesanan extends Model
         'file_desain',
         'status'
     ];
+
+      public function logs()
+    {
+        // Parameter: (Model Tujuan, Foreign Key di tabel tujuan, Local Key di tabel ini)
+        return $this->hasMany(LogPesanan::class, 'kode_pesanan', 'kode_pesanan');
+    }
 }
