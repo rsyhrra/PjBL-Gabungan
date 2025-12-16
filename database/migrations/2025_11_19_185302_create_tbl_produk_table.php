@@ -10,18 +10,12 @@ return new class extends Migration
     {
         Schema::create('tbl_produk', function (Blueprint $table) {
             $table->id('id_produk');
-            
-            // UBAH INI: Dari integer id_kategori jadi string kategori
-            $table->string('kategori'); 
-            
             $table->string('nama_produk');
+            $table->integer('harga');
+            $table->string('min_order')->nullable();
+            $table->string('kategori');
             $table->text('deskripsi_produk')->nullable();
-            $table->string('foto_produk')->nullable();
-            $table->integer('harga')->default(0);
-            
-            // TAMBAH INI: Untuk Minimal Order (Contoh: "400 lbr")
-            $table->string('min_order')->default('1 pcs'); 
-            
+            $table->string('foto_produk');
             $table->timestamps();
         });
     }

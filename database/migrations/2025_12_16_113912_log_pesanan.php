@@ -8,17 +8,18 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('tbl_portofolio', function (Blueprint $table) {
+        Schema::create('log_pesanan', function (Blueprint $table) {
             $table->id();
-            $table->string('judul');
-            $table->string('kategori');
-            $table->string('foto');
+            $table->string('kode_pesanan');
+            $table->string('status_lama');
+            $table->string('status_baru');
+            $table->timestamp('waktu_perubahan');
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('tbl_portofolio');
+        Schema::dropIfExists('log_pesanan');
     }
 };
