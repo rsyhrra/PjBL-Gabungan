@@ -16,7 +16,7 @@ class BackupController extends Controller
         $password = ''; // Kosongkan jika pakai XAMPP default
         
         // 2. Siapkan Nama File & Path Sementara
-        $filename = 'backup-aneka-usaha' . $dbName . '-' . date('Y-m-d_H-i-s') . '.sql';
+        $filename = 'backup-' . $dbName . '-' . date('Y-m-d_H-i-s') . '.sql';
         // Simpan sementara di folder storage/app
         $storagePath = storage_path("app/" . $filename);
 
