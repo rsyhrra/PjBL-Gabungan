@@ -5,6 +5,7 @@ use App\Http\Controllers\BerandaController;
 use App\Http\Controllers\PesananController;
 use App\Http\Controllers\TestimoniController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\BackupController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,6 +18,8 @@ use App\Http\Controllers\AdminController;
 // ==========================================
 
 // Halaman Utama (Beranda)
+Route::get('/backup-db', [BackupController::class, 'downloadBackup'])->name('backup.db');
+
 Route::get('/', [BerandaController::class, 'index'])->name('home');
 
 // Halaman Pesan (Jika ada)
@@ -69,5 +72,5 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
     
     // Rute untuk menghapus portofolio
     Route::delete('/portofolio/delete/{id}', [AdminController::class, 'deletePortofolio'])->name('portofolio.delete');
-
+    
 });

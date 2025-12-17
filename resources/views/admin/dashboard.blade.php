@@ -89,6 +89,32 @@
         }
         .logout-btn:hover { background-color: #fee; border-color: #fcc; color: #e74c3c; }
 
+        /* --- TAMBAHAN: TOMBOL BACKUP --- */
+        .btn-backup { 
+            text-decoration: none; 
+            color: #fff; 
+            background-color: #27ae60; /* Warna Hijau (Aman/Sukses) */
+            font-weight: 600; 
+            display: flex; align-items: center; gap: 8px; transition: 0.3s;
+            padding: 9px 20px; 
+            border-radius: 30px; 
+            border: none; 
+            white-space: nowrap;
+            box-shadow: 0 4px 6px rgba(39, 174, 96, 0.2);
+            font-size: 0.9rem;
+        }
+        .btn-backup:hover { 
+            background-color: #2ecc71; 
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 12px rgba(39, 174, 96, 0.3); 
+        }
+
+        /* Responsive untuk Topbar */
+        @media (max-width: 768px) {
+            .btn-backup span { display: none; } /* Sembunyikan teks di HP, icon saja */
+            .btn-backup { padding: 9px 12px; }
+        }
+
         .content-area { padding: 40px; }
 
         /* --- 4. CARDS & CHARTS --- */
@@ -235,10 +261,21 @@
     </div>
 
     <div class="main-content">
-        <div class="topbar">
-            <div class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></div>
-            <input type="text" id="globalSearch" class="search-box" placeholder="Cari pesanan atau ulasan..." onkeyup="filterDashboard()">
-            <a href="{{ route('admin.logout') }}" class="logout-btn"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a>
+       <div class="topbar">
+            <div style="display: flex; align-items: center; gap: 15px; flex: 1;">
+                <div class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></div>
+                <input type="text" id="globalSearch" class="search-box" placeholder="Cari pesanan atau ulasan..." onkeyup="filterDashboard()">
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <a href="{{ route('backup.db') }}" class="btn-backup" title="Backup Database SQL">
+                    <i class="fas fa-cloud-download-alt"></i> <span>Backup DB</span>
+                </a>
+
+                <a href="{{ route('admin.logout') }}" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+                </a>
+            </div>
         </div>
 
         <div class="content-area">
