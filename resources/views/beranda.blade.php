@@ -1187,7 +1187,7 @@
                 if (result.isConfirmed) {
                     const nomorAdmin = "6281937536701"; 
                     const pesan = `Halo Admin Aneka Usaha,%0a%0aSaya ingin mengajukan pembatalan untuk pesanan:%0a*Kode: ${data.kode}*%0a*Atas Nama: ${data.nama}*%0a%0aMohon diproses pembatalannya. Terima kasih.`;
-                    window.open(`https://api.whatsapp.com/send?phone=${nomorAdmin}&text=${pesan}`, '_blank');
+                    window.open(`https://wa.me/${nomorAdmin}?text=${pesan}`, '_blank');
                 }
             });
         }
@@ -1252,8 +1252,12 @@
             if(wishlist.includes(item.id_produk)) { btnFav.classList.add('active'); btnFav.innerHTML = '<i class="fas fa-heart"></i>'; }
             else { btnFav.classList.remove('active'); btnFav.innerHTML = '<i class="far fa-heart"></i>'; }
 
-            const text = `Halo, saya tertarik dengan produk *${item.nama_produk}* (Rp ${item.harga}). Apakah tersedia?`;
-            document.getElementById('shareBtn').href = `https://wa.me/?text=${encodeURIComponent(text)}`;
+            const nomorAdmin = "6281937536701"; 
+            const hargaFormatted = new Intl.NumberFormat('id-ID').format(item.harga);
+            
+            const text = `Halo Admin, saya tertarik dengan produk *${item.nama_produk}* seharga Rp ${hargaFormatted}. Apakah stok tersedia?`;
+            
+            document.getElementById('shareBtn').href = `https://wa.me/${nomorAdmin}?text=${encodeURIComponent(text)}`;
         }
 
         // FUNGSI LIGHTBOX PORTOFOLIO
