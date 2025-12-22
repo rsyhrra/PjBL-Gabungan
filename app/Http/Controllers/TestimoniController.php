@@ -3,40 +3,35 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB; // Wajib ada untuk akses database manual
+use Illuminate\Support\Facades\DB;
+use App\Models\Testimoni; // <--- WAJIB ADA: Panggil Model Testimoni
 
 class TestimoniController extends Controller
 {
     /**
-     * Menampilkan halaman form tulis testimoni
+     * Menampilkan halaman tulis/edit testimoni
      */
     public function halamanTulisTestimoni($kode_pesanan)
     {
-        // 1. Cek apakah pesanan ada di tbl_pesanan
+        // 1. Cek Pesanan
         $pesanan = DB::table('tbl_pesanan')->where('kode_pesanan', $kode_pesanan)->first();
 
         if (!$pesanan) {
             return redirect('/')->with('error_testimoni', 'Kode pesanan tidak valid.');
         }
 
-        // 2. Cek apakah sudah pernah diulas
-        $sudahUlas = DB::table('tbl_testimoni')
-            ->where('kode_pesanan', $kode_pesanan)
-            ->exists();
+        // 2. PERBAIKAN: Jangan diblokir! Cek apakah data lama ada?
+        $existingTestimoni = Testimoni::where('kode_pesanan', $kode_pesanan)->first();
 
-        if ($sudahUlas) {
-            return redirect('/')->with('error_testimoni', 'Pesanan ini sudah pernah diulas sebelumnya.');
-        }
-
-        return view('tulis_testimoni', compact('kode_pesanan'));
+        // 3. Kirim data pesanan & data testimoni lama (jika ada) ke view
+        return view('tulis_testimoni', compact('kode_pesanan', 'pesanan', 'existingTestimoni'));
     }
 
     /**
-     * Memproses penyimpanan data testimoni
+     * Memproses penyimpanan (Update jika ada, Create jika baru)
      */
     public function kirimTestimoni(Request $request)
     {
-        // 1. Validasi Input
         $request->validate([
             'kode_pesanan' => 'required|string',
             'nama'         => 'required|string|max:100',
@@ -45,30 +40,29 @@ class TestimoniController extends Controller
             'isi'          => 'required|string|min:5',
         ]);
 
-        // 2. Simpan ke Database (Gunakan DB::table agar pasti masuk ke tbl_testimoni)
         try {
-            DB::table('tbl_testimoni')->insert([
-                'kode_pesanan'   => $request->kode_pesanan,
-                'nama_pelanggan' => $request->nama,
-                'kota'           => $request->kota,
-                'rating'         => $request->rating,
-                'isi_testimoni'  => $request->isi,
-                'is_visible'     => 1, // Langsung tampilkan (1 = true)
-                'created_at'     => now(),
-                'updated_at'     => now(),
-            ]);
+            // 4. PERBAIKAN: Gunakan updateOrCreate menggantikan insert
+            Testimoni::updateOrCreate(
+                ['kode_pesanan' => $request->kode_pesanan], // Kunci pencarian (WHERE)
+                [
+                    'nama_pelanggan' => $request->nama,
+                    'kota'           => $request->kota,
+                    'rating'         => $request->rating,
+                    'isi_testimoni'  => $request->isi,
+                    'is_visible'     => true, // Paksa tampil
+                    'updated_at'     => now() // Update waktu agar tampil paling atas
+                ]
+            );
 
-            // 3. Update status pesanan jadi "sudah direview"
+            // 5. Update status pesanan
             DB::table('tbl_pesanan')
                 ->where('kode_pesanan', $request->kode_pesanan)
                 ->update(['is_reviewed' => 1]);
 
-            // 4. REDIRECT KE BERANDA (Ini yang membuat kembali ke halaman awal)
-            return redirect('/')->with('success_testimoni', 'Terima kasih! Ulasan Anda telah berhasil dikirim.');
+            return redirect('/')->with('success_testimoni', 'Ulasan berhasil disimpan!');
 
         } catch (\Exception $e) {
-            // Jika ada error database, kembalikan ke form dengan pesan error
-            return back()->withErrors(['msg' => 'Gagal menyimpan ulasan: ' . $e->getMessage()]);
+            return back()->withErrors(['msg' => 'Gagal menyimpan: ' . $e->getMessage()]);
         }
     }
 }
